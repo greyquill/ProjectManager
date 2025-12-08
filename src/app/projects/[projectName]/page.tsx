@@ -87,8 +87,8 @@ export default function ProjectDetailPage() {
   const [savingProject, setSavingProject] = useState(false)
 
   // Preview state
-  const [epicDescriptionPreview, setEpicDescriptionPreview] = useState(false)
-  const [storyDescriptionPreview, setStoryDescriptionPreview] = useState(false)
+  const [epicDescriptionPreview, setEpicDescriptionPreview] = useState(true)
+  const [storyDescriptionPreview, setStoryDescriptionPreview] = useState(true)
 
   useEffect(() => {
     if (projectName) {
