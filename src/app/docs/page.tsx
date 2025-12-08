@@ -472,7 +472,7 @@ export default function DocsPage() {
                   In Focus Mode (Quick Creation)
                 </h3>
                 <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
-                  <li>Navigate to the "+ Add Epic" row at the bottom of the epic list (light blue bar)</li>
+                  <li>Navigate to the &quot;+ Add Epic&quot; row at the bottom of the epic list (light blue bar)</li>
                   <li>Type the epic title in the input field</li>
                   <li>Press <kbd className="bg-surface-muted px-2 py-1 rounded border border-border-light font-mono text-sm">Enter</kbd> to create the epic</li>
                 </ol>
@@ -483,7 +483,7 @@ export default function DocsPage() {
                   <li>Appears as a full-width light blue bar at the bottom of all epics</li>
                   <li>Shows a prominent blue border when focused</li>
                   <li>Automatically sets summary to match the title</li>
-                  <li>Defaults priority to "Medium" and status to "To Do"</li>
+                  <li>Defaults priority to &quot;Medium&quot; and status to &quot;To Do&quot;</li>
                   <li>Uses project manager as the epic manager (if available)</li>
                   <li>New epics appear at the bottom of the list with ID prefix [EPIC-XXXX]</li>
                   <li>After creation, focus returns to the input for creating another epic</li>
@@ -537,7 +537,7 @@ export default function DocsPage() {
                   In Focus Mode (Simplified)
                 </h3>
                 <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
-                  <li>Navigate to the "+" icon row under an expanded epic (or press Enter when focused on it)</li>
+                  <li>Navigate to the &quot;+&quot; icon row under an expanded epic (or press Enter when focused on it)</li>
                   <li>Type the story title in the input field</li>
                   <li>Press <kbd className="bg-surface-muted px-2 py-1 rounded border border-border-light font-mono text-sm">Enter</kbd> to create the story</li>
                   <li>Press <kbd className="bg-surface-muted px-2 py-1 rounded border border-border-light font-mono text-sm">Esc</kbd> to cancel</li>
@@ -547,10 +547,10 @@ export default function DocsPage() {
                 </p>
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
                   <li>Only the title field is shown (summary, priority, and manager fields are hidden)</li>
-                  <li>Priority defaults to "Medium"</li>
+                  <li>Priority defaults to &quot;Medium&quot;</li>
                   <li>Manager defaults to the project manager (if a project manager is assigned)</li>
                   <li>No Create/Cancel buttons - use Enter to create, ESC to cancel</li>
-                  <li>After creation, focus automatically returns to the "+" icon for quick creation of another story</li>
+                  <li>After creation, focus automatically returns to the &quot;+&quot; icon for quick creation of another story</li>
                   <li><strong>Optimistic Updates:</strong> Stories appear instantly in the UI with zero perceived delay. The story is added to the list immediately, and the API call happens in the background. When the server responds, the story is updated with the real ID. This allows for rapid, uninterrupted story creation.</li>
                 </ul>
 
