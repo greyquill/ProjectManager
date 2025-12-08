@@ -259,7 +259,10 @@ export default function ProjectsPage() {
             <p className="text-text-secondary mb-6">
               Get started by creating your first project
             </p>
-            <Button variant="primary">
+            <Button
+              variant="primary"
+              onClick={() => setShowNewProjectModal(true)}
+            >
               <Plus className="h-4 w-4 mr-2" />
               Create Project
             </Button>

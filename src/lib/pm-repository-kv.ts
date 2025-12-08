@@ -23,25 +23,46 @@ function getKVClient() {
   if (kvClient) return kvClient
   if (initError) throw initError
 
+  // Check which environment variables are available
+  const hasUpstash = !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
+  const hasVercelKV = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN)
+
   try {
-    // Try Upstash Redis first (Marketplace integration - recommended)
-    const { Redis } = require('@upstash/redis')
-    kvClient = Redis.fromEnv()
-    return kvClient
-  } catch (error: any) {
-    try {
-      // Fallback to Vercel KV (legacy)
+    // Try Vercel KV first if those env vars are present (most common case)
+    if (hasVercelKV) {
       const vercelKv = require('@vercel/kv')
       kvClient = vercelKv.kv
       return kvClient
-    } catch (error2: any) {
-      // Store error for better debugging
-      initError = new Error(
-        `Redis/KV client initialization failed. Upstash: ${error?.message || 'not available'}, Vercel KV: ${error2?.message || 'not available'}. ` +
-        `Please ensure @upstash/redis is installed and UPSTASH_REDIS_REST_URL/UPSTASH_REDIS_REST_TOKEN are set.`
-      )
-      throw initError
     }
+
+    // Try Upstash Redis if those env vars are present (Marketplace integration)
+    if (hasUpstash) {
+      const { Redis } = require('@upstash/redis')
+      kvClient = Redis.fromEnv()
+      return kvClient
+    }
+
+    // If neither is explicitly available, try Vercel KV first (more common)
+    try {
+      const vercelKv = require('@vercel/kv')
+      kvClient = vercelKv.kv
+      return kvClient
+    } catch {
+      // Then try Upstash Redis
+      const { Redis } = require('@upstash/redis')
+      kvClient = Redis.fromEnv()
+      return kvClient
+    }
+  } catch (error: any) {
+    // Store error for better debugging
+    initError = new Error(
+      `Redis/KV client initialization failed. ` +
+      `Vercel KV env vars: ${hasVercelKV ? 'present' : 'missing'}, ` +
+      `Upstash env vars: ${hasUpstash ? 'present' : 'missing'}. ` +
+      `Error: ${error?.message || String(error)}. ` +
+      `Please ensure Redis/KV is properly configured in Vercel.`
+    )
+    throw initError
   }
 }
 

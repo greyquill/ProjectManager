@@ -7,16 +7,33 @@ import { NextResponse } from 'next/server'
 export async function GET() {
   try {
     // Check environment variables
-    const hasUpstash = !!process.env.UPSTASH_REDIS_REST_URL
-    const hasVercelKV = !!process.env.KV_REST_API_URL
+    const hasUpstash = !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
+    const hasVercelKV = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN)
+    const hasRedisUrl = !!process.env.REDIS_URL
     const isVercel = process.env.VERCEL === '1'
 
     // Try to initialize Redis client
     let redisStatus = 'not_configured'
     let redisError = null
+    let envVarDetails: any = {}
 
     try {
       if (hasUpstash) {
+        envVarDetails.upstashUrl = process.env.UPSTASH_REDIS_REST_URL ?
+          `${process.env.UPSTASH_REDIS_REST_URL.substring(0, 20)}...` : 'not set'
+        envVarDetails.upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN ?
+          'set (hidden)' : 'not set'
+
+        // Validate URL format first
+        const url = process.env.UPSTASH_REDIS_REST_URL
+        if (url) {
+          try {
+            new URL(url)
+          } catch {
+            throw new Error(`Invalid URL format: ${url}`)
+          }
+        }
+
         const { Redis } = require('@upstash/redis')
         const client = Redis.fromEnv()
         // Try a simple ping
@@ -41,6 +58,7 @@ export async function GET() {
         hasVercelKVEnv: hasVercelKV,
         redisStatus,
         redisError,
+        envVarDetails,
       },
     })
   } catch (error) {
