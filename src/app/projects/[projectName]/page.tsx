@@ -23,6 +23,8 @@ import {
   X,
   Trash2,
   Tag,
+  Eye,
+  Edit,
 } from 'lucide-react'
 import type { Project, Epic, Story, StoryFile, Person } from '@/lib/types'
 
@@ -84,6 +86,10 @@ export default function ProjectDetailPage() {
   const [hasProjectChanges, setHasProjectChanges] = useState(false)
   const [savingProject, setSavingProject] = useState(false)
 
+  // Preview state
+  const [epicDescriptionPreview, setEpicDescriptionPreview] = useState(false)
+  const [storyDescriptionPreview, setStoryDescriptionPreview] = useState(false)
+
   useEffect(() => {
     if (projectName) {
       fetchProject()
@@ -104,6 +110,9 @@ export default function ProjectDetailPage() {
     if (selection.type === 'epic' && selection.epicName && epics.length > 0) {
       const epic = epics.find((e) => e._name === selection.epicName)
       if (epic) {
+        // Expand the epic
+        setExpandedEpics((prev) => new Set([...prev, selection.epicName!]))
+
         setEpicTitle(epic.title)
         setEpicSummary(epic.summary)
         setEpicDescription(epic.description || '')
@@ -117,6 +126,9 @@ export default function ProjectDetailPage() {
       const epic = epics.find((e) => e._name === selection.epicName)
       const story = epic?.stories.find((s) => s.id === selection.storyId)
       if (story) {
+        // Expand the parent epic so the story is visible in the accordion
+        setExpandedEpics((prev) => new Set([...prev, selection.epicName!]))
+
         setStoryTitle(story.title)
         setStorySummary(story.summary)
         setStoryDescription(story.description || '')
@@ -417,6 +429,122 @@ export default function ProjectDetailPage() {
       : [...projectContributors, personId]
     setProjectContributors(updated)
     setHasProjectChanges(true)
+  }
+
+  // Simple markdown renderer
+  function renderMarkdown(text: string): string {
+    if (!text) return ''
+
+    // Split into lines for processing
+    const lines = text.split('\n')
+    const output: string[] = []
+    let inList = false
+    let inCodeBlock = false
+    let codeBlockContent: string[] = []
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i]
+
+      // Code blocks
+      if (line.trim().startsWith('```')) {
+        if (inCodeBlock) {
+          const code = codeBlockContent.join('\n')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+          output.push(`<pre style="background: rgba(0,0,0,0.05); padding: 1rem; border-radius: 0.5rem; overflow-x: auto;"><code style="font-family: monospace; font-size: 0.875rem;">${code}</code></pre>`)
+          codeBlockContent = []
+          inCodeBlock = false
+        } else {
+          inCodeBlock = true
+        }
+        continue
+      }
+
+      if (inCodeBlock) {
+        codeBlockContent.push(line)
+        continue
+      }
+
+      // Headers
+      if (line.startsWith('### ')) {
+        if (inList) {
+          output.push('</ul>')
+          inList = false
+        }
+        const headerText = processInlineMarkdown(line.substring(4))
+        output.push(`<h3 style="font-size: 1.125rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem;">${headerText}</h3>`)
+        continue
+      }
+      if (line.startsWith('## ')) {
+        if (inList) {
+          output.push('</ul>')
+          inList = false
+        }
+        const headerText = processInlineMarkdown(line.substring(3))
+        output.push(`<h2 style="font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem;">${headerText}</h2>`)
+        continue
+      }
+      if (line.startsWith('# ')) {
+        if (inList) {
+          output.push('</ul>')
+          inList = false
+        }
+        const headerText = processInlineMarkdown(line.substring(2))
+        output.push(`<h1 style="font-size: 1.5rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem;">${headerText}</h1>`)
+        continue
+      }
+
+      // Lists
+      if (line.trim().startsWith('- ') || line.trim().startsWith('* ') || /^\d+\.\s/.test(line.trim())) {
+        if (!inList) {
+          output.push('<ul style="list-style-type: disc; margin-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">')
+          inList = true
+        }
+        const content = line.trim().replace(/^[-*]\s+/, '').replace(/^\d+\.\s+/, '')
+        output.push(`<li style="margin-bottom: 0.25rem;">${processInlineMarkdown(content)}</li>`)
+        continue
+      }
+
+      // Empty line
+      if (line.trim() === '') {
+        if (inList) {
+          output.push('</ul>')
+          inList = false
+        }
+        continue
+      }
+
+      // Regular paragraph
+      if (inList) {
+        output.push('</ul>')
+        inList = false
+      }
+      output.push(`<p style="margin-bottom: 0.75rem;">${processInlineMarkdown(line)}</p>`)
+    }
+
+    if (inList) {
+      output.push('</ul>')
+    }
+
+    return output.join('')
+  }
+
+  // Process inline markdown (bold, italic, code, links)
+  function processInlineMarkdown(text: string): string {
+    return text
+      // Escape HTML first
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      // Bold
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      // Italic
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      // Inline code
+      .replace(/`([^`]+)`/g, '<code style="background: rgba(0,0,0,0.1); padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-family: monospace;">$1</code>')
+      // Links
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color: #3b82f6; text-decoration: underline;">$1</a>')
   }
 
   function getStatusIcon(status: string) {
@@ -939,18 +1067,48 @@ export default function ProjectDetailPage() {
 
                   {/* Description */}
                   <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">
-                      Description
-                    </label>
-                    <textarea
-                      value={epicDescription}
-                      onChange={(e) => {
-                        setEpicDescription(e.target.value)
-                        setHasChanges(true)
-                      }}
-                      rows={8}
-                      className="input-field font-mono text-sm"
-                    />
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-sm font-medium text-text-primary">
+                        Description
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setEpicDescriptionPreview(!epicDescriptionPreview)}
+                        className="flex items-center gap-1 text-xs text-text-secondary hover:text-text-primary transition-colors"
+                      >
+                        {epicDescriptionPreview ? (
+                          <>
+                            <Edit className="h-3 w-3" />
+                            Edit
+                          </>
+                        ) : (
+                          <>
+                            <Eye className="h-3 w-3" />
+                            Preview
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    {epicDescriptionPreview ? (
+                      <div
+                        className="input-field min-h-[32rem] overflow-y-auto"
+                        style={{
+                          padding: '0.75rem',
+                          lineHeight: '1.6',
+                        }}
+                        dangerouslySetInnerHTML={{ __html: renderMarkdown(epicDescription) }}
+                      />
+                    ) : (
+                      <textarea
+                        value={epicDescription}
+                        onChange={(e) => {
+                          setEpicDescription(e.target.value)
+                          setHasChanges(true)
+                        }}
+                        rows={16}
+                        className="input-field font-mono text-sm"
+                      />
+                    )}
                   </div>
 
                   {/* Metrics (Read-only) */}
@@ -1201,18 +1359,48 @@ export default function ProjectDetailPage() {
 
                   {/* Description */}
                   <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">
-                      Description
-                    </label>
-                    <textarea
-                      value={storyDescription}
-                      onChange={(e) => {
-                        setStoryDescription(e.target.value)
-                        setHasChanges(true)
-                      }}
-                      rows={8}
-                      className="input-field font-mono text-sm"
-                    />
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-sm font-medium text-text-primary">
+                        Description
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setStoryDescriptionPreview(!storyDescriptionPreview)}
+                        className="flex items-center gap-1 text-xs text-text-secondary hover:text-text-primary transition-colors"
+                      >
+                        {storyDescriptionPreview ? (
+                          <>
+                            <Edit className="h-3 w-3" />
+                            Edit
+                          </>
+                        ) : (
+                          <>
+                            <Eye className="h-3 w-3" />
+                            Preview
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    {storyDescriptionPreview ? (
+                      <div
+                        className="input-field min-h-[32rem] overflow-y-auto"
+                        style={{
+                          padding: '0.75rem',
+                          lineHeight: '1.6',
+                        }}
+                        dangerouslySetInnerHTML={{ __html: renderMarkdown(storyDescription) }}
+                      />
+                    ) : (
+                      <textarea
+                        value={storyDescription}
+                        onChange={(e) => {
+                          setStoryDescription(e.target.value)
+                          setHasChanges(true)
+                        }}
+                        rows={16}
+                        className="input-field font-mono text-sm"
+                      />
+                    )}
                   </div>
 
                   {/* Acceptance Criteria */}
