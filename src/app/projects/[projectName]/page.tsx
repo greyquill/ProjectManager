@@ -74,6 +74,10 @@ export default function ProjectDetailPage() {
   const [storyPriority, setStoryPriority] = useState<'low' | 'medium' | 'high' | 'critical'>('medium')
   const [storyManager, setStoryManager] = useState('')
   const [storyDueDate, setStoryDueDate] = useState('')
+  const [storyPlannedStartDate, setStoryPlannedStartDate] = useState('')
+  const [storyPlannedDueDate, setStoryPlannedDueDate] = useState('')
+  const [storyActualStartDate, setStoryActualStartDate] = useState('')
+  const [storyActualDueDate, setStoryActualDueDate] = useState('')
   const [storyTags, setStoryTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState('')
   const [storyPoints, setStoryPoints] = useState(0)
@@ -156,6 +160,10 @@ export default function ProjectDetailPage() {
         setStoryPriority(story.priority)
         setStoryManager(story.manager || '')
         setStoryDueDate(story.dueDate || '')
+        setStoryPlannedStartDate(story.plannedStartDate || '')
+        setStoryPlannedDueDate(story.plannedDueDate || '')
+        setStoryActualStartDate(story.actualStartDate || '')
+        setStoryActualDueDate(story.actualDueDate || '')
         setStoryTags(story.tags || [])
         setStoryPoints(story.estimate?.storyPoints || 0)
         setAcceptanceCriteria(
@@ -351,6 +359,10 @@ export default function ProjectDetailPage() {
         priority: storyPriority,
         manager: storyManager,
         dueDate: storyDueDate || null,
+        plannedStartDate: storyPlannedStartDate || null,
+        plannedDueDate: storyPlannedDueDate || null,
+        actualStartDate: storyActualStartDate || null,
+        actualDueDate: storyActualDueDate || null,
         tags: storyTags,
         estimate: {
           storyPoints,
@@ -1850,18 +1862,68 @@ export default function ProjectDetailPage() {
                         </tr>
                         <tr className="border-b border-border-light">
                           <td className="px-4 py-2 bg-surface-muted text-sm font-medium text-text-primary">
-                            Due Date
+                            Planned Dates
                           </td>
                           <td className="px-4 py-2">
-                            <input
-                              type="date"
-                              value={storyDueDate}
-                              onChange={(e) => {
-                                setStoryDueDate(e.target.value)
-                                setHasChanges(true)
-                              }}
-                              className="input-field text-sm"
-                            />
+                            <div className="flex gap-4 items-center">
+                              <div className="flex-1">
+                                <label className="block text-xs text-text-secondary mb-1">Start Date</label>
+                                <input
+                                  type="date"
+                                  value={storyPlannedStartDate}
+                                  onChange={(e) => {
+                                    setStoryPlannedStartDate(e.target.value)
+                                    setHasChanges(true)
+                                  }}
+                                  className="input-field text-sm w-full"
+                                />
+                              </div>
+                              <div className="flex-1">
+                                <label className="block text-xs text-text-secondary mb-1">Due Date</label>
+                                <input
+                                  type="date"
+                                  value={storyPlannedDueDate}
+                                  onChange={(e) => {
+                                    setStoryPlannedDueDate(e.target.value)
+                                    setHasChanges(true)
+                                  }}
+                                  className="input-field text-sm w-full"
+                                />
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr className="border-b border-border-light">
+                          <td className="px-4 py-2 bg-surface-muted text-sm font-medium text-text-primary">
+                            Actual Dates
+                          </td>
+                          <td className="px-4 py-2">
+                            <div className="flex gap-4 items-center">
+                              <div className="flex-1">
+                                <label className="block text-xs text-text-secondary mb-1">Start Date</label>
+                                <input
+                                  type="date"
+                                  value={storyActualStartDate}
+                                  onChange={(e) => {
+                                    setStoryActualStartDate(e.target.value)
+                                    setHasChanges(true)
+                                  }}
+                                  className="input-field text-sm w-full"
+                                />
+                              </div>
+                              <div className="flex-1">
+                                <label className="block text-xs text-text-secondary mb-1">Due Date</label>
+                                <input
+                                  type="date"
+                                  value={storyActualDueDate}
+                                  onChange={(e) => {
+                                    setStoryActualDueDate(e.target.value)
+                                    setHasChanges(true)
+                                  }}
+                                  className="input-field text-sm w-full"
+                                />
+                              </div>
+                            </div>
                           </td>
                         </tr>
                         <tr className="border-b border-border-light">
