@@ -12,6 +12,9 @@
 /.next/
 /out/
 
+# legacy apps folder (should not exist)
+/apps/
+
 # production
 /build
 

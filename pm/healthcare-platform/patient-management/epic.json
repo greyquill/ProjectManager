@@ -1,0 +1,21 @@
+{
+  "title": "Patient Management Module",
+  "summary": "Implement end-to-end patient registration, listing, and management.",
+  "description": "This epic covers all aspects of patient management including:\n- Patient registration and profile creation\n- Patient listing and search functionality\n- Patient profile updates and management\n- Integration with appointment scheduling\n\n## Goals\n- Streamline patient onboarding process\n- Provide comprehensive patient data management\n- Enable quick patient lookup and access\n\n## Constraints\n- Must comply with healthcare data privacy regulations\n- Should integrate with existing hospital systems\n- Must support multi-tenant architecture",
+  "status": "in_progress",
+  "priority": "high",
+  "assignee": "unassigned",
+  "createdAt": "2025-01-05T09:00:00Z",
+  "updatedAt": "2025-01-05T11:00:00Z",
+  "targetRelease": "2025-02-15",
+  "storyIds": ["STORY-123", "STORY-124"],
+  "metrics": {
+    "totalStoryPoints": 8,
+    "completedStoryPoints": 3
+  },
+  "metadata": {
+    "createdBy": "unassigned",
+    "custom": {}
+  }
+}
+

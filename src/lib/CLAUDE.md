@@ -7,10 +7,15 @@ This directory contains utility functions, type definitions, and service modules
 
 ### `types.ts`
 TypeScript type definitions and Zod schemas for:
-- Story
-- Epic
-- Project
-- Form validation schemas
+- **Story**: Complete story schema with all fields (status, priority, acceptance criteria, files, etc.)
+- **Epic**: Epic schema with metrics and story tracking
+- **Project**: Project schema with defaults and metadata
+- **Helper Functions**:
+  - `parseStory()`, `parseEpic()`, `parseProject()` - Validation and parsing
+  - `createStory()`, `createEpic()`, `createProject()` - Factory functions with defaults
+  - `generateStoryId()`, `generateTimestamp()` - ID and timestamp generation
+
+All schemas use Zod for runtime validation and TypeScript type inference.
 
 ### `pm-repository.ts`
 File-based data layer for reading and writing JSON files in hierarchical structure:
