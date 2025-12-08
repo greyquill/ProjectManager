@@ -9,12 +9,11 @@ export const StoryStatusSchema = z.enum([
   'in_progress',
   'blocked',
   'done',
-  'archived',
 ])
 
 export const PrioritySchema = z.enum(['low', 'medium', 'high', 'critical'])
 
-export const EpicStatusSchema = z.enum(['todo', 'in_progress', 'done', 'archived'])
+export const EpicStatusSchema = z.enum(['todo', 'in_progress', 'blocked', 'done'])
 
 export const FileRoleSchema = z.enum(['primary', 'supporting', 'test'])
 

@@ -11,11 +11,11 @@
     "User can sort by columns",
     "Clicking a patient row navigates to patient detail"
   ],
-  "status": "todo",
-  "priority": "medium",
+  "status": "in_progress",
+  "priority": "low",
   "manager": "person-1765177917654-376",
   "createdAt": "2025-01-05T10:15:00Z",
-  "updatedAt": "2025-12-08T07:46:33.539Z",
+  "updatedAt": "2025-12-08T10:45:43.973Z",
   "dueDate": "2025-12-12",
   "tags": [
     "frontend",

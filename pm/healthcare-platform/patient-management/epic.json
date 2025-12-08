@@ -6,9 +6,12 @@
   "priority": "high",
   "manager": "person-002",
   "createdAt": "2025-01-05T09:00:00Z",
-  "updatedAt": "2025-01-05T11:00:00Z",
+  "updatedAt": "2025-12-08T10:47:20.660Z",
   "targetRelease": "2025-02-15",
-  "storyIds": ["STORY-123", "STORY-124"],
+  "storyIds": [
+    "STORY-123",
+    "STORY-124"
+  ],
   "metrics": {
     "totalStoryPoints": 8,
     "completedStoryPoints": 3
@@ -18,4 +21,3 @@
     "custom": {}
   }
 }
-

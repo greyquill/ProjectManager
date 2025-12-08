@@ -60,7 +60,7 @@ export default function ProjectDetailPage() {
   const [epicTitle, setEpicTitle] = useState('')
   const [epicSummary, setEpicSummary] = useState('')
   const [epicDescription, setEpicDescription] = useState('')
-  const [epicStatus, setEpicStatus] = useState<'todo' | 'in_progress' | 'done' | 'archived'>('todo')
+  const [epicStatus, setEpicStatus] = useState<'todo' | 'in_progress' | 'blocked' | 'done'>('todo')
   const [epicPriority, setEpicPriority] = useState<'low' | 'medium' | 'high' | 'critical'>('medium')
   const [epicManager, setEpicManager] = useState('')
   const [epicTargetRelease, setEpicTargetRelease] = useState('')
@@ -69,7 +69,7 @@ export default function ProjectDetailPage() {
   const [storyTitle, setStoryTitle] = useState('')
   const [storySummary, setStorySummary] = useState('')
   const [storyDescription, setStoryDescription] = useState('')
-  const [storyStatus, setStoryStatus] = useState<'todo' | 'in_progress' | 'blocked' | 'done' | 'archived'>('todo')
+  const [storyStatus, setStoryStatus] = useState<'todo' | 'in_progress' | 'blocked' | 'done'>('todo')
   const [storyPriority, setStoryPriority] = useState<'low' | 'medium' | 'high' | 'critical'>('medium')
   const [storyManager, setStoryManager] = useState('')
   const [storyDueDate, setStoryDueDate] = useState('')
@@ -238,11 +238,42 @@ export default function ProjectDetailPage() {
     navigateToStory(epicName, story.id)
   }
 
-  async function saveEpic() {
+  // Helper functions for status and priority colors
+  function getStatusColor(status: 'todo' | 'in_progress' | 'blocked' | 'done'): string {
+    switch (status) {
+      case 'todo':
+        return 'border-l-gray-400'
+      case 'in_progress':
+        return 'border-l-blue-500'
+      case 'blocked':
+        return 'border-l-red-500'
+      case 'done':
+        return 'border-l-green-500'
+      default:
+        return 'border-l-gray-400'
+    }
+  }
+
+  function getPriorityColor(priority: 'low' | 'medium' | 'high' | 'critical'): string {
+    switch (priority) {
+      case 'low':
+        return 'bg-blue-100 border-blue-300 text-blue-700'
+      case 'medium':
+        return 'bg-yellow-100 border-yellow-300 text-yellow-700'
+      case 'high':
+        return 'bg-orange-100 border-orange-300 text-orange-700'
+      case 'critical':
+        return 'bg-red-100 border-red-300 text-red-700'
+      default:
+        return 'bg-gray-100 border-gray-300 text-gray-700'
+    }
+  }
+
+  async function saveEpic(autoSave = false) {
     if (!selection.epicName) return
 
     try {
-      setSaving(true)
+      if (!autoSave) setSaving(true)
       const epic = epics.find((e) => e._name === selection.epicName)
       if (!epic) return
 
@@ -271,22 +302,22 @@ export default function ProjectDetailPage() {
 
       if (result.success) {
         await fetchEpics()
-        setHasChanges(false)
+        if (!autoSave) setHasChanges(false)
       } else {
         setError(result.error || 'Failed to save epic')
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save epic')
     } finally {
-      setSaving(false)
+      if (!autoSave) setSaving(false)
     }
   }
 
-  async function saveStory() {
+  async function saveStory(autoSave = false) {
     if (!selection.epicName || !selection.storyId) return
 
     try {
-      setSaving(true)
+      if (!autoSave) setSaving(true)
       const epic = epics.find((e) => e._name === selection.epicName)
       const story = epic?.stories.find((s) => s.id === selection.storyId)
       if (!story) return
@@ -327,14 +358,14 @@ export default function ProjectDetailPage() {
 
       if (result.success) {
         await fetchEpics()
-        setHasChanges(false)
+        if (!autoSave) setHasChanges(false)
       } else {
         setError(result.error || 'Failed to save story')
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save story')
     } finally {
-      setSaving(false)
+      if (!autoSave) setSaving(false)
     }
   }
 
@@ -552,7 +583,7 @@ export default function ProjectDetailPage() {
       case 'done':
         return <CheckCircle2 className="h-4 w-4 text-green-600" />
       case 'in_progress':
-        return <Circle className="h-4 w-4 text-blue-600" />
+        return <div className="h-4 w-4 rounded-full bg-blue-500" />
       case 'blocked':
         return <AlertCircle className="h-4 w-4 text-red-600" />
       default:
@@ -560,18 +591,6 @@ export default function ProjectDetailPage() {
     }
   }
 
-  function getPriorityColor(priority: string): string {
-    switch (priority) {
-      case 'critical':
-        return 'priority-critical'
-      case 'high':
-        return 'priority-high'
-      case 'medium':
-        return 'priority-medium'
-      default:
-        return 'priority-low'
-    }
-  }
 
   if (loading) {
     return (
@@ -707,12 +726,14 @@ export default function ProjectDetailPage() {
                         )
                       : 0
 
+                  const statusColor = getStatusColor(epic.status as 'todo' | 'in_progress' | 'blocked' | 'done')
+
                   return (
                     <Card
                       key={epic._name}
-                      className={`overflow-hidden ${
+                      className={`overflow-hidden border-l-4 ${
                         isSelected ? 'ring-2 ring-primary' : ''
-                      }`}
+                      } ${statusColor}`}
                     >
                       {/* Epic Row */}
                       <div
@@ -772,13 +793,14 @@ export default function ProjectDetailPage() {
                               selection.type === 'story' &&
                               selection.epicName === epic._name &&
                               selection.storyId === story.id
+                            const storyStatusColor = getStatusColor(story.status as 'todo' | 'in_progress' | 'blocked' | 'done')
 
                             return (
                               <div
                                 key={story.id}
-                                className={`p-3 pl-12 cursor-pointer hover:bg-surface-muted transition-colors border-b border-border-light last:border-b-0 ${
+                                className={`p-3 pl-12 cursor-pointer hover:bg-surface-muted transition-colors border-l-4 border-b border-border-light last:border-b-0 ${
                                   isStorySelected ? 'bg-primary/5' : ''
-                                }`}
+                                } ${storyStatusColor}`}
                                 onClick={(e) => {
                                   e.stopPropagation()
                                   selectStory(epic._name, story)
@@ -951,7 +973,7 @@ export default function ProjectDetailPage() {
                     )}
                     <Button
                       variant="primary"
-                      onClick={saveEpic}
+                      onClick={() => saveEpic(false)}
                       isLoading={saving}
                       disabled={!hasChanges}
                     >
@@ -988,19 +1010,49 @@ export default function ProjectDetailPage() {
                             Status
                           </td>
                           <td className="px-4 py-2">
-                            <select
-                              value={epicStatus}
-                              onChange={(e) => {
-                                setEpicStatus(e.target.value as any)
-                                setHasChanges(true)
-                              }}
-                              className="input-field text-sm"
-                            >
-                              <option value="todo">To Do</option>
-                              <option value="in_progress">In Progress</option>
-                              <option value="done">Done</option>
-                              <option value="archived">Archived</option>
-                            </select>
+                            <div className="flex gap-4">
+                              {(['todo', 'in_progress', 'blocked', 'done'] as const).map((status) => (
+                                <label
+                                  key={status}
+                                  className="flex items-center gap-2 cursor-pointer"
+                                >
+                                  <input
+                                    type="radio"
+                                    name="epic-status"
+                                    value={status}
+                                    checked={epicStatus === status}
+                                    onChange={async (e) => {
+                                      setEpicStatus(e.target.value as any)
+                                      setHasChanges(true)
+                                      // Auto-save
+                                      const currentEpic = epics.find((e) => e._name === selection.epicName)
+                                      if (currentEpic) {
+                                        const updatedEpic: Epic = {
+                                          ...currentEpic,
+                                          status: e.target.value as any,
+                                          updatedAt: new Date().toISOString(),
+                                        }
+                                        try {
+                                          await fetch(
+                                            `/api/projects/${projectName}/epics/${selection.epicName}`,
+                                            {
+                                              method: 'PUT',
+                                              headers: { 'Content-Type': 'application/json' },
+                                              body: JSON.stringify(updatedEpic),
+                                            }
+                                          )
+                                          await fetchEpics()
+                                        } catch (err) {
+                                          console.error('Auto-save failed:', err)
+                                        }
+                                      }
+                                    }}
+                                    className="w-4 h-4"
+                                  />
+                                  <span className="text-sm capitalize">{status.replace('_', ' ')}</span>
+                                </label>
+                              ))}
+                            </div>
                           </td>
                         </tr>
                         <tr className="border-b border-border-light">
@@ -1008,19 +1060,49 @@ export default function ProjectDetailPage() {
                             Priority
                           </td>
                           <td className="px-4 py-2">
-                            <select
-                              value={epicPriority}
-                              onChange={(e) => {
-                                setEpicPriority(e.target.value as any)
-                                setHasChanges(true)
-                              }}
-                              className="input-field text-sm"
-                            >
-                              <option value="low">Low</option>
-                              <option value="medium">Medium</option>
-                              <option value="high">High</option>
-                              <option value="critical">Critical</option>
-                            </select>
+                            <div className="flex gap-4">
+                              {(['low', 'medium', 'high', 'critical'] as const).map((priority) => (
+                                <label
+                                  key={priority}
+                                  className="flex items-center gap-2 cursor-pointer"
+                                >
+                                  <input
+                                    type="radio"
+                                    name="epic-priority"
+                                    value={priority}
+                                    checked={epicPriority === priority}
+                                    onChange={async (e) => {
+                                      setEpicPriority(e.target.value as any)
+                                      setHasChanges(true)
+                                      // Auto-save
+                                      const currentEpic = epics.find((e) => e._name === selection.epicName)
+                                      if (currentEpic) {
+                                        const updatedEpic: Epic = {
+                                          ...currentEpic,
+                                          priority: e.target.value as any,
+                                          updatedAt: new Date().toISOString(),
+                                        }
+                                        try {
+                                          await fetch(
+                                            `/api/projects/${projectName}/epics/${selection.epicName}`,
+                                            {
+                                              method: 'PUT',
+                                              headers: { 'Content-Type': 'application/json' },
+                                              body: JSON.stringify(updatedEpic),
+                                            }
+                                          )
+                                          await fetchEpics()
+                                        } catch (err) {
+                                          console.error('Auto-save failed:', err)
+                                        }
+                                      }
+                                    }}
+                                    className="w-4 h-4"
+                                  />
+                                  <span className="text-sm capitalize">{priority}</span>
+                                </label>
+                              ))}
+                            </div>
                           </td>
                         </tr>
                         <tr className="border-b border-border-light">
@@ -1188,7 +1270,7 @@ export default function ProjectDetailPage() {
                     )}
                     <Button
                       variant="primary"
-                      onClick={saveStory}
+                      onClick={() => saveStory(false)}
                       isLoading={saving}
                       disabled={!hasChanges}
                     >
@@ -1225,20 +1307,50 @@ export default function ProjectDetailPage() {
                             Status
                           </td>
                           <td className="px-4 py-2">
-                            <select
-                              value={storyStatus}
-                              onChange={(e) => {
-                                setStoryStatus(e.target.value as any)
-                                setHasChanges(true)
-                              }}
-                              className="input-field text-sm"
-                            >
-                              <option value="todo">To Do</option>
-                              <option value="in_progress">In Progress</option>
-                              <option value="blocked">Blocked</option>
-                              <option value="done">Done</option>
-                              <option value="archived">Archived</option>
-                            </select>
+                            <div className="flex gap-4">
+                              {(['todo', 'in_progress', 'blocked', 'done'] as const).map((status) => (
+                                <label
+                                  key={status}
+                                  className="flex items-center gap-2 cursor-pointer"
+                                >
+                                  <input
+                                    type="radio"
+                                    name="story-status"
+                                    value={status}
+                                    checked={storyStatus === status}
+                                    onChange={async (e) => {
+                                      setStoryStatus(e.target.value as any)
+                                      setHasChanges(true)
+                                      // Auto-save
+                                      const epic = epics.find((e) => e._name === selection.epicName)
+                                      const story = epic?.stories.find((s) => s.id === selection.storyId)
+                                      if (story) {
+                                        const updatedStory: Story = {
+                                          ...story,
+                                          status: e.target.value as any,
+                                          updatedAt: new Date().toISOString(),
+                                        }
+                                        try {
+                                          await fetch(
+                                            `/api/projects/${projectName}/epics/${selection.epicName}/stories/${selection.storyId}`,
+                                            {
+                                              method: 'PUT',
+                                              headers: { 'Content-Type': 'application/json' },
+                                              body: JSON.stringify(updatedStory),
+                                            }
+                                          )
+                                          await fetchEpics()
+                                        } catch (err) {
+                                          console.error('Auto-save failed:', err)
+                                        }
+                                      }
+                                    }}
+                                    className="w-4 h-4"
+                                  />
+                                  <span className="text-sm capitalize">{status.replace('_', ' ')}</span>
+                                </label>
+                              ))}
+                            </div>
                           </td>
                         </tr>
                         <tr className="border-b border-border-light">
@@ -1246,19 +1358,50 @@ export default function ProjectDetailPage() {
                             Priority
                           </td>
                           <td className="px-4 py-2">
-                            <select
-                              value={storyPriority}
-                              onChange={(e) => {
-                                setStoryPriority(e.target.value as any)
-                                setHasChanges(true)
-                              }}
-                              className="input-field text-sm"
-                            >
-                              <option value="low">Low</option>
-                              <option value="medium">Medium</option>
-                              <option value="high">High</option>
-                              <option value="critical">Critical</option>
-                            </select>
+                            <div className="flex gap-4">
+                              {(['low', 'medium', 'high', 'critical'] as const).map((priority) => (
+                                <label
+                                  key={priority}
+                                  className="flex items-center gap-2 cursor-pointer"
+                                >
+                                  <input
+                                    type="radio"
+                                    name="story-priority"
+                                    value={priority}
+                                    checked={storyPriority === priority}
+                                    onChange={async (e) => {
+                                      setStoryPriority(e.target.value as any)
+                                      setHasChanges(true)
+                                      // Auto-save
+                                      const epic = epics.find((e) => e._name === selection.epicName)
+                                      const story = epic?.stories.find((s) => s.id === selection.storyId)
+                                      if (story) {
+                                        const updatedStory: Story = {
+                                          ...story,
+                                          priority: e.target.value as any,
+                                          updatedAt: new Date().toISOString(),
+                                        }
+                                        try {
+                                          await fetch(
+                                            `/api/projects/${projectName}/epics/${selection.epicName}/stories/${selection.storyId}`,
+                                            {
+                                              method: 'PUT',
+                                              headers: { 'Content-Type': 'application/json' },
+                                              body: JSON.stringify(updatedStory),
+                                            }
+                                          )
+                                          await fetchEpics()
+                                        } catch (err) {
+                                          console.error('Auto-save failed:', err)
+                                        }
+                                      }
+                                    }}
+                                    className="w-4 h-4"
+                                  />
+                                  <span className="text-sm capitalize">{priority}</span>
+                                </label>
+                              ))}
+                            </div>
                           </td>
                         </tr>
                         <tr className="border-b border-border-light">

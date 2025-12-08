@@ -11,12 +11,16 @@
     "Success message displayed after submission"
   ],
   "status": "in_progress",
-  "priority": "medium",
+  "priority": "low",
   "manager": "person-002",
   "createdAt": "2025-01-05T10:00:00Z",
-  "updatedAt": "2025-01-05T14:30:00Z",
+  "updatedAt": "2025-12-08T10:47:03.646Z",
   "dueDate": null,
-  "tags": ["frontend", "patients", "forms"],
+  "tags": [
+    "frontend",
+    "patients",
+    "forms"
+  ],
   "estimate": {
     "storyPoints": 5,
     "confidence": "medium"
@@ -43,4 +47,3 @@
     "custom": {}
   }
 }
-
