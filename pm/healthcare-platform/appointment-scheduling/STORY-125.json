@@ -9,15 +9,21 @@
     "User can choose appointment type",
     "User can enter patient information",
     "User receives confirmation after booking",
-    "Booking appears in patient's appointment history"
+    "Booking appears in patient's appointment history",
+    "lkklkklklklk"
   ],
   "status": "todo",
   "priority": "high",
-  "assignee": "unassigned",
+  "manager": "person-003",
   "createdAt": "2025-01-05T11:00:00Z",
-  "updatedAt": "2025-01-05T11:00:00Z",
+  "updatedAt": "2025-12-08T06:24:28.523Z",
   "dueDate": "2025-02-20",
-  "tags": ["frontend", "appointments", "calendar", "booking"],
+  "tags": [
+    "frontend",
+    "appointments",
+    "calendar",
+    "booking"
+  ],
   "estimate": {
     "storyPoints": 5,
     "confidence": "medium"
@@ -40,8 +46,7 @@
   ],
   "metadata": {
     "createdBy": "unassigned",
-    "lastEditedBy": "unassigned",
+    "lastEditedBy": "user",
     "custom": {}
   }
 }
-

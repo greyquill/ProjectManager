@@ -1,0 +1,1238 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { Header } from '@/components/Header'
+import { Card } from '@/components/Card'
+import { Button } from '@/components/Button'
+import { Badge } from '@/components/Badge'
+import {
+  ArrowLeft,
+  ChevronDown,
+  ChevronRight,
+  FolderKanban,
+  Plus,
+  User,
+  Target,
+  FileText,
+  CheckCircle2,
+  Circle,
+  AlertCircle,
+  Save,
+  X,
+  Trash2,
+  Tag,
+} from 'lucide-react'
+import type { Project, Epic, Story, StoryFile, Person } from '@/lib/types'
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
+type Selection = {
+  type: 'epic' | 'story' | null
+  epicName?: string
+  storyId?: string
+}
+
+export default function ProjectDetailPage() {
+  const params = useParams()
+  const router = useRouter()
+  const projectName = params.projectName as string
+
+  const [project, setProject] = useState<Project | null>(null)
+  const [epics, setEpics] = useState<(Epic & { _name: string; stories: Story[] })[]>([])
+  const [people, setPeople] = useState<Person[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [expandedEpics, setExpandedEpics] = useState<Set<string>>(new Set())
+  const [selection, setSelection] = useState<Selection>({ type: null })
+  const [saving, setSaving] = useState(false)
+  const [hasChanges, setHasChanges] = useState(false)
+
+  // Epic edit state
+  const [epicTitle, setEpicTitle] = useState('')
+  const [epicSummary, setEpicSummary] = useState('')
+  const [epicDescription, setEpicDescription] = useState('')
+  const [epicStatus, setEpicStatus] = useState<'todo' | 'in_progress' | 'done' | 'archived'>('todo')
+  const [epicPriority, setEpicPriority] = useState<'low' | 'medium' | 'high' | 'critical'>('medium')
+  const [epicManager, setEpicManager] = useState('')
+  const [epicTargetRelease, setEpicTargetRelease] = useState('')
+
+  // Story edit state
+  const [storyTitle, setStoryTitle] = useState('')
+  const [storySummary, setStorySummary] = useState('')
+  const [storyDescription, setStoryDescription] = useState('')
+  const [storyStatus, setStoryStatus] = useState<'todo' | 'in_progress' | 'blocked' | 'done' | 'archived'>('todo')
+  const [storyPriority, setStoryPriority] = useState<'low' | 'medium' | 'high' | 'critical'>('medium')
+  const [storyManager, setStoryManager] = useState('')
+  const [storyDueDate, setStoryDueDate] = useState('')
+  const [storyTags, setStoryTags] = useState<string[]>([])
+  const [newTag, setNewTag] = useState('')
+  const [storyPoints, setStoryPoints] = useState(0)
+  const [acceptanceCriteria, setAcceptanceCriteria] = useState<string[]>([''])
+  const [newCriterion, setNewCriterion] = useState('')
+  const [files, setFiles] = useState<StoryFile[]>([])
+
+  // Project metadata edit state
+  const [projectManager, setProjectManager] = useState('')
+  const [projectContributors, setProjectContributors] = useState<string[]>([])
+  const [hasProjectChanges, setHasProjectChanges] = useState(false)
+  const [savingProject, setSavingProject] = useState(false)
+
+  useEffect(() => {
+    if (projectName) {
+      fetchProject()
+      fetchEpics()
+      fetchPeople()
+    }
+  }, [projectName])
+
+  async function fetchPeople() {
+    try {
+      const response = await fetch(`/api/projects/${projectName}/people`)
+      const result = await response.json()
+
+      if (result.success) {
+        setPeople(result.data || [])
+      }
+    } catch (err) {
+      console.error('Failed to load people:', err)
+    }
+  }
+
+  async function fetchProject() {
+    try {
+      const response = await fetch(`/api/projects/${projectName}`)
+      const result = await response.json()
+
+      if (result.success) {
+        const proj = result.data
+        setProject(proj)
+        setProjectManager(proj.metadata?.manager || 'unassigned')
+        setProjectContributors(proj.metadata?.contributors || [])
+      } else {
+        setError(result.error || 'Failed to load project')
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load project')
+    }
+  }
+
+  async function fetchEpics() {
+    try {
+      const response = await fetch(`/api/projects/${projectName}/epics`)
+      const result = await response.json()
+
+      if (result.success) {
+        const epicsWithStories = await Promise.all(
+          result.data.map(async (epic: Epic & { _name: string }) => {
+            const storiesResponse = await fetch(
+              `/api/projects/${projectName}/epics/${epic._name}/stories`
+            )
+            const storiesResult = await storiesResponse.json()
+            return {
+              ...epic,
+              stories: storiesResult.success ? storiesResult.data : [],
+            }
+          })
+        )
+        setEpics(epicsWithStories)
+      }
+    } catch (err) {
+      console.error('Failed to load epics:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  function toggleEpic(epicName: string) {
+    const newExpanded = new Set(expandedEpics)
+    if (newExpanded.has(epicName)) {
+      newExpanded.delete(epicName)
+    } else {
+      newExpanded.add(epicName)
+    }
+    setExpandedEpics(newExpanded)
+  }
+
+  function selectEpic(epic: Epic & { _name: string; stories: Story[] }) {
+    setSelection({ type: 'epic', epicName: epic._name })
+    setEpicTitle(epic.title)
+    setEpicSummary(epic.summary)
+    setEpicDescription(epic.description || '')
+    setEpicStatus(epic.status)
+    setEpicPriority(epic.priority)
+    setEpicManager(epic.manager || '')
+    setEpicTargetRelease(epic.targetRelease || '')
+    setHasChanges(false)
+  }
+
+  function selectStory(epicName: string, story: Story) {
+    setSelection({ type: 'story', epicName, storyId: story.id })
+    setStoryTitle(story.title)
+    setStorySummary(story.summary)
+    setStoryDescription(story.description || '')
+    setStoryStatus(story.status)
+    setStoryPriority(story.priority)
+    setStoryManager(story.manager || '')
+    setStoryDueDate(story.dueDate || '')
+    setStoryTags(story.tags || [])
+    setStoryPoints(story.estimate?.storyPoints || 0)
+    setAcceptanceCriteria(
+      story.acceptanceCriteria && story.acceptanceCriteria.length > 0
+        ? story.acceptanceCriteria
+        : ['']
+    )
+    setFiles(story.files || [])
+    setHasChanges(false)
+  }
+
+  async function saveEpic() {
+    if (!selection.epicName) return
+
+    try {
+      setSaving(true)
+      const epic = epics.find((e) => e._name === selection.epicName)
+      if (!epic) return
+
+      const updatedEpic: Epic = {
+        ...epic,
+        title: epicTitle,
+        summary: epicSummary,
+        description: epicDescription,
+        status: epicStatus,
+        priority: epicPriority,
+        manager: epicManager,
+        targetRelease: epicTargetRelease || null,
+        updatedAt: new Date().toISOString(),
+      }
+
+      const response = await fetch(
+        `/api/projects/${projectName}/epics/${selection.epicName}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedEpic),
+        }
+      )
+
+      const result = await response.json()
+
+      if (result.success) {
+        await fetchEpics()
+        setHasChanges(false)
+      } else {
+        setError(result.error || 'Failed to save epic')
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save epic')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function saveStory() {
+    if (!selection.epicName || !selection.storyId) return
+
+    try {
+      setSaving(true)
+      const epic = epics.find((e) => e._name === selection.epicName)
+      const story = epic?.stories.find((s) => s.id === selection.storyId)
+      if (!story) return
+
+      const updatedStory: Story = {
+        ...story,
+        title: storyTitle,
+        summary: storySummary,
+        description: storyDescription,
+        status: storyStatus,
+        priority: storyPriority,
+        manager: storyManager,
+        dueDate: storyDueDate || null,
+        tags: storyTags,
+        estimate: {
+          storyPoints,
+          confidence: story.estimate?.confidence,
+        },
+        acceptanceCriteria: acceptanceCriteria.filter((c) => c && c.trim() !== ''),
+        files,
+        updatedAt: new Date().toISOString(),
+        metadata: {
+          ...story.metadata,
+          lastEditedBy: 'user',
+        },
+      }
+
+      const response = await fetch(
+        `/api/projects/${projectName}/epics/${selection.epicName}/stories/${selection.storyId}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedStory),
+        }
+      )
+
+      const result = await response.json()
+
+      if (result.success) {
+        await fetchEpics()
+        setHasChanges(false)
+      } else {
+        setError(result.error || 'Failed to save story')
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save story')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  function addTag() {
+    if (newTag.trim() && !storyTags.includes(newTag.trim())) {
+      setStoryTags([...storyTags, newTag.trim()])
+      setNewTag('')
+      setHasChanges(true)
+    }
+  }
+
+  function removeTag(tagToRemove: string) {
+    setStoryTags(storyTags.filter((t) => t !== tagToRemove))
+    setHasChanges(true)
+  }
+
+  function addCriterion() {
+    if (newCriterion.trim()) {
+      setAcceptanceCriteria([...acceptanceCriteria, newCriterion.trim()])
+      setNewCriterion('')
+      setHasChanges(true)
+    }
+  }
+
+  function removeCriterion(index: number) {
+    setAcceptanceCriteria(acceptanceCriteria.filter((_, i) => i !== index))
+    setHasChanges(true)
+  }
+
+  function updateCriterion(index: number, value: string) {
+    const updated = [...acceptanceCriteria]
+    updated[index] = value
+    setAcceptanceCriteria(updated)
+    setHasChanges(true)
+  }
+
+  function addFile() {
+    setFiles([...files, { path: '', role: 'supporting' }])
+    setHasChanges(true)
+  }
+
+  function removeFile(index: number) {
+    setFiles(files.filter((_, i) => i !== index))
+    setHasChanges(true)
+  }
+
+  function updateFile(index: number, field: 'path' | 'role', value: string) {
+    const updated = [...files]
+    updated[index] = { ...updated[index], [field]: value }
+    setFiles(updated)
+    setHasChanges(true)
+  }
+
+  async function saveProjectMetadata() {
+    if (!project) return
+
+    try {
+      setSavingProject(true)
+      const updatedProject: Project = {
+        ...project,
+        metadata: {
+          ...project.metadata,
+          manager: projectManager,
+          contributors: projectContributors,
+        },
+      }
+
+      const response = await fetch(`/api/projects/${projectName}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedProject),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        await fetchProject()
+        setHasProjectChanges(false)
+      } else {
+        setError(result.error || 'Failed to save project')
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save project')
+    } finally {
+      setSavingProject(false)
+    }
+  }
+
+  function toggleContributor(personId: string) {
+    const updated = projectContributors.includes(personId)
+      ? projectContributors.filter((id) => id !== personId)
+      : [...projectContributors, personId]
+    setProjectContributors(updated)
+    setHasProjectChanges(true)
+  }
+
+  function getStatusIcon(status: string) {
+    switch (status) {
+      case 'done':
+        return <CheckCircle2 className="h-4 w-4 text-green-600" />
+      case 'in_progress':
+        return <Circle className="h-4 w-4 text-blue-600" />
+      case 'blocked':
+        return <AlertCircle className="h-4 w-4 text-red-600" />
+      default:
+        return <Circle className="h-4 w-4 text-gray-400" />
+    }
+  }
+
+  function getPriorityColor(priority: string): string {
+    switch (priority) {
+      case 'critical':
+        return 'priority-critical'
+      case 'high':
+        return 'priority-high'
+      case 'medium':
+        return 'priority-medium'
+      default:
+        return 'priority-low'
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background-light">
+        <Header />
+        <main className="container py-8">
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <p className="mt-4 text-text-secondary">Loading project...</p>
+          </div>
+        </main>
+      </div>
+    )
+  }
+
+  if (error || !project) {
+    return (
+      <div className="min-h-screen bg-background-light">
+        <Header />
+        <main className="container py-8">
+          <Card className="p-6 bg-red-50 border-red-200">
+            <p className="text-red-800 mb-4">{error || 'Project not found'}</p>
+            <Button variant="outline" onClick={() => router.push('/projects')}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Projects
+            </Button>
+          </Card>
+        </main>
+      </div>
+    )
+  }
+
+  const displayName = project.name || projectName
+  const totalStoryPoints = epics.reduce(
+    (sum, epic) => sum + (epic.metrics?.totalStoryPoints || 0),
+    0
+  )
+  const completedStoryPoints = epics.reduce(
+    (sum, epic) => sum + (epic.metrics?.completedStoryPoints || 0),
+    0
+  )
+  const completionPercentage =
+    totalStoryPoints > 0
+      ? Math.round((completedStoryPoints / totalStoryPoints) * 100)
+      : 0
+
+  const selectedEpic = selection.type === 'epic' && selection.epicName
+    ? epics.find((e) => e._name === selection.epicName)
+    : null
+
+  const selectedStory = selection.type === 'story' && selection.epicName && selection.storyId
+    ? epics
+        .find((e) => e._name === selection.epicName)
+        ?.stories.find((s) => s.id === selection.storyId)
+    : null
+
+  return (
+    <div className="min-h-screen bg-background-light">
+      <Header />
+
+      <main className="container py-6">
+        {/* Project Header - Compact */}
+        <div className="mb-6">
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className="h-8 w-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+              <FolderKanban className="h-4 w-4" />
+            </div>
+            <h1 className="text-lg font-semibold text-text-primary">
+              {displayName}
+            </h1>
+            <span className="text-text-secondary">|</span>
+            <span className="text-sm text-text-secondary">
+              <span className="font-medium text-text-primary">{epics.length}</span> Epics
+            </span>
+            <span className="text-text-secondary">|</span>
+            <span className="text-sm text-text-secondary">
+              <span className="font-medium text-text-primary">{totalStoryPoints}</span> Story Points
+            </span>
+            <span className="text-text-secondary">|</span>
+            <span className="text-sm text-text-secondary">
+              <span className="font-medium text-text-primary">{completionPercentage}%</span> Progress
+            </span>
+            <span className="text-text-secondary">|</span>
+            <span className="text-sm text-text-secondary">
+              Manager: <span className="font-medium text-text-primary">
+                {project.metadata?.manager && project.metadata.manager !== 'unassigned'
+                  ? people.find(p => p.id === project.metadata?.manager)?.name || project.metadata.manager
+                  : 'unassigned'}
+              </span>
+              {project.metadata?.contributors && project.metadata.contributors.length > 0 && (
+                <> | Contributors: <span className="font-medium text-text-primary">
+                  {project.metadata.contributors
+                    .map(id => people.find(p => p.id === id)?.name || id)
+                    .join(', ')}
+                </span></>
+              )}
+            </span>
+          </div>
+        </div>
+
+        {/* Main Content: Accordion + Detail Panel */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left: Epic/Story Accordion */}
+          <div className="lg:col-span-1 space-y-2">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-text-primary">Epics & Stories</h2>
+              <Button variant="outline" size="sm">
+                <Plus className="h-4 w-4 mr-1" />
+                Epic
+              </Button>
+            </div>
+
+            {epics.length === 0 ? (
+              <Card className="p-8 text-center">
+                <Target className="h-12 w-12 text-text-secondary mx-auto mb-3 opacity-50" />
+                <p className="text-sm text-text-secondary">No epics yet</p>
+              </Card>
+            ) : (
+              <div className="space-y-1">
+                {epics.map((epic) => {
+                  const isExpanded = expandedEpics.has(epic._name)
+                  const isSelected = selection.type === 'epic' && selection.epicName === epic._name
+                  const epicProgress =
+                    epic.metrics?.totalStoryPoints > 0
+                      ? Math.round(
+                          (epic.metrics.completedStoryPoints /
+                            epic.metrics.totalStoryPoints) *
+                            100
+                        )
+                      : 0
+
+                  return (
+                    <Card
+                      key={epic._name}
+                      className={`overflow-hidden ${
+                        isSelected ? 'ring-2 ring-primary' : ''
+                      }`}
+                    >
+                      {/* Epic Row */}
+                      <div
+                        className="p-4 cursor-pointer hover:bg-surface-muted transition-colors"
+                        onClick={() => {
+                          toggleEpic(epic._name)
+                          selectEpic(epic)
+                        }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                toggleEpic(epic._name)
+                              }}
+                              className="flex-shrink-0"
+                            >
+                              {isExpanded ? (
+                                <ChevronDown className="h-4 w-4 text-text-secondary" />
+                              ) : (
+                                <ChevronRight className="h-4 w-4 text-text-secondary" />
+                              )}
+                            </button>
+                            <Target className="h-4 w-4 text-primary flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className="font-semibold text-text-primary truncate">
+                                {epic.title}
+                              </div>
+                              <div className="flex items-center gap-2 mt-1">
+                                <Badge status={epic.status as any} />
+                                <span className="text-xs text-text-secondary">
+                                  {epic.stories.length} stories
+                                </span>
+                                <span className="text-xs text-text-secondary">
+                                  {epicProgress}% done
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex-shrink-0 ml-2 text-right">
+                            <div className="text-xs font-medium text-text-primary">
+                              {epic.metrics?.totalStoryPoints || 0} pts
+                            </div>
+                            <div className="text-xs text-text-secondary">
+                              {epic.metrics?.completedStoryPoints || 0} done
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Stories (Collapsed) */}
+                      {isExpanded && epic.stories.length > 0 && (
+                        <div className="border-t border-border-light">
+                          {epic.stories.map((story) => {
+                            const isStorySelected =
+                              selection.type === 'story' &&
+                              selection.epicName === epic._name &&
+                              selection.storyId === story.id
+
+                            return (
+                              <div
+                                key={story.id}
+                                className={`p-3 pl-12 cursor-pointer hover:bg-surface-muted transition-colors border-b border-border-light last:border-b-0 ${
+                                  isStorySelected ? 'bg-primary/5' : ''
+                                }`}
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  selectStory(epic._name, story)
+                                }}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                                    {getStatusIcon(story.status)}
+                                    <FileText className="h-3 w-3 text-text-secondary flex-shrink-0" />
+                                    <div className="flex-1 min-w-0">
+                                      <div className="text-sm font-medium text-text-primary truncate">
+                                        {story.title}
+                                      </div>
+                                      {story.manager && story.manager !== 'unassigned' && (
+                                        <div className="flex items-center gap-1 mt-1">
+                                          <User className="h-3 w-3 text-text-secondary" />
+                                          <span className="text-xs text-text-secondary">
+                                            {people.find(p => p.id === story.manager)?.name || story.manager}
+                                          </span>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div className="flex-shrink-0 ml-2">
+                                    {story.estimate?.storyPoints > 0 && (
+                                      <span className="text-xs text-text-secondary">
+                                        {story.estimate.storyPoints} pts
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </Card>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Right: Editable Detail Panel */}
+          <div className="lg:col-span-2">
+            {selection.type === null ? (
+              <Card className="p-6">
+                <div className="text-center mb-6">
+                  <FileText className="h-16 w-16 text-text-secondary mx-auto mb-4 opacity-50" />
+                  <h3 className="text-lg font-semibold text-text-primary mb-2">
+                    Select an Epic or Story
+                  </h3>
+                  <p className="text-text-secondary text-sm mb-6">
+                    Click on an epic or story from the list to view and edit details
+                  </p>
+                </div>
+                {project.description && (
+                  <div className="border-t border-border-light pt-6 mb-6">
+                    <h4 className="text-sm font-medium text-text-primary mb-2">Project Description</h4>
+                    <p className="text-text-secondary text-sm whitespace-pre-line">
+                      {project.description}
+                    </p>
+                  </div>
+                )}
+
+                {/* Project Metadata Editor */}
+                <div className="border-t border-border-light pt-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-sm font-medium text-text-primary">Project Team</h4>
+                    {hasProjectChanges && (
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={saveProjectMetadata}
+                        isLoading={savingProject}
+                      >
+                        <Save className="h-4 w-4 mr-2" />
+                        Save Changes
+                      </Button>
+                    )}
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-text-primary mb-1">
+                        Manager
+                      </label>
+                      <select
+                        value={projectManager}
+                        onChange={(e) => {
+                          setProjectManager(e.target.value)
+                          setHasProjectChanges(true)
+                        }}
+                        className="input-field text-sm"
+                      >
+                        <option value="unassigned">Unassigned</option>
+                        {people.map((person) => (
+                          <option key={person.id} value={person.id}>
+                            {person.name} ({person.designation})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-text-primary mb-2">
+                        Contributors
+                      </label>
+                      <div className="space-y-2 max-h-48 overflow-y-auto">
+                        {people.map((person) => (
+                          <label
+                            key={person.id}
+                            className="flex items-center gap-2 p-2 rounded hover:bg-surface-muted cursor-pointer"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={projectContributors.includes(person.id)}
+                              onChange={() => toggleContributor(person.id)}
+                              className="rounded"
+                            />
+                            <div className="flex-1">
+                              <div className="text-sm text-text-primary">{person.name}</div>
+                              <div className="text-xs text-text-secondary">
+                                {person.designation} • {person.roleInProject || 'Contributor'}
+                              </div>
+                            </div>
+                          </label>
+                        ))}
+                        {people.length === 0 && (
+                          <p className="text-sm text-text-secondary">
+                            No people available. Add people in the People page.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ) : selection.type === 'epic' && selectedEpic ? (
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-text-primary">Edit Epic</h2>
+                  <div className="flex items-center gap-3">
+                    {hasChanges && (
+                      <span className="text-sm text-text-secondary">Unsaved changes</span>
+                    )}
+                    <Button
+                      variant="primary"
+                      onClick={saveEpic}
+                      isLoading={saving}
+                      disabled={!hasChanges}
+                    >
+                      <Save className="h-4 w-4 mr-2" />
+                      Save
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Title */}
+                  <div>
+                    <label className="block text-sm font-medium text-text-primary mb-1">
+                      Title
+                    </label>
+                    <input
+                      type="text"
+                      value={epicTitle}
+                      onChange={(e) => {
+                        setEpicTitle(e.target.value)
+                        setHasChanges(true)
+                      }}
+                      className="input-field"
+                    />
+                  </div>
+
+                  {/* Summary */}
+                  <div>
+                    <label className="block text-sm font-medium text-text-primary mb-1">
+                      Summary
+                    </label>
+                    <input
+                      type="text"
+                      value={epicSummary}
+                      onChange={(e) => {
+                        setEpicSummary(e.target.value)
+                        setHasChanges(true)
+                      }}
+                      className="input-field"
+                    />
+                  </div>
+
+                  {/* Metadata Table */}
+                  <div className="border border-border-light rounded-lg overflow-hidden">
+                    <table className="w-full">
+                      <tbody>
+                        <tr className="border-b border-border-light">
+                          <td className="px-4 py-2 bg-surface-muted text-sm font-medium text-text-primary w-1/3">
+                            Status
+                          </td>
+                          <td className="px-4 py-2">
+                            <select
+                              value={epicStatus}
+                              onChange={(e) => {
+                                setEpicStatus(e.target.value as any)
+                                setHasChanges(true)
+                              }}
+                              className="input-field text-sm"
+                            >
+                              <option value="todo">To Do</option>
+                              <option value="in_progress">In Progress</option>
+                              <option value="done">Done</option>
+                              <option value="archived">Archived</option>
+                            </select>
+                          </td>
+                        </tr>
+                        <tr className="border-b border-border-light">
+                          <td className="px-4 py-2 bg-surface-muted text-sm font-medium text-text-primary">
+                            Priority
+                          </td>
+                          <td className="px-4 py-2">
+                            <select
+                              value={epicPriority}
+                              onChange={(e) => {
+                                setEpicPriority(e.target.value as any)
+                                setHasChanges(true)
+                              }}
+                              className="input-field text-sm"
+                            >
+                              <option value="low">Low</option>
+                              <option value="medium">Medium</option>
+                              <option value="high">High</option>
+                              <option value="critical">Critical</option>
+                            </select>
+                          </td>
+                        </tr>
+                        <tr className="border-b border-border-light">
+                          <td className="px-4 py-2 bg-surface-muted text-sm font-medium text-text-primary">
+                            Manager
+                          </td>
+                          <td className="px-4 py-2">
+                            <select
+                              value={epicManager}
+                              onChange={(e) => {
+                                setEpicManager(e.target.value)
+                                setHasChanges(true)
+                              }}
+                              className="input-field text-sm"
+                            >
+                              <option value="unassigned">Unassigned</option>
+                              {people.map((person) => (
+                                <option key={person.id} value={person.id}>
+                                  {person.name} ({person.designation})
+                                </option>
+                              ))}
+                            </select>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="px-4 py-2 bg-surface-muted text-sm font-medium text-text-primary">
+                            Target Release
+                          </td>
+                          <td className="px-4 py-2">
+                            <input
+                              type="date"
+                              value={epicTargetRelease}
+                              onChange={(e) => {
+                                setEpicTargetRelease(e.target.value)
+                                setHasChanges(true)
+                              }}
+                              className="input-field text-sm"
+                            />
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <label className="block text-sm font-medium text-text-primary mb-1">
+                      Description
+                    </label>
+                    <textarea
+                      value={epicDescription}
+                      onChange={(e) => {
+                        setEpicDescription(e.target.value)
+                        setHasChanges(true)
+                      }}
+                      rows={8}
+                      className="input-field font-mono text-sm"
+                    />
+                  </div>
+
+                  {/* Metrics (Read-only) */}
+                  <div className="grid grid-cols-4 gap-4 pt-4 border-t border-border-light">
+                    <div>
+                      <div className="text-xs text-text-secondary mb-1">Stories</div>
+                      <div className="text-lg font-bold text-text-primary">
+                        {selectedEpic.stories.length}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-text-secondary mb-1">Story Points</div>
+                      <div className="text-lg font-bold text-text-primary">
+                        {selectedEpic.metrics?.totalStoryPoints || 0}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-text-secondary mb-1">Completed</div>
+                      <div className="text-lg font-bold text-text-primary">
+                        {selectedEpic.metrics?.completedStoryPoints || 0}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-text-secondary mb-1">Progress</div>
+                      <div className="text-lg font-bold text-text-primary">
+                        {selectedEpic.metrics?.totalStoryPoints > 0
+                          ? Math.round(
+                              (selectedEpic.metrics.completedStoryPoints /
+                                selectedEpic.metrics.totalStoryPoints) *
+                                100
+                            )
+                          : 0}
+                        %
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ) : selection.type === 'story' && selectedStory ? (
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-text-primary">Edit Story</h2>
+                  <div className="flex items-center gap-3">
+                    {hasChanges && (
+                      <span className="text-sm text-text-secondary">Unsaved changes</span>
+                    )}
+                    <Button
+                      variant="primary"
+                      onClick={saveStory}
+                      isLoading={saving}
+                      disabled={!hasChanges}
+                    >
+                      <Save className="h-4 w-4 mr-2" />
+                      Save
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Title */}
+                  <div>
+                    <label className="block text-sm font-medium text-text-primary mb-1">
+                      Title
+                    </label>
+                    <input
+                      type="text"
+                      value={storyTitle}
+                      onChange={(e) => {
+                        setStoryTitle(e.target.value)
+                        setHasChanges(true)
+                      }}
+                      className="input-field"
+                    />
+                  </div>
+
+                  {/* Summary */}
+                  <div>
+                    <label className="block text-sm font-medium text-text-primary mb-1">
+                      Summary
+                    </label>
+                    <input
+                      type="text"
+                      value={storySummary}
+                      onChange={(e) => {
+                        setStorySummary(e.target.value)
+                        setHasChanges(true)
+                      }}
+                      className="input-field"
+                    />
+                  </div>
+
+                  {/* Metadata Table */}
+                  <div className="border border-border-light rounded-lg overflow-hidden">
+                    <table className="w-full">
+                      <tbody>
+                        <tr className="border-b border-border-light">
+                          <td className="px-4 py-2 bg-surface-muted text-sm font-medium text-text-primary w-1/3">
+                            Status
+                          </td>
+                          <td className="px-4 py-2">
+                            <select
+                              value={storyStatus}
+                              onChange={(e) => {
+                                setStoryStatus(e.target.value as any)
+                                setHasChanges(true)
+                              }}
+                              className="input-field text-sm"
+                            >
+                              <option value="todo">To Do</option>
+                              <option value="in_progress">In Progress</option>
+                              <option value="blocked">Blocked</option>
+                              <option value="done">Done</option>
+                              <option value="archived">Archived</option>
+                            </select>
+                          </td>
+                        </tr>
+                        <tr className="border-b border-border-light">
+                          <td className="px-4 py-2 bg-surface-muted text-sm font-medium text-text-primary">
+                            Priority
+                          </td>
+                          <td className="px-4 py-2">
+                            <select
+                              value={storyPriority}
+                              onChange={(e) => {
+                                setStoryPriority(e.target.value as any)
+                                setHasChanges(true)
+                              }}
+                              className="input-field text-sm"
+                            >
+                              <option value="low">Low</option>
+                              <option value="medium">Medium</option>
+                              <option value="high">High</option>
+                              <option value="critical">Critical</option>
+                            </select>
+                          </td>
+                        </tr>
+                        <tr className="border-b border-border-light">
+                          <td className="px-4 py-2 bg-surface-muted text-sm font-medium text-text-primary">
+                            Manager
+                          </td>
+                          <td className="px-4 py-2">
+                            <select
+                              value={storyManager}
+                              onChange={(e) => {
+                                setStoryManager(e.target.value)
+                                setHasChanges(true)
+                              }}
+                              className="input-field text-sm"
+                            >
+                              <option value="unassigned">Unassigned</option>
+                              {people.map((person) => (
+                                <option key={person.id} value={person.id}>
+                                  {person.name} ({person.designation})
+                                </option>
+                              ))}
+                            </select>
+                          </td>
+                        </tr>
+                        <tr className="border-b border-border-light">
+                          <td className="px-4 py-2 bg-surface-muted text-sm font-medium text-text-primary">
+                            Due Date
+                          </td>
+                          <td className="px-4 py-2">
+                            <input
+                              type="date"
+                              value={storyDueDate}
+                              onChange={(e) => {
+                                setStoryDueDate(e.target.value)
+                                setHasChanges(true)
+                              }}
+                              className="input-field text-sm"
+                            />
+                          </td>
+                        </tr>
+                        <tr className="border-b border-border-light">
+                          <td className="px-4 py-2 bg-surface-muted text-sm font-medium text-text-primary">
+                            Story Points
+                          </td>
+                          <td className="px-4 py-2">
+                            <input
+                              type="number"
+                              value={storyPoints}
+                              onChange={(e) => {
+                                setStoryPoints(parseInt(e.target.value) || 0)
+                                setHasChanges(true)
+                              }}
+                              min="0"
+                              className="input-field text-sm"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="px-4 py-2 bg-surface-muted text-sm font-medium text-text-primary align-top">
+                            Tags
+                          </td>
+                          <td className="px-4 py-2">
+                            <div className="flex gap-2 mb-2">
+                              <input
+                                type="text"
+                                value={newTag}
+                                onChange={(e) => setNewTag(e.target.value)}
+                                onKeyPress={(e) => e.key === 'Enter' && addTag()}
+                                placeholder="Add tag"
+                                className="input-field text-sm flex-1"
+                              />
+                              <Button variant="outline" size="sm" onClick={addTag}>
+                                <Plus className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {storyTags.map((tag) => (
+                                <span
+                                  key={tag}
+                                  className="inline-flex items-center gap-1 px-2 py-1 bg-surface-muted rounded text-sm"
+                                >
+                                  <Tag className="h-3 w-3" />
+                                  {tag}
+                                  <button
+                                    onClick={() => removeTag(tag)}
+                                    className="hover:text-red-600"
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </button>
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <label className="block text-sm font-medium text-text-primary mb-1">
+                      Description
+                    </label>
+                    <textarea
+                      value={storyDescription}
+                      onChange={(e) => {
+                        setStoryDescription(e.target.value)
+                        setHasChanges(true)
+                      }}
+                      rows={8}
+                      className="input-field font-mono text-sm"
+                    />
+                  </div>
+
+                  {/* Acceptance Criteria */}
+                  <div>
+                    <label className="block text-sm font-medium text-text-primary mb-2">
+                      Acceptance Criteria
+                    </label>
+                    <div className="space-y-2">
+                      {acceptanceCriteria.map((criterion, index) => (
+                        <div key={index} className="flex gap-2">
+                          <input
+                            type="text"
+                            value={criterion}
+                            onChange={(e) => updateCriterion(index, e.target.value)}
+                            className="input-field flex-1"
+                            placeholder="Acceptance criterion"
+                          />
+                          <button
+                            onClick={() => removeCriterion(index)}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                      ))}
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={newCriterion}
+                          onChange={(e) => setNewCriterion(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && addCriterion()}
+                          className="input-field flex-1"
+                          placeholder="Add new criterion..."
+                        />
+                        <Button variant="outline" size="sm" onClick={addCriterion}>
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Files */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-sm font-medium text-text-primary">
+                        Files
+                      </label>
+                      <Button variant="outline" size="sm" onClick={addFile}>
+                        <Plus className="h-4 w-4 mr-1" />
+                        Add
+                      </Button>
+                    </div>
+                    <div className="space-y-2">
+                      {files.map((file, index) => (
+                        <div key={index} className="flex gap-2">
+                          <input
+                            type="text"
+                            value={file.path}
+                            onChange={(e) => updateFile(index, 'path', e.target.value)}
+                            placeholder="File path"
+                            className="input-field flex-1 text-sm"
+                          />
+                          <select
+                            value={file.role}
+                            onChange={(e) => updateFile(index, 'role', e.target.value)}
+                            className="input-field text-sm w-32"
+                          >
+                            <option value="primary">Primary</option>
+                            <option value="supporting">Supporting</option>
+                            <option value="test">Test</option>
+                          </select>
+                          <button
+                            onClick={() => removeFile(index)}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ) : null}
+          </div>
+        </div>
+      </main>
+    </div>
+  )
+}

@@ -27,7 +27,9 @@ export async function GET(
     const epics = await Promise.all(
       epicNames.map(async (name) => {
         try {
-          return await pmRepository.readEpic(projectName, name)
+          const epic = await pmRepository.readEpic(projectName, name)
+          // Include the folder name (epic identifier) in the response
+          return { ...epic, _name: name }
         } catch {
           return null
         }

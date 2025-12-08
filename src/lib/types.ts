@@ -21,6 +21,20 @@ export const FileRoleSchema = z.enum(['primary', 'supporting', 'test'])
 export const ConfidenceSchema = z.enum(['low', 'medium', 'high']).optional()
 
 // ============================================================================
+// Person Types
+// ============================================================================
+
+export const PersonSchema = z.object({
+  id: z.string().min(1, 'Person ID is required'),
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Valid email is required'),
+  designation: z.string().default(''),
+  roleInProject: z.string().default(''),
+})
+
+export const PeopleSchema = z.array(PersonSchema)
+
+// ============================================================================
 // Story Types
 // ============================================================================
 
@@ -52,10 +66,16 @@ export const StorySchema = z.object({
   status: StoryStatusSchema.default('todo'),
   priority: PrioritySchema.default('medium'),
 
-  assignee: z.string().default('unassigned'),
+  manager: z.string().default('unassigned'), // Person ID
   createdAt: z.string().datetime().or(z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/)),
   updatedAt: z.string().datetime().or(z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/)),
-  dueDate: z.string().datetime().nullable().optional(),
+  dueDate: z
+    .string()
+    .datetime()
+    .or(z.string().regex(/^\d{4}-\d{2}-\d{2}$/)) // Accept date format YYYY-MM-DD
+    .or(z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/))
+    .nullable()
+    .optional(),
 
   tags: z.array(z.string()).default([]),
   estimate: StoryEstimateSchema.default({ storyPoints: 0 }),
@@ -97,10 +117,16 @@ export const EpicSchema = z.object({
   status: EpicStatusSchema.default('todo'),
   priority: PrioritySchema.default('medium'),
 
-  assignee: z.string().default('unassigned'),
+  manager: z.string().default('unassigned'), // Person ID
   createdAt: z.string().datetime().or(z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/)),
   updatedAt: z.string().datetime().or(z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/)),
-  targetRelease: z.string().nullable().optional(),
+  targetRelease: z
+    .string()
+    .datetime()
+    .or(z.string().regex(/^\d{4}-\d{2}-\d{2}$/)) // Accept date format YYYY-MM-DD
+    .or(z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/))
+    .nullable()
+    .optional(),
 
   storyIds: z.array(z.string()).default([]),
 
@@ -120,8 +146,9 @@ export const EpicSchema = z.object({
 // ============================================================================
 
 export const ProjectMetadataSchema = z.object({
-  owner: z.string().default('unassigned'),
-  repoUrl: z.string().url().optional(),
+  manager: z.string().default('unassigned'), // Person ID (replaces owner)
+  contributors: z.array(z.string()).default([]), // Array of Person IDs
+  repoUrl: z.string().url().or(z.string().length(0)).optional(),
   custom: z.record(z.unknown()).default({}),
 })
 
@@ -141,7 +168,8 @@ export const ProjectSchema = z.object({
   defaultPriorities: z.array(PrioritySchema).default(['low', 'medium', 'high', 'critical']),
 
   metadata: ProjectMetadataSchema.default({
-    owner: 'unassigned',
+    manager: 'unassigned',
+    contributors: [],
     custom: {},
   }),
 })
@@ -155,6 +183,7 @@ export type Priority = z.infer<typeof PrioritySchema>
 export type EpicStatus = z.infer<typeof EpicStatusSchema>
 export type FileRole = z.infer<typeof FileRoleSchema>
 export type Confidence = z.infer<typeof ConfidenceSchema>
+export type Person = z.infer<typeof PersonSchema>
 
 export type StoryFile = z.infer<typeof StoryFileSchema>
 export type StoryEstimate = z.infer<typeof StoryEstimateSchema>
@@ -179,6 +208,13 @@ export function generateStoryId(): string {
   const timestamp = Date.now()
   const random = Math.floor(Math.random() * 1000)
   return `STORY-${timestamp}-${random}`
+}
+
+/**
+ * Parse people data from JSON
+ */
+export function parsePeople(data: unknown): Person[] {
+  return PeopleSchema.parse(data)
 }
 
 /**
@@ -222,7 +258,7 @@ export function createStory(overrides: Partial<Story> = {}): Story {
     acceptanceCriteria: [],
     status: 'todo',
     priority: 'medium',
-    assignee: 'unassigned',
+    manager: 'unassigned',
     createdAt: now,
     updatedAt: now,
     tags: [],
@@ -250,7 +286,7 @@ export function createEpic(overrides: Partial<Epic> = {}): Epic {
     description: '',
     status: 'todo',
     priority: 'medium',
-    assignee: 'unassigned',
+    manager: 'unassigned',
     createdAt: now,
     updatedAt: now,
     storyIds: [],
@@ -277,7 +313,8 @@ export function createProject(overrides: Partial<Project> = {}): Project {
     defaultStatuses: ['todo', 'in_progress', 'blocked', 'done'],
     defaultPriorities: ['low', 'medium', 'high', 'critical'],
     metadata: {
-      owner: 'unassigned',
+      manager: 'unassigned',
+      contributors: [],
       custom: {},
     },
     ...overrides,

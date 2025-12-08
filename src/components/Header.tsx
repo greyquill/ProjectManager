@@ -21,10 +21,10 @@ export function Header() {
               Projects
             </Link>
             <Link
-              href="/projects"
-              className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+              href="/people"
+              className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
             >
-              Get Started →
+              People
             </Link>
           </nav>
         </div>

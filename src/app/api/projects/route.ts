@@ -12,7 +12,9 @@ export async function GET() {
     const projects = await Promise.all(
       projectNames.map(async (name) => {
         try {
-          return await pmRepository.readProject(name)
+          const project = await pmRepository.readProject(name)
+          // Include the project name (folder name) in the response
+          return { ...project, _name: name }
         } catch {
           // Skip projects that can't be read
           return null

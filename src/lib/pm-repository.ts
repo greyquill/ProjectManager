@@ -4,9 +4,11 @@ import {
   Project,
   Epic,
   Story,
+  Person,
   parseProject,
   parseEpic,
   parseStory,
+  parsePeople,
   generateStoryId,
   generateTimestamp,
 } from './types'
@@ -51,6 +53,13 @@ function getEpicDir(projectName: string, epicName: string): string {
  */
 function getProjectFilePath(projectName: string): string {
   return path.join(PM_DATA_DIR, projectName, 'project.json')
+}
+
+/**
+ * Get people JSON file path
+ */
+function getPeopleFilePath(projectName: string): string {
+  return path.join(PM_DATA_DIR, projectName, 'people.json')
 }
 
 /**
@@ -182,6 +191,159 @@ export async function deleteProject(projectName: string): Promise<void> {
   } catch (error) {
     throw new Error(`Failed to delete project: ${projectName} - ${error}`)
   }
+}
+
+// ============================================================================
+// People Operations
+// ============================================================================
+
+/**
+ * Read people for a project
+ */
+export async function readPeople(projectName: string): Promise<Person[]> {
+  const filePath = getPeopleFilePath(projectName)
+  try {
+    return await readJsonFile(filePath, parsePeople)
+  } catch (error) {
+    // If file doesn't exist, return empty array
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return []
+    }
+    throw error
+  }
+}
+
+/**
+ * Write people for a project
+ */
+export async function writePeople(
+  projectName: string,
+  people: Person[]
+): Promise<void> {
+  const filePath = getPeopleFilePath(projectName)
+  // Validate before writing
+  parsePeople(people)
+  await ensureDirectory(getProjectDir(projectName))
+  await writeJsonFile(filePath, people)
+}
+
+/**
+ * Check if people file exists
+ */
+export async function peopleExists(projectName: string): Promise<boolean> {
+  try {
+    const filePath = getPeopleFilePath(projectName)
+    await fs.access(filePath)
+    return true
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Get all people from all projects
+ */
+export async function getAllPeople(): Promise<Array<{ person: Person; projectName: string }>> {
+  const projectNames = await listProjects()
+  const allPeople: Array<{ person: Person; projectName: string }> = []
+
+  for (const projectName of projectNames) {
+    try {
+      const people = await readPeople(projectName)
+      people.forEach((person) => {
+        allPeople.push({ person, projectName })
+      })
+    } catch {
+      // Skip projects that can't be read
+    }
+  }
+
+  return allPeople
+}
+
+/**
+ * Check where a person is used (returns list of projects where person is manager or contributor)
+ */
+export async function checkPersonUsage(personId: string): Promise<{
+  projects: Array<{ name: string; asManager: boolean; asContributor: boolean; inEpics: string[]; inStories: string[] }>
+}> {
+  const projectNames = await listProjects()
+  const usage: Array<{ name: string; asManager: boolean; asContributor: boolean; inEpics: string[]; inStories: string[] }> = []
+
+  for (const projectName of projectNames) {
+    try {
+      const project = await readProject(projectName)
+      const isManager = project.metadata?.manager === personId
+      const isContributor = project.metadata?.contributors?.includes(personId) || false
+      const inEpics: string[] = []
+      const inStories: string[] = []
+
+      if (isManager || isContributor) {
+        // Check epics and stories
+        const epics = await listEpics(projectName)
+        for (const epicName of epics) {
+          try {
+            const epic = await readEpic(projectName, epicName)
+            if (epic.manager === personId) {
+              inEpics.push(epicName)
+            }
+            // Check stories in this epic
+            const stories = await listStories(projectName, epicName)
+            for (const storyId of stories) {
+              try {
+                const story = await readStory(projectName, epicName, storyId)
+                if (story.manager === personId) {
+                  inStories.push(`${epicName}/${storyId}`)
+                }
+              } catch {
+                // Skip stories that can't be read
+              }
+            }
+          } catch {
+            // Skip epics that can't be read
+          }
+        }
+      } else {
+        // Still check epics and stories even if not manager/contributor
+        const epics = await listEpics(projectName)
+        for (const epicName of epics) {
+          try {
+            const epic = await readEpic(projectName, epicName)
+            if (epic.manager === personId) {
+              inEpics.push(epicName)
+            }
+            const stories = await listStories(projectName, epicName)
+            for (const storyId of stories) {
+              try {
+                const story = await readStory(projectName, epicName, storyId)
+                if (story.manager === personId) {
+                  inStories.push(`${epicName}/${storyId}`)
+                }
+              } catch {
+                // Skip
+              }
+            }
+          } catch {
+            // Skip
+          }
+        }
+      }
+
+      if (isManager || isContributor || inEpics.length > 0 || inStories.length > 0) {
+        usage.push({
+          name: projectName,
+          asManager: isManager,
+          asContributor: isContributor,
+          inEpics,
+          inStories,
+        })
+      }
+    } catch {
+      // Skip projects that can't be read
+    }
+  }
+
+  return { projects: usage }
 }
 
 // ============================================================================
@@ -385,7 +547,7 @@ export async function createStory(
     acceptanceCriteria: storyData.acceptanceCriteria || [],
     status: storyData.status || 'todo',
     priority: storyData.priority || 'medium',
-    assignee: storyData.assignee || 'unassigned',
+    manager: storyData.manager || 'unassigned',
     createdAt: now,
     updatedAt: now,
     tags: storyData.tags || [],
@@ -416,6 +578,13 @@ export const pmRepository = {
   listProjects,
   projectExists,
   deleteProject,
+
+  // People
+  readPeople,
+  writePeople,
+  peopleExists,
+  getAllPeople,
+  checkPersonUsage,
 
   // Epics
   readEpic,
