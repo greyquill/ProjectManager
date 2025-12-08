@@ -17,36 +17,52 @@ import {
 // Support both @upstash/redis (Marketplace - recommended) and @vercel/kv (legacy)
 // Lazy initialization to avoid build-time errors
 let kvClient: any = null
+let initError: Error | null = null
 
 function getKVClient() {
   if (kvClient) return kvClient
-  
+  if (initError) throw initError
+
   try {
     // Try Upstash Redis first (Marketplace integration - recommended)
     const { Redis } = require('@upstash/redis')
     kvClient = Redis.fromEnv()
     return kvClient
-  } catch {
+  } catch (error: any) {
     try {
       // Fallback to Vercel KV (legacy)
       const vercelKv = require('@vercel/kv')
       kvClient = vercelKv.kv
       return kvClient
-    } catch {
-      // During build, packages might not be available - that's okay
-      // Will be available at runtime in Vercel
-      return null
+    } catch (error2: any) {
+      // Store error for better debugging
+      initError = new Error(
+        `Redis/KV client initialization failed. Upstash: ${error?.message || 'not available'}, Vercel KV: ${error2?.message || 'not available'}. ` +
+        `Please ensure @upstash/redis is installed and UPSTASH_REDIS_REST_URL/UPSTASH_REDIS_REST_TOKEN are set.`
+      )
+      throw initError
     }
   }
 }
 
+// Create a proxy that initializes the client on first use
 const kv = new Proxy({} as any, {
   get(_target, prop) {
-    const client = getKVClient()
-    if (!client) {
-      throw new Error('Redis/KV client not available. Please install @upstash/redis from the Vercel Marketplace.')
+    try {
+      const client = getKVClient()
+      if (!client) {
+        throw new Error('Redis/KV client not available. Please install @upstash/redis from the Vercel Marketplace.')
+      }
+      const method = client[prop]
+      if (typeof method === 'function') {
+        return method.bind(client)
+      }
+      return method
+    } catch (error) {
+      // Provide better error message
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      throw new Error(`Redis client error: ${errorMessage}. Make sure Upstash Redis is connected and environment variables are set.`)
     }
-    return client[prop]
   }
 })
 
@@ -98,20 +114,32 @@ export async function readProject(projectName: string): Promise<Project> {
 export async function writeProject(projectName: string, project: Project): Promise<void> {
   const key = getProjectKey(projectName)
   parseProject(project)
-  
+
   // Update projects list
-  const projectsList = await kv.get(getProjectsListKey()) || []
-  if (!projectsList.includes(projectName)) {
-    projectsList.push(projectName)
-    await kv.set(getProjectsListKey(), projectsList)
+  try {
+    const projectsList = await kv.get(getProjectsListKey())
+    const updatedList = Array.isArray(projectsList) ? projectsList : []
+    if (!updatedList.includes(projectName)) {
+      updatedList.push(projectName)
+      await kv.set(getProjectsListKey(), updatedList)
+    }
+  } catch (error) {
+    // If projects list doesn't exist, create it
+    await kv.set(getProjectsListKey(), [projectName])
   }
-  
+
   await kv.set(key, project)
 }
 
 export async function listProjects(): Promise<string[]> {
-  const projectsList = await kv.get(getProjectsListKey())
-  return projectsList || []
+  try {
+    const projectsList = await kv.get(getProjectsListKey())
+    return Array.isArray(projectsList) ? projectsList : []
+  } catch (error) {
+    // If database is empty or key doesn't exist, return empty array
+    console.warn('Error reading projects list from Redis, returning empty array:', error)
+    return []
+  }
 }
 
 export async function projectExists(projectName: string): Promise<boolean> {
@@ -123,10 +151,10 @@ export async function projectExists(projectName: string): Promise<boolean> {
 
 export async function deleteProject(projectName: string): Promise<void> {
   const key = getProjectKey(projectName)
-  
+
   // Get all epics for this project
   const epics = await listEpics(projectName)
-  
+
   // Delete all stories and epics
   for (const epicName of epics) {
     const stories = await listStories(projectName, epicName)
@@ -136,10 +164,10 @@ export async function deleteProject(projectName: string): Promise<void> {
     await kv.del(getEpicKey(projectName, epicName))
     await kv.del(getStoriesListKey(projectName, epicName))
   }
-  
+
   await kv.del(key)
   await kv.del(getEpicsListKey(projectName))
-  
+
   // Remove from projects list
   const projectsList = await kv.get(getProjectsListKey()) || []
   const updatedList = projectsList.filter((p: string) => p !== projectName)
@@ -151,12 +179,18 @@ export async function deleteProject(projectName: string): Promise<void> {
 // ============================================================================
 
 export async function readGlobalPeople(): Promise<Person[]> {
-  const key = getPeopleKey()
-  const data = await kv.get(key)
-  if (!data) {
+  try {
+    const key = getPeopleKey()
+    const data = await kv.get(key)
+    if (!data) {
+      return []
+    }
+    return parsePeople(data)
+  } catch (error) {
+    // If database is empty or key doesn't exist, return empty array
+    console.warn('Error reading people from Redis, returning empty array:', error)
     return []
   }
-  return parsePeople(data)
 }
 
 export async function writeGlobalPeople(people: Person[]): Promise<void> {
@@ -199,22 +233,22 @@ export async function checkPersonUsage(personId: string): Promise<{
   const projects: string[] = []
   const epics: { projectName: string; epicName: string }[] = []
   const stories: { projectName: string; epicName: string; storyId: string }[] = []
-  
+
   const projectNames = await listProjects()
-  
+
   for (const projectName of projectNames) {
     const project = await readProject(projectName)
     if (project.metadata?.manager === personId || project.metadata?.contributors?.includes(personId)) {
       projects.push(projectName)
     }
-    
+
     const epicNames = await listEpics(projectName)
     for (const epicName of epicNames) {
       const epic = await readEpic(projectName, epicName)
       if (epic.manager === personId) {
         epics.push({ projectName, epicName })
       }
-      
+
       const storyIds = await listStories(projectName, epicName)
       for (const storyId of storyIds) {
         const story = await readStory(projectName, epicName, storyId)
@@ -224,7 +258,7 @@ export async function checkPersonUsage(personId: string): Promise<{
       }
     }
   }
-  
+
   return { projects, epics, stories }
 }
 
@@ -244,20 +278,25 @@ export async function readEpic(projectName: string, epicName: string): Promise<E
 export async function writeEpic(projectName: string, epicName: string, epic: Epic): Promise<void> {
   const key = getEpicKey(projectName, epicName)
   parseEpic(epic)
-  
+
   // Update epics list
   const epicsList = await kv.get(getEpicsListKey(projectName)) || []
   if (!epicsList.includes(epicName)) {
     epicsList.push(epicName)
     await kv.set(getEpicsListKey(projectName), epicsList)
   }
-  
+
   await kv.set(key, epic)
 }
 
 export async function listEpics(projectName: string): Promise<string[]> {
-  const epicsList = await kv.get(getEpicsListKey(projectName))
-  return epicsList || []
+  try {
+    const epicsList = await kv.get(getEpicsListKey(projectName))
+    return Array.isArray(epicsList) ? epicsList : []
+  } catch (error) {
+    console.warn('Error reading epics list from Redis, returning empty array:', error)
+    return []
+  }
 }
 
 export async function epicExists(projectName: string, epicName: string): Promise<boolean> {
@@ -269,16 +308,16 @@ export async function epicExists(projectName: string, epicName: string): Promise
 
 export async function deleteEpic(projectName: string, epicName: string): Promise<void> {
   const key = getEpicKey(projectName, epicName)
-  
+
   // Delete all stories
   const stories = await listStories(projectName, epicName)
   for (const storyId of stories) {
     await kv.del(getStoryKey(projectName, epicName, storyId))
   }
-  
+
   await kv.del(key)
   await kv.del(getStoriesListKey(projectName, epicName))
-  
+
   // Remove from epics list
   const epicsList = await kv.get(getEpicsListKey(projectName)) || []
   const updatedList = epicsList.filter((e: string) => e !== epicName)
@@ -310,22 +349,22 @@ export async function writeStory(
 ): Promise<void> {
   const key = getStoryKey(projectName, epicName, storyId)
   parseStory(story)
-  
+
   // Ensure ID matches
   if (story.id !== storyId) {
     story.id = storyId
   }
-  
+
   // Update timestamp
   story.updatedAt = generateTimestamp()
-  
+
   // Update stories list
   const storiesList = await kv.get(getStoriesListKey(projectName, epicName)) || []
   if (!storiesList.includes(storyId)) {
     storiesList.push(storyId)
     await kv.set(getStoriesListKey(projectName, epicName), storiesList)
   }
-  
+
   await kv.set(key, story)
 }
 
@@ -333,8 +372,13 @@ export async function listStories(
   projectName: string,
   epicName: string
 ): Promise<string[]> {
-  const storiesList = await kv.get(getStoriesListKey(projectName, epicName))
-  return storiesList || []
+  try {
+    const storiesList = await kv.get(getStoriesListKey(projectName, epicName))
+    return Array.isArray(storiesList) ? storiesList : []
+  } catch (error) {
+    console.warn('Error reading stories list from Redis, returning empty array:', error)
+    return []
+  }
 }
 
 export async function storyExists(
@@ -355,7 +399,7 @@ export async function deleteStory(
 ): Promise<void> {
   const key = getStoryKey(projectName, epicName, storyId)
   await kv.del(key)
-  
+
   // Remove from stories list
   const storiesList = await kv.get(getStoriesListKey(projectName, epicName)) || []
   const updatedList = storiesList.filter((s: string) => s !== storyId)
@@ -375,17 +419,17 @@ export async function generateNextEpicId(projectName: string): Promise<string> {
       return match ? parseInt(match[1], 10) : null
     })
     .filter((n): n is number => n !== null)
-  
+
   let nextNumber = 1
   if (existingNumbers.length > 0) {
     const maxNumber = Math.max(...existingNumbers)
     nextNumber = maxNumber + 1
   }
-  
+
   if (nextNumber > 9999) {
     throw new Error('Maximum number of epics (9999) reached')
   }
-  
+
   return `EPIC-${nextNumber.toString().padStart(4, '0')}`
 }
 
@@ -400,17 +444,17 @@ export async function generateNextStoryId(
       return match ? parseInt(match[1], 10) : null
     })
     .filter((n): n is number => n !== null)
-  
+
   let nextNumber = 1
   if (existingNumbers.length > 0) {
     const maxNumber = Math.max(...existingNumbers)
     nextNumber = maxNumber + 1
   }
-  
+
   if (nextNumber > 999) {
     throw new Error('Maximum number of stories (999) reached')
   }
-  
+
   return `STORY-${nextNumber.toString().padStart(3, '0')}`
 }
 
