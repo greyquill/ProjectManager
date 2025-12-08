@@ -26,7 +26,7 @@
 
 ### Directory Structure
 ```
-apps/pm-app/
+ProjectManager/
 ├── src/
 │   ├── app/                    # Next.js App Router pages
 │   │   ├── api/                # API routes
@@ -40,13 +40,13 @@ apps/pm-app/
 │   │   ├── pm-repository.ts    # File-based data layer
 │   │   └── utils.ts            # Helper functions
 │   └── theme/                  # Theme configuration
-└── pm/                         # Project management data
-    ├── projects/
-    │   └── PROJ-*.json
-    ├── epics/
-    │   └── EPIC-*.json
-    └── stories/
-        └── STORY-*.json
+├── scripts/                    # Automation scripts
+└── pm/                         # Project management data (hierarchical)
+    └── [project-name]/
+        ├── project.json
+        └── [epic-name]/
+            ├── epic.json
+            └── STORY-*.json
 ```
 
 ### Key Features

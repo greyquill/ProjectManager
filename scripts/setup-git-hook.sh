@@ -23,7 +23,7 @@ cat > "$PROJECT_ROOT/$HOOK_FILE" << 'EOF'
 
 # Auto-update CLAUDE.md before commit
 echo "[Git Hook] Updating CLAUDE.md..."
-cd "$(git rev-parse --show-toplevel)/apps/pm-app"
+cd "$(git rev-parse --show-toplevel)"
 node scripts/update-claude-md.js
 
 # Add CLAUDE.md if it was modified

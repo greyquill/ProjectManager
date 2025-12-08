@@ -1,6 +1,6 @@
 # Project File Structure
 
-This document shows the complete file structure created for Task 1.
+This document shows the complete file structure created for Task 1 (simplified root structure).
 
 ## Root Level
 ```
@@ -9,62 +9,80 @@ ProjectManager/
 ├── Plan.md                          # ✅ Original requirements (from user)
 ├── TASK_1_COMPLETE.md              # ✅ Task 1 summary
 ├── IMPLEMENTATION_PROGRESS.md       # ✅ Overall progress tracker
-├── package.json                     # ✅ Root workspace config
+├── FILE_STRUCTURE.md                # ✅ This file
+├── package.json                     # ✅ Main package.json
+├── package-lock.json                # ✅ Dependency lock
+├── tsconfig.json                    # ✅ TypeScript config
+├── next.config.js                   # ✅ Next.js config
+├── postcss.config.js                # ✅ PostCSS config
+├── tailwind.config.js              # ✅ Tailwind config
+├── .eslintrc.json                   # ✅ ESLint config
+├── .gitignore                      # ✅ Git ignore rules
+├── env.example                     # ✅ Environment template
+├── next-env.d.ts                   # ✅ Next.js types
+├── CLAUDE.md                       # ✅ Main AI context doc
 │
-├── apps/
-│   └── pm-app/                      # ✅ Main Next.js application
-│       ├── package.json             # ✅ App dependencies
-│       ├── tsconfig.json            # ✅ TypeScript config
-│       ├── next.config.js           # ✅ Next.js config
-│       ├── postcss.config.js        # ✅ PostCSS config
-│       ├── tailwind.config.js       # ✅ Tailwind config
-│       ├── .eslintrc.json           # ✅ ESLint config
-│       ├── .gitignore               # ✅ Git ignore rules
-│       ├── env.example              # ✅ Environment template
-│       ├── CLAUDE.md                # ✅ Main AI context doc
-│       │
-│       ├── scripts/                 # ✅ Automation scripts
-│       │   ├── update-claude-md.js  # ✅ CLAUDE.md updater
-│       │   ├── setup-git-hook.sh    # ✅ Git hook installer
-│       │   └── README.md            # ✅ Scripts documentation
-│       │
-│       └── src/
-│           ├── app/                 # Next.js App Router
-│           │   ├── page.tsx         # ✅ Landing page
-│           │   ├── layout.tsx       # ✅ Root layout
-│           │   ├── template.tsx     # ✅ Page transitions
-│           │   ├── globals.css      # ✅ Global styles
-│           │   └── CLAUDE.md        # ✅ App Router docs
-│           │
-│           ├── components/          # Reusable UI components
-│           │   ├── Button.tsx       # ✅ Button component
-│           │   ├── Card.tsx         # ✅ Card component
-│           │   ├── Badge.tsx        # ✅ Badge component
-│           │   ├── Header.tsx       # ✅ Header component
-│           │   ├── Container.tsx    # ✅ Container component
-│           │   └── CLAUDE.md        # ✅ Component docs
-│           │
-│           ├── lib/                 # Utilities (ready for Task 2+)
-│           │   └── CLAUDE.md        # ✅ Lib documentation
-│           │
-│           └── theme/               # Design system
-│               ├── index.ts         # ✅ Theme exports
-│               ├── tokens.ts        # ✅ Design tokens
-│               └── CLAUDE.md        # ✅ Theme docs
+├── scripts/                        # ✅ Automation scripts
+│   ├── update-claude-md.js         # ✅ CLAUDE.md updater
+│   ├── setup-git-hook.sh           # ✅ Git hook installer
+│   └── README.md                   # ✅ Scripts documentation
 │
-└── pm/                              # Project management data (Task 3)
+├── src/
+│   ├── app/                        # Next.js App Router
+│   │   ├── page.tsx                # ✅ Landing page
+│   │   ├── layout.tsx              # ✅ Root layout
+│   │   ├── template.tsx            # ✅ Page transitions
+│   │   ├── globals.css             # ✅ Global styles
+│   │   └── CLAUDE.md               # ✅ App Router docs
+│   │
+│   ├── components/                 # Reusable UI components
+│   │   ├── Button.tsx             # ✅ Button component
+│   │   ├── Card.tsx                # ✅ Card component
+│   │   ├── Badge.tsx               # ✅ Badge component
+│   │   ├── Header.tsx              # ✅ Header component
+│   │   ├── Container.tsx           # ✅ Container component
+│   │   └── CLAUDE.md               # ✅ Component docs
+│   │
+│   ├── lib/                        # Utilities (ready for Task 2+)
+│   │   └── CLAUDE.md               # ✅ Lib documentation
+│   │
+│   └── theme/                      # Design system
+│       ├── index.ts                # ✅ Theme exports
+│       ├── tokens.ts               # ✅ Design tokens
+│       └── CLAUDE.md               # ✅ Theme docs
+│
+└── pm/                             # Project management data (Task 3)
     └── [project-name]/              # ⏳ To be created (hierarchical)
-        ├── project.json             # ⏳ Project metadata
-        └── [epic-name]/             # ⏳ Epic folders
-            ├── epic.json            # ⏳ Epic metadata
-            └── STORY-*.json         # ⏳ Story files
+        ├── project.json            # ⏳ Project metadata
+        └── [epic-name]/            # ⏳ Epic folders
+            ├── epic.json           # ⏳ Epic metadata
+            └── STORY-*.json        # ⏳ Story files
 ```
+
+## Structure Changes (Simplified)
+
+**Before** (Monorepo):
+```
+ProjectManager/
+└── apps/
+    └── pm-app/          # Nested structure
+```
+
+**After** (Simplified):
+```
+ProjectManager/          # Direct structure
+├── src/
+├── scripts/
+└── pm/
+```
+
+All configuration files are now at the root level for easier access.
 
 ## File Statistics
 
 ### ✅ Completed (Task 1)
 - **Total Files Created**: 28 files
-- **Configuration Files**: 8 files
+- **Configuration Files**: 8 files (at root)
 - **Source Code Files**: 11 files
 - **Documentation Files**: 9 files
 - **Scripts**: 2 files
@@ -78,15 +96,15 @@ ProjectManager/
 
 ## Key Files by Purpose
 
-### 📦 Configuration (8 files)
-1. `package.json` (root) - Workspace config
-2. `apps/pm-app/package.json` - App dependencies
-3. `apps/pm-app/tsconfig.json` - TypeScript settings
-4. `apps/pm-app/next.config.js` - Next.js config
-5. `apps/pm-app/postcss.config.js` - PostCSS config
-6. `apps/pm-app/tailwind.config.js` - Tailwind theme
-7. `apps/pm-app/.eslintrc.json` - Linting rules
-8. `apps/pm-app/env.example` - Environment template
+### 📦 Configuration (8 files at root)
+1. `package.json` - Main dependencies and scripts
+2. `tsconfig.json` - TypeScript settings
+3. `next.config.js` - Next.js config
+4. `postcss.config.js` - PostCSS config
+5. `tailwind.config.js` - Tailwind theme
+6. `.eslintrc.json` - Linting rules
+7. `env.example` - Environment template
+8. `.gitignore` - Git ignore rules
 
 ### 🎨 UI Components (5 files)
 1. `src/components/Button.tsx` - Button with variants
@@ -109,7 +127,7 @@ ProjectManager/
 2. `TASK_1_COMPLETE.md` - Task 1 summary
 3. `IMPLEMENTATION_PROGRESS.md` - Progress tracker
 4. `Plan.md` - Requirements (original)
-5. `apps/pm-app/CLAUDE.md` - Main AI context
+5. `CLAUDE.md` - Main AI context
 6. `src/app/CLAUDE.md` - App Router docs
 7. `src/components/CLAUDE.md` - Component docs
 8. `src/lib/CLAUDE.md` - Lib docs
@@ -127,7 +145,7 @@ ProjectManager/
 src/
 ├── lib/
 │   ├── types.ts              # TypeScript schemas (Task 2)
-│   ├── pm-repository.ts      # File operations (Task 4)
+│   ├── pm-repository.ts     # File operations (Task 4)
 │   └── utils.ts              # Helper functions (Task 4)
 │
 └── app/
@@ -183,5 +201,4 @@ Route (app)                    Size     First Load JS
 
 ---
 
-**Note**: This structure follows the commerce-pro/welcome reference architecture while being tailored for the Project Manager requirements from Plan.md.
-
+**Note**: This structure follows a simplified Next.js project layout, with all configuration at the root level for easier access and maintenance.

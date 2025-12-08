@@ -73,8 +73,6 @@ This hierarchical structure makes it easy to:
 2. **Install dependencies**
    ```bash
    npm install
-   cd apps/pm-app
-   npm install
    ```
 
 3. **Run the development server**
@@ -141,19 +139,19 @@ The application will create the `/pm` directory structure on first run with samp
 ### File Structure
 ```
 ProjectManager/
-├── apps/
-│   └── pm-app/              # Main Next.js application
-│       ├── src/
-│       │   ├── app/         # Pages and API routes
-│       │   ├── components/  # Reusable UI components
-│       │   ├── lib/         # Utilities and data layer
-│       │   └── theme/       # Design tokens
-│       ├── scripts/         # Automation scripts
-│       └── CLAUDE.md        # AI assistant context
-└── pm/                      # Project management data
-    ├── projects/
-    ├── epics/
-    └── stories/
+├── src/
+│   ├── app/                 # Pages and API routes
+│   ├── components/          # Reusable UI components
+│   ├── lib/                 # Utilities and data layer
+│   └── theme/               # Design tokens
+├── scripts/                 # Automation scripts
+├── pm/                      # Project management data
+│   └── [project-name]/      # Hierarchical structure
+│       ├── project.json
+│       └── [epic-name]/
+│           ├── epic.json
+│           └── STORY-*.json
+└── CLAUDE.md                # AI assistant context
 ```
 
 ### Data Flow
@@ -185,7 +183,7 @@ npm run setup-git-hook   # Setup git hooks for CLAUDE.md
 
 ### Project Structure
 
-See `apps/pm-app/CLAUDE.md` for detailed documentation of the application architecture, including:
+See `CLAUDE.md` for detailed documentation of the application architecture, including:
 - Component organization
 - API route patterns
 - Data model schemas
@@ -210,10 +208,10 @@ This project is designed to work seamlessly with Cursor AI:
 
 ### Environment Variables
 
-Copy `apps/pm-app/env.example` to `apps/pm-app/.env.local`:
+Copy `env.example` to `.env.local`:
 
 ```bash
-cp apps/pm-app/env.example apps/pm-app/.env.local
+cp env.example .env.local
 ```
 
 Currently minimal configuration is needed. Future additions may include:
@@ -223,8 +221,8 @@ Currently minimal configuration is needed. Future additions may include:
 
 ### Customization
 
-**Theme Colors**: Edit `apps/pm-app/tailwind.config.js`
-**Data Location**: Modify `PM_DATA_DIR` in `apps/pm-app/src/lib/pm-repository.ts`
+**Theme Colors**: Edit `tailwind.config.js`
+**Data Location**: Modify `PM_DATA_DIR` in `src/lib/pm-repository.ts`
 **Status Options**: Update project JSON `defaultStatuses` array
 **Priority Levels**: Update project JSON `defaultPriorities` array
 
