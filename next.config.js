@@ -1,9 +1,26 @@
 const path = require('path')
 
+// Check if we're building for GitHub Pages
+const isGitHubPages = process.env.GITHUB_PAGES === 'true'
+// If using custom domain (e.g., project-manager.greyquill.io), basePath should be empty
+// If using GitHub Pages subdomain (e.g., username.github.io/repo), set basePath to '/repo-name'
+const basePath = isGitHubPages ? (process.env.GITHUB_PAGES_BASE_PATH || '') : ''
+const assetPrefix = isGitHubPages ? basePath : ''
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Explicitly set output directory to root .next folder
   distDir: '.next',
+
+  // GitHub Pages configuration
+  ...(isGitHubPages && {
+    output: 'export',
+    basePath: basePath,
+    assetPrefix: assetPrefix,
+    images: {
+      unoptimized: true,
+    },
+  }),
 
   // Improve development experience
   reactStrictMode: true,
