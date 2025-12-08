@@ -1,0 +1,25 @@
+{
+  "id": "STORY-126",
+  "title": "sad",
+  "summary": "sdf",
+  "description": "",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-08T13:54:19.428Z",
+  "updatedAt": "2025-12-08T13:54:19.611Z",
+  "tags": [],
+  "estimate": {
+    "storyPoints": 0
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "user",
+    "lastEditedBy": "user",
+    "custom": {}
+  },
+  "dueDate": null
+}
