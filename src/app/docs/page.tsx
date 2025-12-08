@@ -813,17 +813,146 @@ export default function DocsPage() {
 
               <section id="keyboard-shortcuts">
                 <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
-                  Keyboard Shortcuts
+                  Keyboard Navigation & Shortcuts
                 </h2>
                 <p className="text-text-secondary mb-4">
-                  Keyboard shortcuts for common actions (planned for future release):
+                  The application provides comprehensive keyboard navigation, allowing you to operate entirely with your keyboard for maximum efficiency. This is especially powerful in <strong>Focus Mode</strong>, where you can manage epics and stories without using your mouse.
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
-                  <li><strong>Ctrl/Cmd + S</strong> - Save current epic or story</li>
-                  <li><strong>Ctrl/Cmd + E</strong> - Toggle markdown preview</li>
-                  <li><strong>Ctrl/Cmd + N</strong> - Create new story (when epic is selected)</li>
-                  <li><strong>Escape</strong> - Deselect current item</li>
+
+                <h3 className="text-2xl font-semibold text-text-primary mb-3 mt-8">
+                  Focus Mode
+                </h3>
+                <p className="text-text-secondary mb-4">
+                  Focus Mode is a dedicated full-screen view for managing epics and stories. Activate it by clicking the <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">&lt;&gt;</code> icon next to "Epics & Stories" on any project page.
+                </p>
+
+                <h4 className="text-xl font-semibold text-text-primary mb-3 mt-6">
+                  Activating Focus Mode
+                </h4>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
+                  <li>Click the <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">&lt;&gt;</code> icon to enter focus mode</li>
+                  <li>The sidebar expands to full width, hiding the detail panel</li>
+                  <li>Click <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">&gt;&lt;</code> to exit focus mode</li>
+                  <li>The toggle button automatically loses focus after clicking (prevents accidental toggling with Space/Enter)</li>
                 </ul>
+
+                <h4 className="text-xl font-semibold text-text-primary mb-3 mt-6">
+                  Navigation in Focus Mode
+                </h4>
+                <div className="bg-surface-muted p-4 rounded-lg mb-4">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-border-light">
+                        <th className="text-left py-2 px-3 font-semibold text-text-primary">Key</th>
+                        <th className="text-left py-2 px-3 font-semibold text-text-primary">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-text-secondary">
+                      <tr className="border-b border-border-light">
+                        <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">↑</kbd> Arrow Up</td>
+                        <td className="py-2 px-3">Move focus to the previous epic or story</td>
+                      </tr>
+                      <tr className="border-b border-border-light">
+                        <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">↓</kbd> Arrow Down</td>
+                        <td className="py-2 px-3">Move focus to the next epic or story</td>
+                      </tr>
+                      <tr className="border-b border-border-light">
+                        <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">→</kbd> Arrow Right</td>
+                        <td className="py-2 px-3">Expand the focused epic (show its stories) - only works when focused on an epic</td>
+                      </tr>
+                      <tr className="border-b border-border-light">
+                        <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">←</kbd> Arrow Left</td>
+                        <td className="py-2 px-3">Collapse the focused epic (hide its stories) - only works when focused on an epic</td>
+                      </tr>
+                      <tr className="border-b border-border-light">
+                        <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">Space</kbd></td>
+                        <td className="py-2 px-3">Toggle expand/collapse for the focused epic - only works when focused on an epic</td>
+                      </tr>
+                      <tr className="border-b border-border-light">
+                        <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">Enter</kbd></td>
+                        <td className="py-2 px-3">
+                          <ul className="list-disc list-inside ml-4 mt-1">
+                            <li>If not editing: Enter edit mode for the focused epic/story title</li>
+                            <li>If already editing: Save changes and exit edit mode</li>
+                          </ul>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">Esc</kbd></td>
+                        <td className="py-2 px-3">Cancel editing and discard changes (only works when in edit mode)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <h4 className="text-xl font-semibold text-text-primary mb-3 mt-6">
+                  Editing Titles in Focus Mode
+                </h4>
+                <p className="text-text-secondary mb-4">
+                  In Focus Mode, you can edit epic and story titles directly:
+                </p>
+                <ol className="list-decimal list-inside text-text-secondary space-y-2 mb-4 ml-4">
+                  <li>Navigate to an epic or story using arrow keys</li>
+                  <li>Press <kbd className="bg-surface-muted px-2 py-1 rounded border border-border-light font-mono text-sm">Enter</kbd> to enter edit mode</li>
+                  <li>Type your changes in the input field</li>
+                  <li>Press <kbd className="bg-surface-muted px-2 py-1 rounded border border-border-light font-mono text-sm">Enter</kbd> again to save, or <kbd className="bg-surface-muted px-2 py-1 rounded border border-border-light font-mono text-sm">Esc</kbd> to cancel</li>
+                  <li>Changes are automatically saved to the JSON file</li>
+                </ol>
+
+                <h4 className="text-xl font-semibold text-text-primary mb-3 mt-6">
+                  Visual Feedback
+                </h4>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
+                  <li>Focused items are highlighted with a blue ring and light blue background</li>
+                  <li>Items automatically scroll into view when focused</li>
+                  <li>Edit mode shows an input field with a blue underline border</li>
+                  <li>The chevron button (for expanding/collapsing) has a focus ring when focused</li>
+                </ul>
+
+                <h3 className="text-2xl font-semibold text-text-primary mb-3 mt-8">
+                  Normal Mode Keyboard Shortcuts
+                </h3>
+                <p className="text-text-secondary mb-4">
+                  Even outside of Focus Mode, you can use keyboard shortcuts for common actions:
+                </p>
+                <div className="bg-surface-muted p-4 rounded-lg mb-4">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-border-light">
+                        <th className="text-left py-2 px-3 font-semibold text-text-primary">Shortcut</th>
+                        <th className="text-left py-2 px-3 font-semibold text-text-primary">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-text-secondary">
+                      <tr className="border-b border-border-light">
+                        <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">Ctrl/Cmd</kbd> + <kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">S</kbd></td>
+                        <td className="py-2 px-3">Save current epic or story (when detail panel is open)</td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">Esc</kbd></td>
+                        <td className="py-2 px-3">Deselect current item (clear selection and show project overview)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <h3 className="text-2xl font-semibold text-text-primary mb-3 mt-8">
+                  General Navigation Tips
+                </h3>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
+                  <li>Focus automatically wraps around: pressing Down on the last item moves to the first, and vice versa</li>
+                  <li>When an epic is expanded, its stories are included in the navigation sequence</li>
+                  <li>Epics automatically expand when you navigate to them (if they have stories)</li>
+                  <li>Focus is maintained on the same epic when expanding/collapsing it</li>
+                  <li>Arrow key navigation is disabled while editing titles to prevent conflicts</li>
+                  <li>All keyboard actions work seamlessly with the visual interface</li>
+                </ul>
+
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mb-4 mt-6">
+                  <p className="text-sm text-text-secondary">
+                    <strong className="text-text-primary">Pro Tip:</strong> Focus Mode is perfect for quickly creating and organizing multiple epics and stories. Use arrow keys to navigate, Enter to edit titles, and Space/Arrow keys to expand/collapse epics - all without touching your mouse!
+                  </p>
+                </div>
               </section>
 
               {/* Footer */}

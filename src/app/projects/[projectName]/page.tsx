@@ -65,6 +65,8 @@ export default function ProjectDetailPage() {
   const [tempEpicTitle, setTempEpicTitle] = useState('')
   const [tempStoryTitle, setTempStoryTitle] = useState('')
   const [lastFocusedEpicName, setLastFocusedEpicName] = useState<string | null>(null)
+  const [shouldMaintainEpicFocus, setShouldMaintainEpicFocus] = useState(false)
+  const [previousSelection, setPreviousSelection] = useState<string | null>(null)
 
   // Epic edit state
   const [epicTitle, setEpicTitle] = useState('')
@@ -162,7 +164,8 @@ export default function ProjectDetailPage() {
         // Expand the parent epic so the story is visible in the accordion
         setExpandedEpics((prev) => new Set([...prev, selection.epicName!]))
 
-        setStoryTitle(story.title)
+        // Extract title without prefix for editing in the detail panel
+        setStoryTitle(extractStoryTitle(story.id, story.title))
         setStorySummary(story.summary)
         setStoryDescription(story.description || '')
         setStoryStatus(story.status)
@@ -275,8 +278,11 @@ export default function ProjectDetailPage() {
     navigateToStory(epicName, story.id)
   }
 
-  // Build flat list of focusable items (epics and stories) for keyboard navigation
-  type FocusableItem = { type: 'epic'; epicName: string; index: number } | { type: 'story'; epicName: string; storyId: string; index: number }
+  // Build flat list of focusable items (epics, stories, and new story buttons) for keyboard navigation
+  type FocusableItem =
+    | { type: 'epic'; epicName: string; index: number }
+    | { type: 'story'; epicName: string; storyId: string; index: number }
+    | { type: 'newStory'; epicName: string; index: number }
 
   const buildFocusableItems = useMemo((): FocusableItem[] => {
     const items: FocusableItem[] = []
@@ -291,6 +297,8 @@ export default function ProjectDetailPage() {
         epic.stories.forEach((story) => {
           items.push({ type: 'story', epicName: epic._name, storyId: story.id, index: globalIndex++ })
         })
+        // Add "New Story" button after stories if epic is expanded
+        items.push({ type: 'newStory', epicName: epic._name, index: globalIndex++ })
       }
     })
 
@@ -347,13 +355,34 @@ export default function ProjectDetailPage() {
   }, [epics, projectName])
 
   // Save story title function
+  // Helper functions for story title formatting
+  const formatStoryTitle = useCallback((storyId: string, title: string): string => {
+    // If title already has the prefix, return as is
+    if (title.startsWith(`[${storyId}]`)) {
+      return title
+    }
+    // Otherwise, add the prefix
+    return `[${storyId}] ${title.trim()}`
+  }, [])
+
+  const extractStoryTitle = useCallback((storyId: string, title: string): string => {
+    // Remove the prefix if it exists for editing
+    const prefix = `[${storyId}]`
+    if (title.startsWith(prefix)) {
+      return title.substring(prefix.length).trim()
+    }
+    return title.trim()
+  }, [])
+
   const saveStoryTitle = useCallback(async (epicName: string, storyId: string, newTitle: string, currentTitle: string) => {
-    if (newTitle.trim() && newTitle.trim() !== currentTitle) {
+    // Ensure the title has the prefix
+    const formattedTitle = formatStoryTitle(storyId, newTitle.trim())
+    if (formattedTitle && formattedTitle !== currentTitle) {
       const story = epics
         .find((e) => e._name === epicName)
         ?.stories.find((s) => s.id === storyId)
       if (story) {
-        const updatedStory = { ...story, title: newTitle.trim() }
+        const updatedStory = { ...story, title: formattedTitle }
         try {
           const response = await fetch(`/api/projects/${projectName}/epics/${epicName}/stories/${storyId}`, {
             method: 'PUT',
@@ -387,7 +416,7 @@ export default function ProjectDetailPage() {
     }
     setEditingStoryTitle(null)
     setTempStoryTitle('')
-  }, [epics, projectName])
+  }, [epics, projectName, formatStoryTitle])
 
   // Handle keyboard navigation in focus mode
   useEffect(() => {
@@ -410,13 +439,13 @@ export default function ProjectDetailPage() {
             .find((e) => e._name === editingStoryTitle.epicName)
             ?.stories.find((s) => s.id === editingStoryTitle.storyId)
           if (story) {
-            saveStoryTitle(editingStoryTitle.epicName, editingStoryTitle.storyId, tempStoryTitle, story.title)
+            saveStoryTitle(editingStoryTitle.epicName, editingStoryTitle.storyId, tempStoryTitle, formatStoryTitle(editingStoryTitle.storyId, story.title))
           }
           e.preventDefault()
           return
         }
 
-        // If not in edit mode, enter edit mode for focused item
+        // If not in edit mode, handle focused item
         if (focusedItemIndex !== null && buildFocusableItems.length > 0) {
           const focusedItem = buildFocusableItems[focusedItemIndex]
           e.preventDefault()
@@ -427,21 +456,50 @@ export default function ProjectDetailPage() {
               setEditingEpicTitle(focusedItem.epicName)
               setTempEpicTitle(epic.title)
             }
-          } else {
+          } else if (focusedItem.type === 'story') {
             setEditingStoryTitle({ epicName: focusedItem.epicName, storyId: focusedItem.storyId })
             const story = epics
               .find((e) => e._name === focusedItem.epicName)
               ?.stories.find((s) => s.id === focusedItem.storyId)
             if (story) {
-              setTempStoryTitle(story.title)
+              setTempStoryTitle(extractStoryTitle(story.id, story.title))
+            }
+          } else if (focusedItem.type === 'newStory') {
+            // Open new story form for this epic
+            setShowNewStoryForm(focusedItem.epicName)
+            // Ensure epic is expanded
+            if (!expandedEpics.has(focusedItem.epicName)) {
+              setExpandedEpics((prev) => new Set([...prev, focusedItem.epicName]))
             }
           }
           return
         }
       }
 
-      // Handle Escape key - cancel edit mode
+      // Handle Escape key - cancel edit mode or close forms
       if (e.key === 'Escape') {
+        // Close new story form
+        if (showNewStoryForm) {
+          setShowNewStoryForm(null)
+          setNewStoryTitle('')
+          setNewStorySummary('')
+          setNewStoryPriority('medium')
+          setNewStoryManager('unassigned')
+          e.preventDefault()
+          return
+        }
+        // Close new epic form
+        if (showNewEpicForm) {
+          setShowNewEpicForm(false)
+          setNewEpicTitle('')
+          setNewEpicSummary('')
+          setNewEpicDescription('')
+          setNewEpicPriority('medium')
+          setNewEpicManager('unassigned')
+          e.preventDefault()
+          return
+        }
+        // Cancel title editing
         if (editingEpicTitle) {
           setEditingEpicTitle(null)
           setTempEpicTitle('')
@@ -468,6 +526,7 @@ export default function ProjectDetailPage() {
             if (!expandedEpics.has(focusedItem.epicName)) {
               setExpandedEpics((prev) => new Set([...prev, focusedItem.epicName]))
               setLastFocusedEpicName(focusedItem.epicName)
+              setShouldMaintainEpicFocus(true) // Flag to maintain focus on epic after expansion
             }
             return
           }
@@ -482,6 +541,7 @@ export default function ProjectDetailPage() {
                 return newSet
               })
               setLastFocusedEpicName(focusedItem.epicName)
+              setShouldMaintainEpicFocus(true) // Flag to maintain focus on epic after collapse
             }
             return
           }
@@ -497,6 +557,7 @@ export default function ProjectDetailPage() {
             }
             setExpandedEpics(newExpanded)
             setLastFocusedEpicName(focusedItem.epicName)
+            setShouldMaintainEpicFocus(true) // Flag to maintain focus on epic after toggle
             return
           }
         }
@@ -505,8 +566,8 @@ export default function ProjectDetailPage() {
       // Handle arrow keys for navigation (Up/Down only)
       if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
 
-      // Don't navigate if we're in edit mode
-      if (editingEpicTitle || editingStoryTitle) return
+      // Don't navigate if we're in edit mode or if a form is open
+      if (editingEpicTitle || editingStoryTitle || showNewStoryForm || showNewEpicForm) return
 
       e.preventDefault()
       if (buildFocusableItems.length === 0) return
@@ -519,35 +580,53 @@ export default function ProjectDetailPage() {
       } else {
         // Navigate up or down
         if (e.key === 'ArrowDown') {
-          currentIndex = (currentIndex + 1) % buildFocusableItems.length
+          // Check if we're on the last item - if so, wrap to first
+          if (currentIndex >= buildFocusableItems.length - 1) {
+            currentIndex = 0
+          } else {
+            currentIndex = currentIndex + 1
+          }
         } else {
-          currentIndex = currentIndex === 0 ? buildFocusableItems.length - 1 : currentIndex - 1
+          // Arrow Up
+          if (currentIndex === 0) {
+            currentIndex = buildFocusableItems.length - 1
+          } else {
+            currentIndex = currentIndex - 1
+          }
         }
       }
 
       const focusedItem = buildFocusableItems[currentIndex]
+      if (!focusedItem) return // Safety check
+
       setFocusedItemIndex(currentIndex)
 
       // Track last focused epic for focus maintenance
       if (focusedItem.type === 'epic') {
         setLastFocusedEpicName(focusedItem.epicName)
-      } else {
+      } else if (focusedItem.type === 'story') {
         // When focusing on a story, track its parent epic
+        setLastFocusedEpicName(focusedItem.epicName)
+      } else if (focusedItem.type === 'newStory') {
+        // When focusing on new story button, track its parent epic
         setLastFocusedEpicName(focusedItem.epicName)
       }
 
-      // Expand epic if needed
+      // Expand epic if needed (this will trigger a rebuild of buildFocusableItems)
       if (focusedItem.type === 'epic' && !expandedEpics.has(focusedItem.epicName)) {
         setExpandedEpics((prev) => new Set([...prev, focusedItem.epicName]))
+        // After expanding, we need to wait for buildFocusableItems to update
+        // The useEffect for maintaining focus will handle this
+        return
       }
 
-      // Navigate to the focused item
+      // Navigate to the focused item (only for epic and story, not newStory)
       if (focusedItem.type === 'epic') {
         const epic = epics.find((e) => e._name === focusedItem.epicName)
         if (epic) {
           selectEpicCallback(epic)
         }
-      } else {
+      } else if (focusedItem.type === 'story') {
         const story = epics
           .find((e) => e._name === focusedItem.epicName)
           ?.stories.find((s) => s.id === focusedItem.storyId)
@@ -555,31 +634,78 @@ export default function ProjectDetailPage() {
           selectStoryCallback(focusedItem.epicName, story)
         }
       }
+      // newStory items don't need navigation - they're just buttons
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isFullscreen, focusedItemIndex, buildFocusableItems, epics, expandedEpics, selectEpicCallback, selectStoryCallback, editingEpicTitle, editingStoryTitle, tempEpicTitle, tempStoryTitle, saveEpicTitle, saveStoryTitle])
+  }, [isFullscreen, focusedItemIndex, buildFocusableItems, epics, expandedEpics, selectEpicCallback, selectStoryCallback, editingEpicTitle, editingStoryTitle, tempEpicTitle, tempStoryTitle, saveEpicTitle, saveStoryTitle, showNewStoryForm, showNewEpicForm, lastFocusedEpicName])
 
-  // Maintain focus on epic when expanding/collapsing
+  // Separate ESC handler that works in both fullscreen and normal mode
   useEffect(() => {
-    if (isFullscreen && lastFocusedEpicName && buildFocusableItems.length > 0) {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        // Close new story form
+        if (showNewStoryForm) {
+          setShowNewStoryForm(null)
+          setNewStoryTitle('')
+          setNewStorySummary('')
+          setNewStoryPriority('medium')
+          setNewStoryManager('unassigned')
+          e.preventDefault()
+          return
+        }
+        // Close new epic form
+        if (showNewEpicForm) {
+          setShowNewEpicForm(false)
+          setNewEpicTitle('')
+          setNewEpicSummary('')
+          setNewEpicDescription('')
+          setNewEpicPriority('medium')
+          setNewEpicManager('unassigned')
+          e.preventDefault()
+          return
+        }
+        // Cancel title editing (works in both modes)
+        if (editingEpicTitle) {
+          setEditingEpicTitle(null)
+          setTempEpicTitle('')
+          e.preventDefault()
+          return
+        }
+        if (editingStoryTitle) {
+          setEditingStoryTitle(null)
+          setTempStoryTitle('')
+          e.preventDefault()
+          return
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleEscape)
+    return () => window.removeEventListener('keydown', handleEscape)
+  }, [showNewStoryForm, showNewEpicForm, editingEpicTitle, editingStoryTitle])
+
+  // Maintain focus on epic when expanding/collapsing (but not during normal navigation)
+  useEffect(() => {
+    if (isFullscreen && lastFocusedEpicName && buildFocusableItems.length > 0 && shouldMaintainEpicFocus) {
       const newIndex = buildFocusableItems.findIndex(
         (item) => item.type === 'epic' && item.epicName === lastFocusedEpicName
       )
       if (newIndex >= 0) {
         setFocusedItemIndex(newIndex)
+        setShouldMaintainEpicFocus(false) // Reset flag after maintaining focus
       }
     }
-  }, [expandedEpics, buildFocusableItems, isFullscreen, lastFocusedEpicName])
+  }, [expandedEpics, buildFocusableItems, isFullscreen, lastFocusedEpicName, shouldMaintainEpicFocus])
 
-  // Reset focus when exiting fullscreen or when selection changes
+  // Reset focus when exiting fullscreen only
   useEffect(() => {
     if (!isFullscreen) {
       setFocusedItemIndex(null)
       setLastFocusedEpicName(null)
-    } else {
-      // Set initial focus based on current selection
+    } else if (focusedItemIndex === null && buildFocusableItems.length > 0) {
+      // Set initial focus only when entering fullscreen mode (focusedItemIndex is null)
       const currentIndex = buildFocusableItems.findIndex((item) => {
         if (selection.type === 'epic' && item.type === 'epic' && item.epicName === selection.epicName) {
           return true
@@ -589,15 +715,51 @@ export default function ProjectDetailPage() {
         }
         return false
       })
-      setFocusedItemIndex(currentIndex >= 0 ? currentIndex : null)
       if (currentIndex >= 0) {
+        setFocusedItemIndex(currentIndex)
         const focusedItem = buildFocusableItems[currentIndex]
         if (focusedItem.type === 'epic') {
           setLastFocusedEpicName(focusedItem.epicName)
         }
+      } else {
+        setFocusedItemIndex(0) // Default to first item
       }
     }
-  }, [isFullscreen, selection, buildFocusableItems])
+  }, [isFullscreen])
+
+  // Close forms when navigating away (selection changes to a different epic/story)
+  const [previousSelectionKey, setPreviousSelectionKey] = useState<string | null>(null)
+
+  useEffect(() => {
+    const currentSelectionKey = selection.type === 'epic'
+      ? `epic-${selection.epicName}`
+      : selection.type === 'story'
+      ? `story-${selection.epicName}-${selection.storyId}`
+      : 'none'
+
+    // Only close forms if selection actually changed (not on initial mount or same selection)
+    if (previousSelectionKey !== null && previousSelectionKey !== currentSelectionKey) {
+      // Close new story form if it's open
+      if (showNewStoryForm) {
+        setShowNewStoryForm(null)
+        setNewStoryTitle('')
+        setNewStorySummary('')
+        setNewStoryPriority('medium')
+        setNewStoryManager('unassigned')
+      }
+      // Close new epic form if it's open
+      if (showNewEpicForm) {
+        setShowNewEpicForm(false)
+        setNewEpicTitle('')
+        setNewEpicSummary('')
+        setNewEpicDescription('')
+        setNewEpicPriority('medium')
+        setNewEpicManager('unassigned')
+      }
+    }
+
+    setPreviousSelectionKey(currentSelectionKey)
+  }, [selection, showNewStoryForm, showNewEpicForm])
 
   // Helper functions for status and priority colors
   function getStatusColor(status: 'todo' | 'in_progress' | 'blocked' | 'done'): string {
@@ -685,7 +847,7 @@ export default function ProjectDetailPage() {
 
       const updatedStory: Story = {
         ...story,
-        title: storyTitle,
+        title: formatStoryTitle(story.id, storyTitle),
         summary: storySummary,
         description: storyDescription,
         status: storyStatus,
@@ -912,6 +1074,8 @@ export default function ProjectDetailPage() {
       setError(null)
 
       const now = new Date().toISOString()
+      // Generate a temporary ID for the story (will be replaced by API)
+      // For now, we'll let the API generate the ID and update the title after creation
       const storyData = {
         title: newStoryTitle.trim(),
         summary: newStorySummary.trim(),
@@ -949,6 +1113,19 @@ export default function ProjectDetailPage() {
       const result = await response.json()
 
       if (result.success) {
+        // Update the story title with the ID prefix
+        if (result.data && result.data.id) {
+          const formattedTitle = formatStoryTitle(result.data.id, newStoryTitle.trim())
+          if (formattedTitle !== result.data.title) {
+            // Update the story with the formatted title
+            await fetch(`/api/projects/${projectName}/epics/${epicName}/stories/${result.data.id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ ...result.data, title: formattedTitle }),
+            })
+          }
+        }
+
         // Reset form
         setNewStoryTitle('')
         setNewStorySummary('')
@@ -1533,12 +1710,12 @@ export default function ProjectDetailPage() {
                                               value={tempStoryTitle}
                                               onChange={(e) => setTempStoryTitle(e.target.value)}
                                               onBlur={() => {
-                                                saveStoryTitle(epic._name, story.id, tempStoryTitle, story.title)
+                                                saveStoryTitle(epic._name, story.id, tempStoryTitle, formatStoryTitle(story.id, story.title))
                                               }}
                                               onKeyDown={(e) => {
                                                 if (e.key === 'Enter') {
                                                   e.preventDefault()
-                                                  saveStoryTitle(epic._name, story.id, tempStoryTitle, story.title)
+                                                  saveStoryTitle(epic._name, story.id, tempStoryTitle, formatStoryTitle(story.id, story.title))
                                                 } else if (e.key === 'Escape') {
                                                   e.preventDefault()
                                                   setEditingStoryTitle(null)
@@ -1555,11 +1732,11 @@ export default function ProjectDetailPage() {
                                                 if (isFullscreen) {
                                                   e.stopPropagation()
                                                   setEditingStoryTitle({ epicName: epic._name, storyId: story.id })
-                                                  setTempStoryTitle(story.title)
+                                                  setTempStoryTitle(extractStoryTitle(story.id, story.title))
                                                 }
                                               }}
                                             >
-                                              {story.title}
+                                              {formatStoryTitle(story.id, story.title)}
                                             </div>
                                           )}
                                           {!isFullscreen && story.manager && story.manager !== 'unassigned' && (
@@ -1702,7 +1879,11 @@ export default function ProjectDetailPage() {
                           {/* Add Story Bar */}
                           {showNewStoryForm !== epic._name && (
                             <div
-                              className="border-t border-gray-300 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
+                              className={`border-t transition-colors cursor-pointer ${
+                                isFullscreen && focusedItemIndex !== null && buildFocusableItems[focusedItemIndex]?.type === 'newStory' && buildFocusableItems[focusedItemIndex]?.epicName === epic._name
+                                  ? 'border-l-4 border-l-blue-500 bg-blue-50 ring-2 ring-blue-500 ring-offset-2'
+                                  : 'border-gray-300 bg-gray-100 hover:bg-gray-200'
+                              }`}
                               onClick={(e) => {
                                 e.stopPropagation()
                                 setShowNewStoryForm(epic._name)
@@ -1711,9 +1892,18 @@ export default function ProjectDetailPage() {
                                   toggleEpic(epic._name)
                                 }
                               }}
+                              ref={(el) => {
+                                if (isFullscreen && focusedItemIndex !== null && buildFocusableItems[focusedItemIndex]?.type === 'newStory' && buildFocusableItems[focusedItemIndex]?.epicName === epic._name && el) {
+                                  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+                                }
+                              }}
                             >
                               <div className="flex items-center justify-center py-2">
-                                <Plus className="h-4 w-4 text-text-secondary" />
+                                <Plus className={`h-4 w-4 ${
+                                  isFullscreen && focusedItemIndex !== null && buildFocusableItems[focusedItemIndex]?.type === 'newStory' && buildFocusableItems[focusedItemIndex]?.epicName === epic._name
+                                    ? 'text-blue-600'
+                                    : 'text-text-secondary'
+                                }`} />
                               </div>
                             </div>
                           )}

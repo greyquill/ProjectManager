@@ -1120,7 +1120,7 @@ export default function AnalyticsPage() {
                               <div className="flex items-start justify-between gap-2">
                                 <div className="flex-1 min-w-0">
                                   <h4 className="text-xs font-medium text-text-primary mb-1.5 truncate hover:text-primary transition-colors">
-                                    {story.title}
+                                    {story.title.startsWith(`[${story.id}]`) ? story.title : `[${story.id}] ${story.title}`}
                                   </h4>
                                   <div className="flex flex-wrap items-center gap-1.5">
                                     <span
