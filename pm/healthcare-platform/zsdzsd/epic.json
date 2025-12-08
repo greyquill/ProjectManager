@@ -4,9 +4,10 @@
   "description": "",
   "status": "todo",
   "priority": "medium",
-  "manager": "person-003",
+  "manager": "person-001",
   "createdAt": "2025-12-08T11:20:36.745Z",
-  "updatedAt": "2025-12-08T11:20:36.809Z",
+  "updatedAt": "2025-12-08T13:24:51.513Z",
+  "targetRelease": null,
   "storyIds": [],
   "metrics": {
     "totalStoryPoints": 0,
@@ -15,6 +16,5 @@
   "metadata": {
     "createdBy": "user",
     "custom": {}
-  },
-  "targetRelease": null
+  }
 }

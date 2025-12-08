@@ -1,45 +1,16 @@
 [
   {
     "id": "person-001",
-    "name": "John Smith",
-    "email": "john.smith@healthcare.com",
-    "designation": "Project Manager",
-    "roleInProject": "Project Lead"
+    "name": "Smrita Singh",
+    "email": "smrita.singh@company.com",
+    "designation": "Business Analyst",
+    "roleInProject": "Owner"
   },
   {
     "id": "person-002",
-    "name": "Sarah Johnson",
-    "email": "sarah.johnson@healthcare.com",
-    "designation": "Senior Developer",
-    "roleInProject": "Tech Lead"
-  },
-  {
-    "id": "person-003",
-    "name": "Michael Chen",
-    "email": "michael.chen@healthcare.com",
-    "designation": "Frontend Developer",
-    "roleInProject": "Contributor"
-  },
-  {
-    "id": "person-004",
-    "name": "Emily Davis",
-    "email": "emily.davis@healthcare.com",
-    "designation": "Backend Developer",
-    "roleInProject": "Contributor"
-  },
-  {
-    "id": "person-005",
-    "name": "David Wilson",
-    "email": "david.wilson@healthcare.com",
-    "designation": "QA Engineer",
-    "roleInProject": "Contributor"
-  },
-  {
-    "id": "person-1765177917654-376",
-    "name": "Amar",
-    "email": "amar@gmail.com",
-    "designation": "DevOps Engineer",
-    "roleInProject": "Contributor"
+    "name": "Amarnath Bagineni",
+    "email": "amarnath.bagineni@company.com",
+    "designation": "Architect",
+    "roleInProject": "Project Lead"
   }
 ]
-

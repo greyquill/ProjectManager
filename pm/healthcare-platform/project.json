@@ -17,11 +17,9 @@
   "createdAt": "2024-01-01T00:00:00Z",
   "updatedAt": "2024-12-08T12:00:00Z",
   "metadata": {
-    "manager": "person-1765177917654-376",
+    "manager": "person-002",
     "contributors": [
-      "person-003",
-      "person-004",
-      "person-005"
+      "person-001"
     ],
     "repoUrl": "",
     "custom": {}

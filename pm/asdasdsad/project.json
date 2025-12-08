@@ -17,8 +17,10 @@
   "createdAt": "2024-12-08T14:30:00Z",
   "updatedAt": "2024-12-08T14:30:00Z",
   "metadata": {
-    "manager": "person-004",
-    "contributors": [],
+    "manager": "person-002",
+    "contributors": [
+      "person-001"
+    ],
     "custom": {}
   }
 }
