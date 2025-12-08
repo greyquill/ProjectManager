@@ -146,6 +146,11 @@ export default function ProjectDetailPage() {
     }
   }
 
+  function clearSelection() {
+    setSelection({ type: null })
+    setHasChanges(false)
+  }
+
   function toggleEpic(epicName: string) {
     const newExpanded = new Set(expandedEpics)
     if (newExpanded.has(epicName)) {
@@ -473,7 +478,11 @@ export default function ProjectDetailPage() {
             <div className="h-8 w-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
               <FolderKanban className="h-4 w-4" />
             </div>
-            <h1 className="text-lg font-semibold text-text-primary">
+            <h1
+              className="text-lg font-semibold text-text-primary cursor-pointer hover:text-primary transition-colors"
+              onClick={clearSelection}
+              title="Click to view project details"
+            >
               {displayName}
             </h1>
             <span className="text-text-secondary">|</span>
@@ -750,7 +759,24 @@ export default function ProjectDetailPage() {
             ) : selection.type === 'epic' && selectedEpic ? (
               <Card className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-text-primary">Edit Epic</h2>
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      value={epicTitle}
+                      onChange={(e) => {
+                        setEpicTitle(e.target.value)
+                        setHasChanges(true)
+                      }}
+                      className="text-2xl font-bold text-text-primary bg-transparent border-none outline-none focus:outline-none focus:ring-0 p-0 w-full"
+                      style={{ borderBottom: '2px solid transparent' }}
+                      onFocus={(e) => {
+                        e.target.style.borderBottom = '2px solid var(--primary, #3b82f6)'
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderBottom = '2px solid transparent'
+                      }}
+                    />
+                  </div>
                   <div className="flex items-center gap-3">
                     {hasChanges && (
                       <span className="text-sm text-text-secondary">Unsaved changes</span>
@@ -768,21 +794,6 @@ export default function ProjectDetailPage() {
                 </div>
 
                 <div className="space-y-4">
-                  {/* Title */}
-                  <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">
-                      Title
-                    </label>
-                    <input
-                      type="text"
-                      value={epicTitle}
-                      onChange={(e) => {
-                        setEpicTitle(e.target.value)
-                        setHasChanges(true)
-                      }}
-                      className="input-field"
-                    />
-                  </div>
 
                   {/* Summary */}
                   <div>
@@ -941,7 +952,32 @@ export default function ProjectDetailPage() {
             ) : selection.type === 'story' && selectedStory ? (
               <Card className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-text-primary">Edit Story</h2>
+                  <div className="flex-1">
+                    {/* Breadcrumb */}
+                    {selection.epicName && (
+                      <div className="text-sm text-text-secondary mb-2">
+                        {epics.find(e => e._name === selection.epicName)?.title || selection.epicName}
+                        <span className="mx-2">/</span>
+                      </div>
+                    )}
+                    {/* Title as heading */}
+                    <input
+                      type="text"
+                      value={storyTitle}
+                      onChange={(e) => {
+                        setStoryTitle(e.target.value)
+                        setHasChanges(true)
+                      }}
+                      className="text-2xl font-bold text-text-primary bg-transparent border-none outline-none focus:outline-none focus:ring-0 p-0 w-full"
+                      style={{ borderBottom: '2px solid transparent' }}
+                      onFocus={(e) => {
+                        e.target.style.borderBottom = '2px solid var(--primary, #3b82f6)'
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderBottom = '2px solid transparent'
+                      }}
+                    />
+                  </div>
                   <div className="flex items-center gap-3">
                     {hasChanges && (
                       <span className="text-sm text-text-secondary">Unsaved changes</span>
@@ -959,21 +995,6 @@ export default function ProjectDetailPage() {
                 </div>
 
                 <div className="space-y-4">
-                  {/* Title */}
-                  <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">
-                      Title
-                    </label>
-                    <input
-                      type="text"
-                      value={storyTitle}
-                      onChange={(e) => {
-                        setStoryTitle(e.target.value)
-                        setHasChanges(true)
-                      }}
-                      className="input-field"
-                    />
-                  </div>
 
                   {/* Summary */}
                   <div>

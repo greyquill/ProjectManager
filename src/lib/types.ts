@@ -55,7 +55,7 @@ export const StoryMetadataSchema = z.object({
 })
 
 export const StorySchema = z.object({
-  id: z.string().regex(/^STORY-\d+$/, 'Story ID must match STORY-{number} format'),
+  id: z.string().regex(/^STORY-\d+(-\d+)?$/, 'Story ID must match STORY-{number} or STORY-{timestamp}-{random} format'),
   epicId: z.string().optional(), // Optional for hierarchical structure (epic name is in path)
 
   title: z.string().min(1, 'Title is required'),

@@ -206,6 +206,11 @@ export async function readPeople(projectName: string): Promise<Person[]> {
     return await readJsonFile(filePath, parsePeople)
   } catch (error) {
     // If file doesn't exist, return empty array
+    // readJsonFile wraps errors, so check the error message
+    if (error instanceof Error && error.message.includes('File not found')) {
+      return []
+    }
+    // Also check for ENOENT in case the error is not wrapped
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
       return []
     }

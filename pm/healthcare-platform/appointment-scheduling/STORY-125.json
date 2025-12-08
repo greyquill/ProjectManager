@@ -9,8 +9,7 @@
     "User can choose appointment type",
     "User can enter patient information",
     "User receives confirmation after booking",
-    "Booking appears in patient's appointment history",
-    "lkklkklklklk"
+    "Booking appears in patient's appointment history"
   ],
   "status": "todo",
   "priority": "high",

@@ -33,6 +33,12 @@
     "email": "david.wilson@healthcare.com",
     "designation": "QA Engineer",
     "roleInProject": "Contributor"
+  },
+  {
+    "id": "person-1765177917654-376",
+    "name": "Amar",
+    "email": "amar@gmail.com",
+    "designation": "DevOps Engineer",
+    "roleInProject": "Contributor"
   }
 ]
-

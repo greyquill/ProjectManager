@@ -374,26 +374,46 @@ export default function PeoplePage() {
                     <label className="block text-sm font-medium text-text-primary mb-1">
                       Designation
                     </label>
-                    <input
-                      type="text"
+                    <select
                       value={formData.designation}
                       onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
                       className="input-field"
-                      placeholder="e.g., Senior Developer, Project Manager"
-                    />
+                    >
+                      <option value="">Select designation</option>
+                      <option value="Project Manager">Project Manager</option>
+                      <option value="Product Manager">Product Manager</option>
+                      <option value="Senior Developer">Senior Developer</option>
+                      <option value="Developer">Developer</option>
+                      <option value="Frontend Developer">Frontend Developer</option>
+                      <option value="Backend Developer">Backend Developer</option>
+                      <option value="Full Stack Developer">Full Stack Developer</option>
+                      <option value="QA Engineer">QA Engineer</option>
+                      <option value="DevOps Engineer">DevOps Engineer</option>
+                      <option value="UI/UX Designer">UI/UX Designer</option>
+                      <option value="Technical Lead">Technical Lead</option>
+                      <option value="Architect">Architect</option>
+                      <option value="Scrum Master">Scrum Master</option>
+                      <option value="Business Analyst">Business Analyst</option>
+                    </select>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-text-primary mb-1">
                       Role in Project
                     </label>
-                    <input
-                      type="text"
+                    <select
                       value={formData.roleInProject}
                       onChange={(e) => setFormData({ ...formData, roleInProject: e.target.value })}
                       className="input-field"
-                      placeholder="e.g., Tech Lead, Contributor"
-                    />
+                    >
+                      <option value="">Select role</option>
+                      <option value="Project Lead">Project Lead</option>
+                      <option value="Tech Lead">Tech Lead</option>
+                      <option value="Contributor">Contributor</option>
+                      <option value="Architect">Architect</option>
+                      <option value="Owner">Owner</option>
+                      <option value="Stakeholder">Stakeholder</option>
+                    </select>
                   </div>
 
                   <div className="flex gap-3 pt-4">
