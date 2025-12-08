@@ -8,6 +8,16 @@ const nextConfig = {
   // Improve development experience
   reactStrictMode: true,
 
+  // Disable caching in development for better reliability
+  ...(process.env.NODE_ENV === 'development' && {
+    onDemandEntries: {
+      // Period (in ms) where the server will keep pages in the buffer
+      maxInactiveAge: 25 * 1000,
+      // Number of pages that should be kept simultaneously without being disposed
+      pagesBufferLength: 2,
+    },
+  }),
+
   webpack: (config, { isServer, dev }) => {
     if (!isServer) {
       config.resolve.fallback = {
@@ -16,8 +26,13 @@ const nextConfig = {
       }
     }
 
-    // Improve cache handling in development
+    // Aggressive cache clearing in development
     if (dev) {
+      // Use memory-only caching in development (no persistent cache)
+      config.cache = {
+        type: 'memory',
+      }
+
       // Improve file watching for better HMR
       config.watchOptions = {
         poll: 1000,
@@ -30,6 +45,8 @@ const nextConfig = {
         ...config.optimization,
         removeAvailableModules: false,
         removeEmptyChunks: false,
+        moduleIds: 'named',
+        chunkIds: 'named',
       }
     }
 

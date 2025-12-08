@@ -10,11 +10,11 @@
     "Form shows validation errors inline",
     "Success message displayed after submission"
   ],
-  "status": "in_progress",
+  "status": "blocked",
   "priority": "low",
   "manager": "person-002",
   "createdAt": "2025-01-05T10:00:00Z",
-  "updatedAt": "2025-12-08T10:47:03.646Z",
+  "updatedAt": "2025-12-08T11:23:50.690Z",
   "dueDate": null,
   "tags": [
     "frontend",

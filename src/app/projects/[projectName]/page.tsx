@@ -90,6 +90,25 @@ export default function ProjectDetailPage() {
   const [epicDescriptionPreview, setEpicDescriptionPreview] = useState(true)
   const [storyDescriptionPreview, setStoryDescriptionPreview] = useState(true)
 
+  // New epic form state
+  const [showNewEpicForm, setShowNewEpicForm] = useState(false)
+  const [newEpicTitle, setNewEpicTitle] = useState('')
+  const [newEpicSummary, setNewEpicSummary] = useState('')
+  const [newEpicDescription, setNewEpicDescription] = useState('')
+  const [newEpicStatus, setNewEpicStatus] = useState<'todo' | 'in_progress' | 'blocked' | 'done'>('todo')
+  const [newEpicPriority, setNewEpicPriority] = useState<'low' | 'medium' | 'high' | 'critical'>('medium')
+  const [newEpicManager, setNewEpicManager] = useState('unassigned')
+  const [creatingEpic, setCreatingEpic] = useState(false)
+
+  // New story form state
+  const [showNewStoryForm, setShowNewStoryForm] = useState<string | null>(null) // epic name or null
+  const [newStoryTitle, setNewStoryTitle] = useState('')
+  const [newStorySummary, setNewStorySummary] = useState('')
+  const [newStoryStatus, setNewStoryStatus] = useState<'todo' | 'in_progress' | 'blocked' | 'done'>('todo')
+  const [newStoryPriority, setNewStoryPriority] = useState<'low' | 'medium' | 'high' | 'critical'>('medium')
+  const [newStoryManager, setNewStoryManager] = useState('unassigned')
+  const [creatingStory, setCreatingStory] = useState(false)
+
   useEffect(() => {
     if (projectName) {
       fetchProject()
@@ -454,6 +473,171 @@ export default function ProjectDetailPage() {
     }
   }
 
+  async function createNewEpic() {
+    if (!newEpicTitle.trim()) {
+      setError('Epic title is required')
+      return
+    }
+
+    try {
+      setCreatingEpic(true)
+      setError(null)
+
+      const now = new Date().toISOString()
+      const epicData = {
+        title: newEpicTitle.trim(),
+        summary: newEpicSummary.trim() || newEpicTitle.trim(), // Use title as summary if empty
+        description: newEpicDescription.trim(),
+        status: newEpicStatus,
+        priority: newEpicPriority,
+        manager: newEpicManager,
+        createdAt: now,
+        updatedAt: now,
+        targetRelease: null,
+        tags: [],
+        storyIds: [],
+        metrics: {
+          totalStoryPoints: 0,
+          completedStoryPoints: 0,
+        },
+        metadata: {
+          createdBy: 'user',
+          custom: {},
+        },
+      }
+
+      const response = await fetch(`/api/projects/${projectName}/epics`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(epicData),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        // Get the epic ID from the response
+        const epicId = result.data?.name || result.data?.id
+
+        // Reset form
+        setNewEpicTitle('')
+        setNewEpicSummary('')
+        setNewEpicDescription('')
+        setNewEpicStatus('todo')
+        setNewEpicPriority('medium')
+        setNewEpicManager('unassigned')
+        setShowNewEpicForm(false)
+
+        // Refresh epics and select the new epic
+        await fetchEpics()
+
+        // Navigate to the new epic
+        if (epicId) {
+          navigateToEpic(epicId)
+        }
+      } else {
+        setError(result.error || 'Failed to create epic')
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create epic')
+    } finally {
+      setCreatingEpic(false)
+    }
+  }
+
+  function cancelNewEpic() {
+    setShowNewEpicForm(false)
+    setNewEpicTitle('')
+    setNewEpicSummary('')
+    setNewEpicDescription('')
+    setNewEpicStatus('todo')
+    setNewEpicPriority('medium')
+    setNewEpicManager('unassigned')
+    setError(null)
+  }
+
+  async function createNewStory(epicName: string) {
+    if (!newStoryTitle.trim() || !newStorySummary.trim()) {
+      setError('Story title and summary are required')
+      return
+    }
+
+    try {
+      setCreatingStory(true)
+      setError(null)
+
+      const now = new Date().toISOString()
+      const storyData = {
+        title: newStoryTitle.trim(),
+        summary: newStorySummary.trim(),
+        description: '',
+        status: newStoryStatus,
+        priority: newStoryPriority,
+        manager: newStoryManager,
+        createdAt: now,
+        updatedAt: now,
+        dueDate: null,
+        tags: [],
+        acceptanceCriteria: [],
+        estimate: {
+          storyPoints: 0,
+        },
+        relatedStories: [],
+        mentions: [],
+        files: [],
+        metadata: {
+          createdBy: 'user',
+          lastEditedBy: 'user',
+          custom: {},
+        },
+      }
+
+      const response = await fetch(
+        `/api/projects/${projectName}/epics/${epicName}/stories`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(storyData),
+        }
+      )
+
+      const result = await response.json()
+
+      if (result.success) {
+        // Reset form
+        setNewStoryTitle('')
+        setNewStorySummary('')
+        setNewStoryStatus('todo')
+        setNewStoryPriority('medium')
+        setNewStoryManager('unassigned')
+        setShowNewStoryForm(null)
+
+        // Refresh epics to get the new story
+        await fetchEpics()
+
+        // Select the new story
+        if (result.data && result.data.id) {
+          navigateToStory(epicName, result.data.id)
+        }
+      } else {
+        setError(result.error || 'Failed to create story')
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create story')
+    } finally {
+      setCreatingStory(false)
+    }
+  }
+
+  function cancelNewStory() {
+    setShowNewStoryForm(null)
+    setNewStoryTitle('')
+    setNewStorySummary('')
+    setNewStoryStatus('todo')
+    setNewStoryPriority('medium')
+    setNewStoryManager('unassigned')
+    setError(null)
+  }
+
   function toggleContributor(personId: string) {
     const updated = projectContributors.includes(personId)
       ? projectContributors.filter((id) => id !== personId)
@@ -701,13 +885,122 @@ export default function ProjectDetailPage() {
           <div className="lg:col-span-1 space-y-2">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-text-primary">Epics & Stories</h2>
-              <Button variant="outline" size="sm">
-                <Plus className="h-4 w-4 mr-1" />
-                Epic
-              </Button>
+              {!showNewEpicForm && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowNewEpicForm(true)}
+                >
+                  <Plus className="h-4 w-4 mr-1" />
+                  Epic
+                </Button>
+              )}
             </div>
 
-            {epics.length === 0 ? (
+            {/* New Epic Form */}
+            {showNewEpicForm && (
+              <Card className="p-4 mb-2 border-2 border-primary">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-semibold text-text-primary">New Epic</h3>
+                    <button
+                      onClick={cancelNewEpic}
+                      className="text-text-secondary hover:text-text-primary"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-text-primary mb-1">
+                      Title <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={newEpicTitle}
+                      onChange={(e) => setNewEpicTitle(e.target.value)}
+                      placeholder="Enter epic title"
+                      className="input-field text-sm"
+                      autoFocus
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-text-primary mb-1">
+                      Summary
+                    </label>
+                    <input
+                      type="text"
+                      value={newEpicSummary}
+                      onChange={(e) => setNewEpicSummary(e.target.value)}
+                      placeholder="Brief summary"
+                      className="input-field text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-text-primary mb-1">
+                      Priority
+                    </label>
+                    <div className="flex gap-2">
+                      {(['low', 'medium', 'high', 'critical'] as const).map((priority) => (
+                        <label key={priority} className="flex items-center gap-1 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="new-epic-priority"
+                            value={priority}
+                            checked={newEpicPriority === priority}
+                            onChange={(e) => setNewEpicPriority(e.target.value as any)}
+                            className="w-3 h-3"
+                          />
+                          <span className="text-xs capitalize">{priority}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-text-primary mb-1">
+                      Manager
+                    </label>
+                    <select
+                      value={newEpicManager}
+                      onChange={(e) => setNewEpicManager(e.target.value)}
+                      className="input-field text-sm"
+                    >
+                      <option value="unassigned">Unassigned</option>
+                      {people.map((person) => (
+                        <option key={person.id} value={person.id}>
+                          {person.name} ({person.designation})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-2">
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={createNewEpic}
+                      isLoading={creatingEpic}
+                      disabled={!newEpicTitle.trim()}
+                    >
+                      Create Epic
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={cancelNewEpic}
+                      disabled={creatingEpic}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            )}
+
+            {epics.length === 0 && !showNewEpicForm ? (
               <Card className="p-8 text-center">
                 <Target className="h-12 w-12 text-text-secondary mx-auto mb-3 opacity-50" />
                 <p className="text-sm text-text-secondary">No epics yet</p>
@@ -786,56 +1079,180 @@ export default function ProjectDetailPage() {
                       </div>
 
                       {/* Stories (Collapsed) */}
-                      {isExpanded && epic.stories.length > 0 && (
-                        <div className="border-t border-border-light">
-                          {epic.stories.map((story) => {
-                            const isStorySelected =
-                              selection.type === 'story' &&
-                              selection.epicName === epic._name &&
-                              selection.storyId === story.id
-                            const storyStatusColor = getStatusColor(story.status as 'todo' | 'in_progress' | 'blocked' | 'done')
+                      {isExpanded && (
+                        <>
+                          {epic.stories.length > 0 && (
+                            <div className="border-t border-border-light">
+                              {epic.stories.map((story) => {
+                                const isStorySelected =
+                                  selection.type === 'story' &&
+                                  selection.epicName === epic._name &&
+                                  selection.storyId === story.id
+                                const storyStatusColor = getStatusColor(story.status as 'todo' | 'in_progress' | 'blocked' | 'done')
 
-                            return (
-                              <div
-                                key={story.id}
-                                className={`p-3 pl-12 cursor-pointer hover:bg-surface-muted transition-colors border-l-4 border-b border-border-light last:border-b-0 ${
-                                  isStorySelected ? 'bg-primary/5' : ''
-                                } ${storyStatusColor}`}
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  selectStory(epic._name, story)
-                                }}
-                              >
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                                    {getStatusIcon(story.status)}
-                                    <FileText className="h-3 w-3 text-text-secondary flex-shrink-0" />
-                                    <div className="flex-1 min-w-0">
-                                      <div className="text-sm font-medium text-text-primary truncate">
-                                        {story.title}
-                                      </div>
-                                      {story.manager && story.manager !== 'unassigned' && (
-                                        <div className="flex items-center gap-1 mt-1">
-                                          <User className="h-3 w-3 text-text-secondary" />
-                                          <span className="text-xs text-text-secondary">
-                                            {people.find(p => p.id === story.manager)?.name || story.manager}
-                                          </span>
+                                return (
+                                  <div
+                                    key={story.id}
+                                    className={`p-3 pl-12 cursor-pointer hover:bg-surface-muted transition-colors border-l-4 border-b border-border-light last:border-b-0 ${
+                                      isStorySelected ? 'bg-primary/5' : ''
+                                    } ${storyStatusColor}`}
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      selectStory(epic._name, story)
+                                    }}
+                                  >
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                                        {getStatusIcon(story.status)}
+                                        <FileText className="h-3 w-3 text-text-secondary flex-shrink-0" />
+                                        <div className="flex-1 min-w-0">
+                                          <div className="text-sm font-medium text-text-primary truncate">
+                                            {story.title}
+                                          </div>
+                                          {story.manager && story.manager !== 'unassigned' && (
+                                            <div className="flex items-center gap-1 mt-1">
+                                              <User className="h-3 w-3 text-text-secondary" />
+                                              <span className="text-xs text-text-secondary">
+                                                {people.find(p => p.id === story.manager)?.name || story.manager}
+                                              </span>
+                                            </div>
+                                          )}
                                         </div>
-                                      )}
+                                      </div>
+                                      <div className="flex-shrink-0 ml-2">
+                                        {story.estimate?.storyPoints > 0 && (
+                                          <span className="text-xs text-text-secondary">
+                                            {story.estimate.storyPoints} pts
+                                          </span>
+                                        )}
+                                      </div>
                                     </div>
                                   </div>
-                                  <div className="flex-shrink-0 ml-2">
-                                    {story.estimate?.storyPoints > 0 && (
-                                      <span className="text-xs text-text-secondary">
-                                        {story.estimate.storyPoints} pts
-                                      </span>
-                                    )}
+                                )
+                              })}
+                            </div>
+                          )}
+
+                          {/* New Story Form */}
+                          {showNewStoryForm === epic._name && (
+                            <div className="border-t border-border-light p-3 bg-surface-muted">
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <h4 className="text-xs font-semibold text-text-primary">New Story</h4>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      cancelNewStory()
+                                    }}
+                                    className="text-text-secondary hover:text-text-primary"
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </button>
+                                </div>
+
+                                <div>
+                                  <input
+                                    type="text"
+                                    value={newStoryTitle}
+                                    onChange={(e) => setNewStoryTitle(e.target.value)}
+                                    placeholder="Story title *"
+                                    className="input-field text-sm w-full"
+                                    autoFocus
+                                  />
+                                </div>
+
+                                <div>
+                                  <input
+                                    type="text"
+                                    value={newStorySummary}
+                                    onChange={(e) => setNewStorySummary(e.target.value)}
+                                    placeholder="Brief summary *"
+                                    className="input-field text-sm w-full"
+                                  />
+                                </div>
+
+                                <div>
+                                  <label className="block text-xs text-text-secondary mb-1">Priority</label>
+                                  <div className="flex gap-2">
+                                    {(['low', 'medium', 'high', 'critical'] as const).map((priority) => (
+                                      <label key={priority} className="flex items-center gap-1 cursor-pointer">
+                                        <input
+                                          type="radio"
+                                          name={`new-story-priority-${epic._name}`}
+                                          value={priority}
+                                          checked={newStoryPriority === priority}
+                                          onChange={(e) => setNewStoryPriority(e.target.value as any)}
+                                          className="w-3 h-3"
+                                        />
+                                        <span className="text-xs capitalize">{priority}</span>
+                                      </label>
+                                    ))}
                                   </div>
                                 </div>
+
+                                <div>
+                                  <select
+                                    value={newStoryManager}
+                                    onChange={(e) => setNewStoryManager(e.target.value)}
+                                    className="input-field text-sm w-full"
+                                  >
+                                    <option value="unassigned">Unassigned</option>
+                                    {people.map((person) => (
+                                      <option key={person.id} value={person.id}>
+                                        {person.name} ({person.designation})
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    variant="primary"
+                                    size="sm"
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      createNewStory(epic._name)
+                                    }}
+                                    isLoading={creatingStory}
+                                    disabled={!newStoryTitle.trim() || !newStorySummary.trim()}
+                                  >
+                                    Create Story
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      cancelNewStory()
+                                    }}
+                                    disabled={creatingStory}
+                                  >
+                                    Cancel
+                                  </Button>
+                                </div>
                               </div>
-                            )
-                          })}
-                        </div>
+                            </div>
+                          )}
+
+                          {/* Add Story Bar */}
+                          {showNewStoryForm !== epic._name && (
+                            <div
+                              className="border-t border-gray-300 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setShowNewStoryForm(epic._name)
+                                // Ensure epic is expanded
+                                if (!isExpanded) {
+                                  toggleEpic(epic._name)
+                                }
+                              }}
+                            >
+                              <div className="flex items-center justify-center py-2">
+                                <Plus className="h-4 w-4 text-text-secondary" />
+                              </div>
+                            </div>
+                          )}
+                        </>
                       )}
                     </Card>
                   )

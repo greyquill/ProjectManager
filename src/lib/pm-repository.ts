@@ -384,13 +384,14 @@ export async function writeEpic(
 
 /**
  * List all epics for a project
+ * Returns both old format (title-based) and new format (EPIC-XXXX) epics
  */
 export async function listEpics(projectName: string): Promise<string[]> {
   try {
     const projectDir = getProjectDir(projectName)
     const entries = await fs.readdir(projectDir, { withFileTypes: true })
     return entries
-      .filter((entry) => entry.isDirectory() && entry.name !== '.git')
+      .filter((entry) => entry.isDirectory() && entry.name !== '.git' && entry.name !== 'node_modules')
       .map((entry) => entry.name)
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
@@ -534,6 +535,59 @@ export async function deleteStory(
 }
 
 /**
+ * Generate next sequential epic ID (EPIC-0001 to EPIC-9999)
+ */
+export async function generateNextEpicId(projectName: string): Promise<string> {
+  const epicNames = await listEpics(projectName)
+  const epicNumbers: number[] = []
+
+  for (const epicName of epicNames) {
+    const match = epicName.match(/^EPIC-(\d{4})$/)
+    if (match) {
+      const num = parseInt(match[1], 10)
+      if (!isNaN(num)) {
+        epicNumbers.push(num)
+      }
+    }
+  }
+
+  const nextNumber = epicNumbers.length > 0 ? Math.max(...epicNumbers) + 1 : 1
+  if (nextNumber > 9999) {
+    throw new Error('Maximum number of epics (9999) reached')
+  }
+
+  return `EPIC-${nextNumber.toString().padStart(4, '0')}`
+}
+
+/**
+ * Generate next sequential story ID (STORY-001 to STORY-999)
+ */
+export async function generateNextStoryId(
+  projectName: string,
+  epicName: string
+): Promise<string> {
+  const storyIds = await listStories(projectName, epicName)
+  const storyNumbers: number[] = []
+
+  for (const storyId of storyIds) {
+    const match = storyId.match(/^STORY-(\d{3})$/)
+    if (match) {
+      const num = parseInt(match[1], 10)
+      if (!isNaN(num)) {
+        storyNumbers.push(num)
+      }
+    }
+  }
+
+  const nextNumber = storyNumbers.length > 0 ? Math.max(...storyNumbers) + 1 : 1
+  if (nextNumber > 999) {
+    throw new Error('Maximum number of stories (999) reached for this epic')
+  }
+
+  return `STORY-${nextNumber.toString().padStart(3, '0')}`
+}
+
+/**
  * Create a new story with generated ID
  */
 export async function createStory(
@@ -541,7 +595,7 @@ export async function createStory(
   epicName: string,
   storyData: Partial<Story> = {}
 ): Promise<Story> {
-  const storyId = generateStoryId()
+  const storyId = await generateNextStoryId(projectName, epicName)
   const now = generateTimestamp()
 
   const story: Story = {
@@ -577,6 +631,9 @@ export async function createStory(
 // ============================================================================
 
 export const pmRepository = {
+  // ID Generation
+  generateNextEpicId,
+  generateNextStoryId,
   // Projects
   readProject,
   writeProject,

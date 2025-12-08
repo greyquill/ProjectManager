@@ -74,12 +74,7 @@ export async function POST(
       )
     }
 
-    const epicName = body.title
-      ?.toLowerCase()
-      .replace(/\s+/g, '-')
-      .replace(/[^a-z0-9-]/g, '')
-
-    if (!epicName) {
+    if (!body.title || !body.title.trim()) {
       return NextResponse.json(
         {
           success: false,
@@ -89,27 +84,19 @@ export async function POST(
       )
     }
 
-    // Check if epic already exists
-    if (await pmRepository.epicExists(projectName, epicName)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: `Epic "${epicName}" already exists in project "${projectName}"`,
-        },
-        { status: 409 }
-      )
-    }
+    // Generate next sequential epic ID (EPIC-0001, EPIC-0002, etc.)
+    const epicId = await pmRepository.generateNextEpicId(projectName)
 
     // Validate and create epic
     const epicData = parseEpic(body)
-    const epic = createEpic(epicData)
+    const epic = createEpic({ ...epicData, id: epicId })
 
-    await pmRepository.writeEpic(projectName, epicName, epic)
+    await pmRepository.writeEpic(projectName, epicId, epic)
 
     return NextResponse.json(
       {
         success: true,
-        data: { name: epicName, ...epic },
+        data: { name: epicId, ...epic },
       },
       { status: 201 }
     )

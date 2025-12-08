@@ -6,7 +6,7 @@
   "priority": "high",
   "manager": "person-001",
   "createdAt": "2025-01-05T09:30:00Z",
-  "updatedAt": "2025-12-08T10:49:03.664Z",
+  "updatedAt": "2025-12-08T11:30:13.648Z",
   "targetRelease": "2025-03-01",
   "storyIds": [
     "STORY-125"
