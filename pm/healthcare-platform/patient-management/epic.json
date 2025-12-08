@@ -1,12 +1,12 @@
 {
-  "title": "Patient Management Module",
+  "title": "Patient Management Moduleasdas",
   "summary": "Implement end-to-end patient registration, listing, and management.",
   "description": "This epic covers all aspects of patient management including:\n- Patient registration and profile creation\n- Patient listing and search functionality\n- Patient profile updates and management\n- Integration with appointment scheduling\n\n## Goals\n- Streamline patient onboarding process\n- Provide comprehensive patient data management\n- Enable quick patient lookup and access\n\n## Constraints\n- Must comply with healthcare data privacy regulations\n- Should integrate with existing hospital systems\n- Must support multi-tenant architecture",
   "status": "todo",
   "priority": "medium",
   "manager": "person-002",
   "createdAt": "2025-01-05T09:00:00Z",
-  "updatedAt": "2025-12-08T11:23:47.072Z",
+  "updatedAt": "2025-12-08T14:11:00.548Z",
   "targetRelease": "2025-02-15",
   "storyIds": [
     "STORY-123",

@@ -64,6 +64,7 @@ export default function ProjectDetailPage() {
   const [editingStoryTitle, setEditingStoryTitle] = useState<{ epicName: string; storyId: string } | null>(null)
   const [tempEpicTitle, setTempEpicTitle] = useState('')
   const [tempStoryTitle, setTempStoryTitle] = useState('')
+  const [lastFocusedEpicName, setLastFocusedEpicName] = useState<string | null>(null)
 
   // Epic edit state
   const [epicTitle, setEpicTitle] = useState('')
@@ -304,12 +305,208 @@ export default function ProjectDetailPage() {
     navigateToStory(epicName, story.id)
   }, [projectName])
 
+  // Save epic title function
+  const saveEpicTitle = useCallback(async (epicName: string, newTitle: string, currentTitle: string) => {
+    if (newTitle.trim() && newTitle.trim() !== currentTitle) {
+      const epic = epics.find((e) => e._name === epicName)
+      if (epic) {
+        const updatedEpic = { ...epic, title: newTitle.trim() }
+        try {
+          const response = await fetch(`/api/projects/${projectName}/epics/${epicName}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedEpic),
+          })
+          if (response.ok) {
+            // Refresh epics list
+            const epicsResponse = await fetch(`/api/projects/${projectName}/epics`)
+            const epicsResult = await epicsResponse.json()
+            if (epicsResult.success) {
+              const epicsWithStories = await Promise.all(
+                epicsResult.data.map(async (epic: Epic & { _name: string }) => {
+                  const storiesResponse = await fetch(
+                    `/api/projects/${projectName}/epics/${epic._name}/stories`
+                  )
+                  const storiesResult = await storiesResponse.json()
+                  return {
+                    ...epic,
+                    stories: storiesResult.success ? storiesResult.data : [],
+                  }
+                })
+              )
+              setEpics(epicsWithStories)
+            }
+          }
+        } catch (err) {
+          console.error('Failed to update epic title:', err)
+        }
+      }
+    }
+    setEditingEpicTitle(null)
+    setTempEpicTitle('')
+  }, [epics, projectName])
+
+  // Save story title function
+  const saveStoryTitle = useCallback(async (epicName: string, storyId: string, newTitle: string, currentTitle: string) => {
+    if (newTitle.trim() && newTitle.trim() !== currentTitle) {
+      const story = epics
+        .find((e) => e._name === epicName)
+        ?.stories.find((s) => s.id === storyId)
+      if (story) {
+        const updatedStory = { ...story, title: newTitle.trim() }
+        try {
+          const response = await fetch(`/api/projects/${projectName}/epics/${epicName}/stories/${storyId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedStory),
+          })
+          if (response.ok) {
+            // Refresh epics list
+            const epicsResponse = await fetch(`/api/projects/${projectName}/epics`)
+            const epicsResult = await epicsResponse.json()
+            if (epicsResult.success) {
+              const epicsWithStories = await Promise.all(
+                epicsResult.data.map(async (epic: Epic & { _name: string }) => {
+                  const storiesResponse = await fetch(
+                    `/api/projects/${projectName}/epics/${epic._name}/stories`
+                  )
+                  const storiesResult = await storiesResponse.json()
+                  return {
+                    ...epic,
+                    stories: storiesResult.success ? storiesResult.data : [],
+                  }
+                })
+              )
+              setEpics(epicsWithStories)
+            }
+          }
+        } catch (err) {
+          console.error('Failed to update story title:', err)
+        }
+      }
+    }
+    setEditingStoryTitle(null)
+    setTempStoryTitle('')
+  }, [epics, projectName])
+
   // Handle keyboard navigation in focus mode
   useEffect(() => {
     if (!isFullscreen) return
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Handle Enter key - enter edit mode or save if already editing
+      if (e.key === 'Enter') {
+        // If we're in edit mode, save and exit
+        if (editingEpicTitle) {
+          const epic = epics.find((e) => e._name === editingEpicTitle)
+          if (epic) {
+            saveEpicTitle(editingEpicTitle, tempEpicTitle, epic.title)
+          }
+          e.preventDefault()
+          return
+        }
+        if (editingStoryTitle) {
+          const story = epics
+            .find((e) => e._name === editingStoryTitle.epicName)
+            ?.stories.find((s) => s.id === editingStoryTitle.storyId)
+          if (story) {
+            saveStoryTitle(editingStoryTitle.epicName, editingStoryTitle.storyId, tempStoryTitle, story.title)
+          }
+          e.preventDefault()
+          return
+        }
+
+        // If not in edit mode, enter edit mode for focused item
+        if (focusedItemIndex !== null && buildFocusableItems.length > 0) {
+          const focusedItem = buildFocusableItems[focusedItemIndex]
+          e.preventDefault()
+
+          if (focusedItem.type === 'epic') {
+            const epic = epics.find((e) => e._name === focusedItem.epicName)
+            if (epic) {
+              setEditingEpicTitle(focusedItem.epicName)
+              setTempEpicTitle(epic.title)
+            }
+          } else {
+            setEditingStoryTitle({ epicName: focusedItem.epicName, storyId: focusedItem.storyId })
+            const story = epics
+              .find((e) => e._name === focusedItem.epicName)
+              ?.stories.find((s) => s.id === focusedItem.storyId)
+            if (story) {
+              setTempStoryTitle(story.title)
+            }
+          }
+          return
+        }
+      }
+
+      // Handle Escape key - cancel edit mode
+      if (e.key === 'Escape') {
+        if (editingEpicTitle) {
+          setEditingEpicTitle(null)
+          setTempEpicTitle('')
+          e.preventDefault()
+          return
+        }
+        if (editingStoryTitle) {
+          setEditingStoryTitle(null)
+          setTempStoryTitle('')
+          e.preventDefault()
+          return
+        }
+      }
+
+      // Handle Right/Left arrow and Space for epic expand/collapse
+      if (focusedItemIndex !== null && buildFocusableItems.length > 0 && !editingEpicTitle && !editingStoryTitle) {
+        const focusedItem = buildFocusableItems[focusedItemIndex]
+
+        // Only handle these keys when focused on an epic
+        if (focusedItem.type === 'epic') {
+          if (e.key === 'ArrowRight') {
+            // Expand epic
+            e.preventDefault()
+            if (!expandedEpics.has(focusedItem.epicName)) {
+              setExpandedEpics((prev) => new Set([...prev, focusedItem.epicName]))
+              setLastFocusedEpicName(focusedItem.epicName)
+            }
+            return
+          }
+
+          if (e.key === 'ArrowLeft') {
+            // Collapse epic
+            e.preventDefault()
+            if (expandedEpics.has(focusedItem.epicName)) {
+              setExpandedEpics((prev) => {
+                const newSet = new Set(prev)
+                newSet.delete(focusedItem.epicName)
+                return newSet
+              })
+              setLastFocusedEpicName(focusedItem.epicName)
+            }
+            return
+          }
+
+          if (e.key === ' ') {
+            // Space bar - toggle expand/collapse
+            e.preventDefault()
+            const newExpanded = new Set(expandedEpics)
+            if (newExpanded.has(focusedItem.epicName)) {
+              newExpanded.delete(focusedItem.epicName)
+            } else {
+              newExpanded.add(focusedItem.epicName)
+            }
+            setExpandedEpics(newExpanded)
+            setLastFocusedEpicName(focusedItem.epicName)
+            return
+          }
+        }
+      }
+
+      // Handle arrow keys for navigation (Up/Down only)
       if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
+
+      // Don't navigate if we're in edit mode
+      if (editingEpicTitle || editingStoryTitle) return
 
       e.preventDefault()
       if (buildFocusableItems.length === 0) return
@@ -330,6 +527,14 @@ export default function ProjectDetailPage() {
 
       const focusedItem = buildFocusableItems[currentIndex]
       setFocusedItemIndex(currentIndex)
+
+      // Track last focused epic for focus maintenance
+      if (focusedItem.type === 'epic') {
+        setLastFocusedEpicName(focusedItem.epicName)
+      } else {
+        // When focusing on a story, track its parent epic
+        setLastFocusedEpicName(focusedItem.epicName)
+      }
 
       // Expand epic if needed
       if (focusedItem.type === 'epic' && !expandedEpics.has(focusedItem.epicName)) {
@@ -354,12 +559,25 @@ export default function ProjectDetailPage() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isFullscreen, focusedItemIndex, buildFocusableItems, epics, expandedEpics, selectEpicCallback, selectStoryCallback])
+  }, [isFullscreen, focusedItemIndex, buildFocusableItems, epics, expandedEpics, selectEpicCallback, selectStoryCallback, editingEpicTitle, editingStoryTitle, tempEpicTitle, tempStoryTitle, saveEpicTitle, saveStoryTitle])
+
+  // Maintain focus on epic when expanding/collapsing
+  useEffect(() => {
+    if (isFullscreen && lastFocusedEpicName && buildFocusableItems.length > 0) {
+      const newIndex = buildFocusableItems.findIndex(
+        (item) => item.type === 'epic' && item.epicName === lastFocusedEpicName
+      )
+      if (newIndex >= 0) {
+        setFocusedItemIndex(newIndex)
+      }
+    }
+  }, [expandedEpics, buildFocusableItems, isFullscreen, lastFocusedEpicName])
 
   // Reset focus when exiting fullscreen or when selection changes
   useEffect(() => {
     if (!isFullscreen) {
       setFocusedItemIndex(null)
+      setLastFocusedEpicName(null)
     } else {
       // Set initial focus based on current selection
       const currentIndex = buildFocusableItems.findIndex((item) => {
@@ -372,6 +590,12 @@ export default function ProjectDetailPage() {
         return false
       })
       setFocusedItemIndex(currentIndex >= 0 ? currentIndex : null)
+      if (currentIndex >= 0) {
+        const focusedItem = buildFocusableItems[currentIndex]
+        if (focusedItem.type === 'epic') {
+          setLastFocusedEpicName(focusedItem.epicName)
+        }
+      }
     }
   }, [isFullscreen, selection, buildFocusableItems])
 
@@ -1211,30 +1435,15 @@ export default function ProjectDetailPage() {
                                   type="text"
                                   value={tempEpicTitle}
                                   onChange={(e) => setTempEpicTitle(e.target.value)}
-                                  onBlur={async () => {
-                                    if (tempEpicTitle.trim() && tempEpicTitle !== epic.title) {
-                                      // Save the epic title
-                                      const updatedEpic = { ...epic, title: tempEpicTitle.trim() }
-                                      try {
-                                        const response = await fetch(`/api/projects/${projectName}/epics/${epic._name}`, {
-                                          method: 'PUT',
-                                          headers: { 'Content-Type': 'application/json' },
-                                          body: JSON.stringify(updatedEpic),
-                                        })
-                                        if (response.ok) {
-                                          await fetchEpics()
-                                        }
-                                      } catch (err) {
-                                        console.error('Failed to update epic title:', err)
-                                      }
-                                    }
-                                    setEditingEpicTitle(null)
-                                    setTempEpicTitle('')
+                                  onBlur={() => {
+                                    saveEpicTitle(epic._name, tempEpicTitle, epic.title)
                                   }}
                                   onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
-                                      e.currentTarget.blur()
+                                      e.preventDefault()
+                                      saveEpicTitle(epic._name, tempEpicTitle, epic.title)
                                     } else if (e.key === 'Escape') {
+                                      e.preventDefault()
                                       setEditingEpicTitle(null)
                                       setTempEpicTitle('')
                                     }
@@ -1323,30 +1532,15 @@ export default function ProjectDetailPage() {
                                               type="text"
                                               value={tempStoryTitle}
                                               onChange={(e) => setTempStoryTitle(e.target.value)}
-                                              onBlur={async () => {
-                                                if (tempStoryTitle.trim() && tempStoryTitle !== story.title) {
-                                                  // Save the story title
-                                                  const updatedStory = { ...story, title: tempStoryTitle.trim() }
-                                                  try {
-                                                    const response = await fetch(`/api/projects/${projectName}/epics/${epic._name}/stories/${story.id}`, {
-                                                      method: 'PUT',
-                                                      headers: { 'Content-Type': 'application/json' },
-                                                      body: JSON.stringify(updatedStory),
-                                                    })
-                                                    if (response.ok) {
-                                                      await fetchEpics()
-                                                    }
-                                                  } catch (err) {
-                                                    console.error('Failed to update story title:', err)
-                                                  }
-                                                }
-                                                setEditingStoryTitle(null)
-                                                setTempStoryTitle('')
+                                              onBlur={() => {
+                                                saveStoryTitle(epic._name, story.id, tempStoryTitle, story.title)
                                               }}
                                               onKeyDown={(e) => {
                                                 if (e.key === 'Enter') {
-                                                  e.currentTarget.blur()
+                                                  e.preventDefault()
+                                                  saveStoryTitle(epic._name, story.id, tempStoryTitle, story.title)
                                                 } else if (e.key === 'Escape') {
+                                                  e.preventDefault()
                                                   setEditingStoryTitle(null)
                                                   setTempStoryTitle('')
                                                 }
