@@ -2,13 +2,26 @@
   "name": "Healthcare Workflow Platform",
   "description": "Overall platform for hospital, patient, and workflow management.",
   "epicIds": [],
-  "defaultStatuses": ["todo", "in_progress", "blocked", "done"],
-  "defaultPriorities": ["low", "medium", "high", "critical"],
+  "defaultStatuses": [
+    "todo",
+    "in_progress",
+    "blocked",
+    "done"
+  ],
+  "defaultPriorities": [
+    "low",
+    "medium",
+    "high",
+    "critical"
+  ],
   "metadata": {
     "manager": "person-001",
-    "contributors": ["person-002", "person-003", "person-004", "person-005"],
+    "contributors": [
+      "person-003",
+      "person-004",
+      "person-005"
+    ],
     "repoUrl": "",
     "custom": {}
   }
 }
-
