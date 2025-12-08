@@ -92,7 +92,7 @@ export default function ProjectDetailPage() {
   const [storyTags, setStoryTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState('')
   const [storyPoints, setStoryPoints] = useState(0)
-  const [acceptanceCriteria, setAcceptanceCriteria] = useState<string[]>([''])
+  const [acceptanceCriteria, setAcceptanceCriteria] = useState<string[]>([])
   const [newCriterion, setNewCriterion] = useState('')
   const [files, setFiles] = useState<StoryFile[]>([])
 
@@ -184,7 +184,7 @@ export default function ProjectDetailPage() {
         setAcceptanceCriteria(
           story.acceptanceCriteria && story.acceptanceCriteria.length > 0
             ? story.acceptanceCriteria
-            : ['']
+            : []
         )
         setFiles(story.files || [])
         setHasChanges(false)
@@ -2987,13 +2987,20 @@ export default function ProjectDetailPage() {
                     </div>
                     {storyDescriptionPreview ? (
                       <div
-                        className="input-field min-h-[32rem] overflow-y-auto"
+                        className="input-field overflow-y-auto"
                         style={{
                           padding: '0.75rem',
                           lineHeight: '1.6',
                         }}
-                        dangerouslySetInnerHTML={{ __html: renderMarkdown(storyDescription) }}
-                      />
+                      >
+                        {storyDescription.trim() ? (
+                          <div dangerouslySetInnerHTML={{ __html: renderMarkdown(storyDescription) }} />
+                        ) : (
+                          <div className="text-text-secondary italic">
+                            {storyTitle ? `Please describe your story "${storyTitle}" here. Click on "Edit" to add a description.` : 'Please describe your story here. Click on "Edit" to add a description.'}
+                          </div>
+                        )}
+                      </div>
                     ) : (
                       <textarea
                         value={storyDescription}
@@ -3003,6 +3010,7 @@ export default function ProjectDetailPage() {
                         }}
                         rows={16}
                         className="input-field font-mono text-sm"
+                        placeholder={storyTitle ? `Please describe your story "${storyTitle}" here` : 'Please describe your story here'}
                       />
                     )}
                   </div>
