@@ -26,6 +26,8 @@ import {
   Eye,
   Edit,
   BarChart3,
+  Maximize2,
+  Minimize2,
 } from 'lucide-react'
 import type { Project, Epic, Story, StoryFile, Person } from '@/lib/types'
 
@@ -56,6 +58,7 @@ export default function ProjectDetailPage() {
   const [expandedEpics, setExpandedEpics] = useState<Set<string>>(new Set())
   const [saving, setSaving] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
 
   // Epic edit state
   const [epicTitle, setEpicTitle] = useState('')
@@ -897,11 +900,24 @@ export default function ProjectDetailPage() {
         </div>
 
         {/* Main Content: Accordion + Detail Panel */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className={`grid gap-6 ${isFullscreen ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-3'}`}>
           {/* Left: Epic/Story Accordion */}
-          <div className="lg:col-span-1 space-y-2">
+          <div className={`space-y-2 ${isFullscreen ? 'col-span-1' : 'lg:col-span-1'}`}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-text-primary">Epics & Stories</h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-semibold text-text-primary">Epics & Stories</h2>
+                <button
+                  onClick={() => setIsFullscreen(!isFullscreen)}
+                  className="p-1.5 rounded hover:bg-surface-hover transition-colors"
+                  title={isFullscreen ? "Exit focus mode" : "Focus mode"}
+                >
+                  {isFullscreen ? (
+                    <Minimize2 className="h-4 w-4 text-text-secondary" />
+                  ) : (
+                    <Maximize2 className="h-4 w-4 text-text-secondary" />
+                  )}
+                </button>
+              </div>
               {!showNewEpicForm && (
                 <Button
                   variant="outline"
@@ -1047,14 +1063,14 @@ export default function ProjectDetailPage() {
                     >
                       {/* Epic Row */}
                       <div
-                        className="p-4 cursor-pointer hover:bg-surface-muted transition-colors"
+                        className={`cursor-pointer hover:bg-surface-muted transition-colors ${isFullscreen ? 'p-2' : 'p-4'}`}
                         onClick={() => {
                           toggleEpic(epic._name)
                           selectEpic(epic)
                         }}
                       >
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className={`flex items-center flex-1 min-w-0 ${isFullscreen ? 'gap-2' : 'gap-3'}`}>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation()
@@ -1063,16 +1079,17 @@ export default function ProjectDetailPage() {
                               className="flex-shrink-0"
                             >
                               {isExpanded ? (
-                                <ChevronDown className="h-4 w-4 text-text-secondary" />
+                                <ChevronDown className={`text-text-secondary ${isFullscreen ? 'h-3 w-3' : 'h-4 w-4'}`} />
                               ) : (
-                                <ChevronRight className="h-4 w-4 text-text-secondary" />
+                                <ChevronRight className={`text-text-secondary ${isFullscreen ? 'h-3 w-3' : 'h-4 w-4'}`} />
                               )}
                             </button>
-                            <Target className="h-4 w-4 text-primary flex-shrink-0" />
+                            <Target className={`text-primary flex-shrink-0 ${isFullscreen ? 'h-3 w-3' : 'h-4 w-4'}`} />
                             <div className="flex-1 min-w-0">
-                              <div className="font-semibold text-text-primary truncate">
+                              <div className={`font-semibold text-text-primary truncate ${isFullscreen ? 'text-sm' : ''}`}>
                                 {epic.title}
                               </div>
+                              {!isFullscreen && (
                               <div className="flex items-center gap-2 mt-1">
                                 <Badge status={epic.status as any} />
                                 <span className="text-xs text-text-secondary">
@@ -1082,6 +1099,7 @@ export default function ProjectDetailPage() {
                                   {epicProgress}% done
                                 </span>
                               </div>
+                              )}
                             </div>
                           </div>
                           <div className="flex-shrink-0 ml-2 text-right">
@@ -1110,23 +1128,23 @@ export default function ProjectDetailPage() {
                                 return (
                                   <div
                                     key={story.id}
-                                    className={`p-3 pl-12 cursor-pointer hover:bg-surface-muted transition-colors border-l-4 border-b border-border-light last:border-b-0 ${
+                                    className={`cursor-pointer hover:bg-surface-muted transition-colors border-l-4 border-b border-border-light last:border-b-0 ${
                                       isStorySelected ? 'bg-primary/5' : ''
-                                    } ${storyStatusColor}`}
+                                    } ${storyStatusColor} ${isFullscreen ? 'p-2 pl-8' : 'p-3 pl-12'}`}
                                     onClick={(e) => {
                                       e.stopPropagation()
                                       selectStory(epic._name, story)
                                     }}
                                   >
                                     <div className="flex items-center justify-between">
-                                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                                      <div className={`flex items-center flex-1 min-w-0 ${isFullscreen ? 'gap-1.5' : 'gap-2'}`}>
                                         {getStatusIcon(story.status)}
-                                        <FileText className="h-3 w-3 text-text-secondary flex-shrink-0" />
+                                        <FileText className={`text-text-secondary flex-shrink-0 ${isFullscreen ? 'h-2.5 w-2.5' : 'h-3 w-3'}`} />
                                         <div className="flex-1 min-w-0">
-                                          <div className="text-sm font-medium text-text-primary truncate">
+                                          <div className={`font-medium text-text-primary truncate ${isFullscreen ? 'text-xs' : 'text-sm'}`}>
                                             {story.title}
                                           </div>
-                                          {story.manager && story.manager !== 'unassigned' && (
+                                          {!isFullscreen && story.manager && story.manager !== 'unassigned' && (
                                             <div className="flex items-center gap-1 mt-1">
                                               <User className="h-3 w-3 text-text-secondary" />
                                               <span className="text-xs text-text-secondary">
@@ -1135,7 +1153,18 @@ export default function ProjectDetailPage() {
                                             </div>
                                           )}
                                         </div>
+                                        {isFullscreen && (
+                                          <div className="flex items-center gap-2 text-xs text-text-secondary">
+                                            {story.manager && story.manager !== 'unassigned' && (
+                                              <span>{people.find(p => p.id === story.manager)?.name || story.manager}</span>
+                                            )}
+                                            {story.estimate?.storyPoints > 0 && (
+                                              <span>{story.estimate.storyPoints} pts</span>
+                                            )}
+                                          </div>
+                                        )}
                                       </div>
+                                      {!isFullscreen && (
                                       <div className="flex-shrink-0 ml-2">
                                         {story.estimate?.storyPoints > 0 && (
                                           <span className="text-xs text-text-secondary">
@@ -1143,6 +1172,7 @@ export default function ProjectDetailPage() {
                                           </span>
                                         )}
                                       </div>
+                                      )}
                                     </div>
                                   </div>
                                 )
@@ -1279,6 +1309,7 @@ export default function ProjectDetailPage() {
           </div>
 
           {/* Right: Editable Detail Panel */}
+          {!isFullscreen && (
           <div className="lg:col-span-2">
             {selection.type === null ? (
               <Card className="p-6">
@@ -2113,6 +2144,7 @@ export default function ProjectDetailPage() {
               </Card>
             ) : null}
           </div>
+          )}
         </div>
       </main>
     </div>

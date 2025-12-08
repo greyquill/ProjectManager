@@ -302,6 +302,7 @@ Currently minimal configuration is needed. Future additions may include:
 - [ ] Sprint planning and tracking
 - [ ] Team collaboration features
 - [ ] Export to other formats (CSV, PDF, Markdown)
+- [ ] Imoport Storied from xlsx file
 
 ## Contributing
 

@@ -68,7 +68,7 @@ export const StorySchema = z.object({
   manager: z.string().default('unassigned'), // Person ID
   createdAt: z.string().datetime().or(z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/)),
   updatedAt: z.string().datetime().or(z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/)),
-  
+
   // Date tracking
   plannedStartDate: z
     .string()
@@ -90,7 +90,7 @@ export const StorySchema = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/) // Accept date format YYYY-MM-DD
     .optional()
     .nullable(),
-  
+
   dueDate: z
     .string()
     .datetime()
