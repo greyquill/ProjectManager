@@ -961,13 +961,13 @@ export default function ProjectDetailPage() {
                   </div>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-6">
 
                   {/* Summary */}
-                  <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">
+                  <div className="pt-2">
+                    <h3 className="text-base font-semibold text-text-primary mb-3 border-b border-border-light pb-2">
                       Summary
-                    </label>
+                    </h3>
                     <input
                       type="text"
                       value={epicSummary}
@@ -1066,11 +1066,11 @@ export default function ProjectDetailPage() {
                   </div>
 
                   {/* Description */}
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <label className="block text-sm font-medium text-text-primary">
+                  <div className="pt-2">
+                    <div className="flex items-center justify-between mb-3 border-b border-border-light pb-2">
+                      <h3 className="text-base font-semibold text-text-primary">
                         Description
-                      </label>
+                      </h3>
                       <button
                         type="button"
                         onClick={() => setEpicDescriptionPreview(!epicDescriptionPreview)}
@@ -1198,13 +1198,13 @@ export default function ProjectDetailPage() {
                   </div>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-6">
 
                   {/* Summary */}
-                  <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">
+                  <div className="pt-2">
+                    <h3 className="text-base font-semibold text-text-primary mb-3 border-b border-border-light pb-2">
                       Summary
-                    </label>
+                    </h3>
                     <input
                       type="text"
                       value={storySummary}
@@ -1358,11 +1358,11 @@ export default function ProjectDetailPage() {
                   </div>
 
                   {/* Description */}
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <label className="block text-sm font-medium text-text-primary">
+                  <div className="pt-2">
+                    <div className="flex items-center justify-between mb-3 border-b border-border-light pb-2">
+                      <h3 className="text-base font-semibold text-text-primary">
                         Description
-                      </label>
+                      </h3>
                       <button
                         type="button"
                         onClick={() => setStoryDescriptionPreview(!storyDescriptionPreview)}
@@ -1404,10 +1404,10 @@ export default function ProjectDetailPage() {
                   </div>
 
                   {/* Acceptance Criteria */}
-                  <div>
-                    <label className="block text-sm font-medium text-text-primary mb-2">
+                  <div className="pt-2">
+                    <h3 className="text-base font-semibold text-text-primary mb-3 border-b border-border-light pb-2">
                       Acceptance Criteria
-                    </label>
+                    </h3>
                     <div className="space-y-2">
                       {acceptanceCriteria.map((criterion, index) => (
                         <div key={index} className="flex gap-2">
@@ -1443,11 +1443,11 @@ export default function ProjectDetailPage() {
                   </div>
 
                   {/* Files */}
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="block text-sm font-medium text-text-primary">
+                  <div className="pt-2">
+                    <div className="flex items-center justify-between mb-3 border-b border-border-light pb-2">
+                      <h3 className="text-base font-semibold text-text-primary">
                         Files
-                      </label>
+                      </h3>
                       <Button variant="outline" size="sm" onClick={addFile}>
                         <Plus className="h-4 w-4 mr-1" />
                         Add
