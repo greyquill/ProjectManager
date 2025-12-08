@@ -128,20 +128,14 @@ export default function ProjectDetailPage() {
   // Quick epic creation in focus mode
   const [quickEpicTitle, setQuickEpicTitle] = useState('')
 
-  useEffect(() => {
-    if (projectName) {
-      fetchProject()
-      fetchEpics()
-      fetchPeople()
-    }
-  }, [projectName])
+  // Will be set up after function declarations
 
   // Derive selection from URL params
-  const selection: Selection = epicNameFromUrl && storyIdFromUrl
+  const selection: Selection = useMemo(() => epicNameFromUrl && storyIdFromUrl
     ? { type: 'story', epicName: epicNameFromUrl, storyId: storyIdFromUrl }
     : epicNameFromUrl
     ? { type: 'epic', epicName: epicNameFromUrl }
-    : { type: null }
+    : { type: null }, [epicNameFromUrl, storyIdFromUrl])
 
   // Update form state when URL params change
   useEffect(() => {
@@ -190,9 +184,10 @@ export default function ProjectDetailPage() {
         setHasChanges(false)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [epicNameFromUrl, storyIdFromUrl, epics])
 
-  async function fetchPeople() {
+  const fetchPeople = useCallback(async () => {
     try {
       const response = await fetch(`/api/projects/${projectName}/people`)
       const result = await response.json()
@@ -203,9 +198,9 @@ export default function ProjectDetailPage() {
     } catch (err) {
       console.error('Failed to load people:', err)
     }
-  }
+  }, [projectName])
 
-  async function fetchProject() {
+  const fetchProject = useCallback(async () => {
     try {
       const response = await fetch(`/api/projects/${projectName}`)
       const result = await response.json()
@@ -221,9 +216,9 @@ export default function ProjectDetailPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load project')
     }
-  }
+  }, [projectName])
 
-  async function fetchEpics() {
+  const fetchEpics = useCallback(async () => {
     try {
       const response = await fetch(`/api/projects/${projectName}/epics`)
       const result = await response.json()
@@ -248,20 +243,29 @@ export default function ProjectDetailPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [projectName])
+
+  // Load data when projectName changes
+  useEffect(() => {
+    if (projectName) {
+      fetchProject()
+      fetchEpics()
+      fetchPeople()
+    }
+  }, [projectName, fetchProject, fetchEpics, fetchPeople])
 
   function clearSelection() {
     router.push(`/projects/${projectName}`)
     setHasChanges(false)
   }
 
-  function navigateToEpic(epicName: string) {
+  const navigateToEpic = useCallback((epicName: string) => {
     router.push(`/projects/${projectName}?epic=${encodeURIComponent(epicName)}`)
-  }
+  }, [router, projectName])
 
-  function navigateToStory(epicName: string, storyId: string) {
+  const navigateToStory = useCallback((epicName: string, storyId: string) => {
     router.push(`/projects/${projectName}?epic=${encodeURIComponent(epicName)}&story=${encodeURIComponent(storyId)}`)
-  }
+  }, [router, projectName])
 
   function toggleEpic(epicName: string) {
     const newExpanded = new Set(expandedEpics)
@@ -316,11 +320,11 @@ export default function ProjectDetailPage() {
 
   const selectEpicCallback = useCallback((epic: Epic & { _name: string; stories: Story[] }) => {
     navigateToEpic(epic._name)
-  }, [projectName])
+  }, [navigateToEpic])
 
   const selectStoryCallback = useCallback((epicName: string, story: Story) => {
     navigateToStory(epicName, story.id)
-  }, [projectName])
+  }, [navigateToStory])
 
   // Save epic title function
   const saveEpicTitle = useCallback(async (epicName: string, newTitle: string, currentTitle: string) => {
@@ -698,7 +702,7 @@ export default function ProjectDetailPage() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isFullscreen, focusedItemIndex, buildFocusableItems, epics, expandedEpics, selectEpicCallback, selectStoryCallback, editingEpicTitle, editingStoryTitle, tempEpicTitle, tempStoryTitle, saveEpicTitle, saveStoryTitle, showNewStoryForm, showNewEpicForm, lastFocusedEpicName])
+  }, [isFullscreen, focusedItemIndex, buildFocusableItems, epics, expandedEpics, selectEpicCallback, selectStoryCallback, editingEpicTitle, editingStoryTitle, tempEpicTitle, tempStoryTitle, saveEpicTitle, saveStoryTitle, showNewStoryForm, showNewEpicForm, lastFocusedEpicName, extractStoryTitle, formatStoryTitle, project?.metadata?.manager, selection.epicName, selection.storyId, selection.type])
 
   // Separate ESC handler that works in both fullscreen and normal mode
   useEffect(() => {
@@ -784,7 +788,7 @@ export default function ProjectDetailPage() {
         setFocusedItemIndex(0) // Default to first item
       }
     }
-  }, [isFullscreen])
+  }, [isFullscreen, buildFocusableItems, focusedItemIndex, selection.epicName, selection.storyId, selection.type])
 
   // Close forms when navigating away (selection changes to a different epic/story)
   const [previousSelectionKey, setPreviousSelectionKey] = useState<string | null>(null)
@@ -818,7 +822,7 @@ export default function ProjectDetailPage() {
     }
 
     setPreviousSelectionKey(currentSelectionKey)
-  }, [selection, showNewStoryForm, showNewEpicForm])
+  }, [selection, showNewStoryForm, showNewEpicForm, previousSelectionKey])
 
   // Helper functions for status and priority colors
   function getStatusColor(status: 'todo' | 'in_progress' | 'blocked' | 'done'): string {

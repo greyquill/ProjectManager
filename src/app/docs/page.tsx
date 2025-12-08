@@ -1028,12 +1028,12 @@ export default function DocsPage() {
                   General Navigation Tips
                 </h3>
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
-                  <li>Focus automatically wraps around: pressing Down on the last item ("+ Add Epic") moves to the first epic, and pressing Up on the first epic moves to "+ Add Epic"</li>
-                  <li>When an epic is expanded, its stories and the "+" icon row are included in the navigation sequence</li>
+                  <li>Focus automatically wraps around: pressing Down on the last item (&quot;+ Add Epic&quot;) moves to the first epic, and pressing Up on the first epic moves to &quot;+ Add Epic&quot;</li>
+                  <li>When an epic is expanded, its stories and the &quot;+&quot; icon row are included in the navigation sequence</li>
                   <li>Epics automatically expand when you navigate to them (if they have stories)</li>
                   <li>Focus is maintained on the same epic when expanding/collapsing it</li>
                   <li>Arrow key navigation is disabled while editing titles or when forms are open to prevent conflicts</li>
-                  <li>After creating a story, focus automatically returns to the "+" icon row for quick creation of another story</li>
+                  <li>After creating a story, focus automatically returns to the &quot;+&quot; icon row for quick creation of another story</li>
                   <li>All keyboard actions work seamlessly with the visual interface</li>
                 </ul>
 

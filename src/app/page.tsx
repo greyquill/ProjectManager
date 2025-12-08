@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { FolderKanban, Lock } from 'lucide-react'
 
@@ -11,12 +11,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false)
   const [checking, setChecking] = useState(true)
 
-  useEffect(() => {
-    // Check if already authenticated
-    checkAuth()
-  }, [])
-
-  async function checkAuth() {
+  const checkAuth = useCallback(async () => {
     try {
       const response = await fetch('/api/auth/check')
       const result = await response.json()
@@ -30,7 +25,12 @@ export default function HomePage() {
     } finally {
       setChecking(false)
     }
-  }
+  }, [router])
+
+  useEffect(() => {
+    // Check if already authenticated
+    checkAuth()
+  }, [checkAuth])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -208,7 +208,7 @@ export default function HomePage() {
               <h3 className="text-lg font-semibold mb-2">Team Performance Tracking</h3>
               <p className="text-text-secondary text-sm">
                 Monitor individual contributions, story points, and team velocity.
-                Make data-driven decisions to optimize your team's productivity.
+                Make data-driven decisions to optimize your team&apos;s productivity.
               </p>
             </div>
           </div>
