@@ -8,7 +8,38 @@ import { parseProject, createProject } from '@/lib/types'
  */
 export async function GET() {
   try {
-    const projectNames = await pmRepository.listProjects()
+    let projectNames = await pmRepository.listProjects()
+
+    // If list is empty, try to discover projects by checking common project names
+    // This is a fallback in case the list wasn't properly maintained
+    if (projectNames.length === 0) {
+      // Try to read known project names that might exist
+      // Common project names to check (this is a temporary workaround)
+      const commonNames = ['umami-healthcare', 'healthcare-platform']
+      const discoveredProjects: string[] = []
+
+      for (const name of commonNames) {
+        try {
+          if (await pmRepository.projectExists(name)) {
+            discoveredProjects.push(name)
+            // Add to list for future
+            try {
+              const project = await pmRepository.readProject(name)
+              await pmRepository.writeProject(name, project) // This will update the list
+            } catch {
+              // Skip if can't read
+            }
+          }
+        } catch {
+          // Skip if check fails
+        }
+      }
+
+      if (discoveredProjects.length > 0) {
+        projectNames = discoveredProjects
+      }
+    }
+
     const projects = await Promise.all(
       projectNames.map(async (name) => {
         try {

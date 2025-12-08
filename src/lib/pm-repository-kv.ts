@@ -150,7 +150,10 @@ export async function writeProject(projectName: string, project: Project): Promi
   const key = getProjectKey(projectName)
   parseProject(project)
 
-  // Update projects list
+  // Write the project first
+  await kv.set(key, project)
+
+  // Update projects list - ensure this always succeeds
   try {
     const projectsList = await kv.get(getProjectsListKey())
     const updatedList = Array.isArray(projectsList) ? projectsList : []
@@ -159,17 +162,35 @@ export async function writeProject(projectName: string, project: Project): Promi
       await kv.set(getProjectsListKey(), updatedList)
     }
   } catch (error) {
-    // If projects list doesn't exist, create it
-    await kv.set(getProjectsListKey(), [projectName])
+    // If projects list doesn't exist or update failed, create/overwrite it
+    console.warn('Failed to update projects list, creating new list:', error)
+    try {
+      await kv.set(getProjectsListKey(), [projectName])
+    } catch (setError) {
+      console.error('Failed to create projects list:', setError)
+      // Don't throw - the project was written successfully, list can be rebuilt later
+    }
   }
-
-  await kv.set(key, project)
 }
 
 export async function listProjects(): Promise<string[]> {
   try {
     const projectsList = await kv.get(getProjectsListKey())
-    return Array.isArray(projectsList) ? projectsList : []
+    if (Array.isArray(projectsList) && projectsList.length > 0) {
+      return projectsList
+    }
+
+    // If list is empty or doesn't exist, try to discover projects by scanning keys
+    // This is a fallback in case the list wasn't properly maintained
+    try {
+      // Note: Redis doesn't support wildcard searches directly in Vercel KV
+      // So we'll just return the list (even if empty) and let the writeProject fix it
+      // For now, return empty array - the list should be maintained by writeProject
+      return []
+    } catch (error) {
+      console.warn('Error discovering projects, returning empty array:', error)
+      return []
+    }
   } catch (error) {
     // If database is empty or key doesn't exist, return empty array
     console.warn('Error reading projects list from Redis, returning empty array:', error)
