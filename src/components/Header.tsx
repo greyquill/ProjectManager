@@ -26,6 +26,12 @@ export function Header() {
             >
               People
             </Link>
+            <Link
+              href="/docs"
+              className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+            >
+              Docs
+            </Link>
           </nav>
         </div>
       </div>
