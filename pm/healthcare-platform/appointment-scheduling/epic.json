@@ -2,11 +2,11 @@
   "title": "Appointment Scheduling System",
   "summary": "Build a comprehensive appointment scheduling system for patients and healthcare providers.",
   "description": "This epic covers the development of a full-featured appointment scheduling system that allows:\n- Patients to book appointments online\n- Healthcare providers to manage their schedules\n- Automated reminders and notifications\n- Calendar integration\n- Rescheduling and cancellation workflows\n\n## Goals\n- Reduce no-show rates through automated reminders\n- Improve patient experience with easy booking\n- Optimize provider schedules\n- Support multiple appointment types\n\n## Constraints\n- Must handle timezone conversions\n- Should support recurring appointments\n- Must integrate with patient management system",
-  "status": "done",
+  "status": "todo",
   "priority": "high",
   "manager": "person-001",
   "createdAt": "2025-01-05T09:30:00Z",
-  "updatedAt": "2025-12-08T11:30:13.648Z",
+  "updatedAt": "2025-12-08T12:48:55.901Z",
   "targetRelease": "2025-03-01",
   "storyIds": [
     "STORY-125"
