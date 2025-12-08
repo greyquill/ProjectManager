@@ -1,0 +1,30 @@
+{
+  "name": "project-manager",
+  "version": "1.0.0",
+  "description": "AI-native project management tool with file-based storage",
+  "private": true,
+  "workspaces": [
+    "apps/pm-app"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/pm-app",
+    "build": "npm run build --workspace=apps/pm-app",
+    "start": "npm run start --workspace=apps/pm-app",
+    "lint": "npm run lint --workspaces",
+    "type-check": "npm run type-check --workspaces",
+    "clean": "npm run clean --workspaces --if-present"
+  },
+  "keywords": [
+    "project-management",
+    "ai-native",
+    "nextjs",
+    "typescript"
+  ],
+  "author": "Development Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
+
