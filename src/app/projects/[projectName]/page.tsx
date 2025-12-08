@@ -467,7 +467,7 @@ export default function ProjectDetailPage() {
               e.preventDefault()
               // Check if button is not disabled
               if (!button.hasAttribute('disabled') && !button.classList.contains('opacity-50')) {
-                button.click()
+                (button as HTMLButtonElement).click()
               }
               return
             }
@@ -1128,22 +1128,25 @@ export default function ProjectDetailPage() {
       return
     }
 
-    try {
-      setCreatingStory(true)
-      setError(null)
+    const now = new Date().toISOString()
+    const title = newStoryTitle.trim()
+    const summary = isFullscreen ? '' : newStorySummary.trim()
+    const manager = isFullscreen && newStoryManager === 'unassigned' && project?.metadata?.manager && project.metadata.manager !== 'unassigned'
+      ? project.metadata.manager
+      : newStoryManager
 
-      const now = new Date().toISOString()
-      // Generate a temporary ID for the story (will be replaced by API)
-      // For now, we'll let the API generate the ID and update the title after creation
-      const storyData = {
-        title: newStoryTitle.trim(),
-        summary: isFullscreen ? '' : newStorySummary.trim(),
+    // In focus mode, do optimistic update for instant feedback
+    if (isFullscreen) {
+      // Generate a temporary ID for optimistic update
+      const tempId = `TEMP-${Date.now()}`
+      const optimisticStory: Story = {
+        id: tempId,
+        title: title, // Will be formatted with ID prefix after API response
+        summary: summary,
         description: '',
         status: newStoryStatus,
         priority: newStoryPriority,
-        manager: isFullscreen && newStoryManager === 'unassigned' && project?.metadata?.manager && project.metadata.manager !== 'unassigned'
-          ? project.metadata.manager
-          : newStoryManager,
+        manager: manager,
         createdAt: now,
         updatedAt: now,
         dueDate: null,
@@ -1162,70 +1165,190 @@ export default function ProjectDetailPage() {
         },
       }
 
-      const response = await fetch(
-        `/api/projects/${projectName}/epics/${epicName}/stories`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(storyData),
-        }
+      // Optimistically add the story to the UI immediately
+      setEpics(prevEpics =>
+        prevEpics.map(epic =>
+          epic._name === epicName
+            ? { ...epic, stories: [...epic.stories, optimisticStory] }
+            : epic
+        )
       )
 
-      const result = await response.json()
+      // Immediately clear form and maintain focus
+      setNewStoryTitle('')
+      setNewStorySummary('')
+      setNewStoryStatus('todo')
+      setNewStoryPriority('medium')
+      setNewStoryManager('unassigned')
+      // Keep form open for quick creation
+      // Focus will be maintained on the "+" row automatically
 
-      if (result.success) {
-        // Update the story title with the ID prefix
-        if (result.data && result.data.id) {
-          const formattedTitle = formatStoryTitle(result.data.id, newStoryTitle.trim())
-          if (formattedTitle !== result.data.title) {
-            // Update the story with the formatted title
-            await fetch(`/api/projects/${projectName}/epics/${epicName}/stories/${result.data.id}`, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ ...result.data, title: formattedTitle }),
-            })
+      // Make API call in background (non-blocking)
+      const storyData = {
+        title: title,
+        summary: summary,
+        description: '',
+        status: newStoryStatus,
+        priority: newStoryPriority,
+        manager: manager,
+        createdAt: now,
+        updatedAt: now,
+        dueDate: null,
+        tags: [],
+        acceptanceCriteria: [],
+        estimate: {
+          storyPoints: 0,
+        },
+        relatedStories: [],
+        mentions: [],
+        files: [],
+        metadata: {
+          createdBy: 'user',
+          lastEditedBy: 'user',
+          custom: {},
+        },
+      }
+
+      // Fire and forget - handle response asynchronously
+      fetch(`/api/projects/${projectName}/epics/${epicName}/stories`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(storyData),
+      })
+        .then(response => response.json())
+        .then(result => {
+          if (result.success && result.data && result.data.id) {
+            // Update the story title with the ID prefix
+            const formattedTitle = formatStoryTitle(result.data.id, title)
+            const finalStory = {
+              ...result.data,
+              title: formattedTitle !== result.data.title ? formattedTitle : result.data.title,
+            }
+
+            // Replace optimistic story with real story
+            setEpics(prevEpics =>
+              prevEpics.map(epic =>
+                epic._name === epicName
+                  ? {
+                      ...epic,
+                      stories: epic.stories.map(story =>
+                        story.id === tempId ? finalStory : story
+                      ),
+                    }
+                  : epic
+              )
+            )
+
+            // Update title if needed
+            if (formattedTitle !== result.data.title) {
+              fetch(`/api/projects/${projectName}/epics/${epicName}/stories/${result.data.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(finalStory),
+              }).catch(err => console.error('Failed to update story title:', err))
+            }
+          } else {
+            // Rollback on error
+            setEpics(prevEpics =>
+              prevEpics.map(epic =>
+                epic._name === epicName
+                  ? { ...epic, stories: epic.stories.filter(story => story.id !== tempId) }
+                  : epic
+              )
+            )
+            setError(result.error || 'Failed to create story')
           }
+        })
+        .catch(err => {
+          // Rollback on error
+          setEpics(prevEpics =>
+            prevEpics.map(epic =>
+              epic._name === epicName
+                ? { ...epic, stories: epic.stories.filter(story => story.id !== tempId) }
+                : epic
+            )
+          )
+          setError(err instanceof Error ? err.message : 'Failed to create story')
+        })
+    } else {
+      // Normal mode - use traditional approach
+      try {
+        setCreatingStory(true)
+        setError(null)
+
+        const storyData = {
+          title: title,
+          summary: summary,
+          description: '',
+          status: newStoryStatus,
+          priority: newStoryPriority,
+          manager: manager,
+          createdAt: now,
+          updatedAt: now,
+          dueDate: null,
+          tags: [],
+          acceptanceCriteria: [],
+          estimate: {
+            storyPoints: 0,
+          },
+          relatedStories: [],
+          mentions: [],
+          files: [],
+          metadata: {
+            createdBy: 'user',
+            lastEditedBy: 'user',
+            custom: {},
+          },
         }
 
-        // Reset form
-        setNewStoryTitle('')
-        setNewStorySummary('')
-        setNewStoryStatus('todo')
-        setNewStoryPriority('medium')
-        setNewStoryManager('unassigned')
-        setShowNewStoryForm(null)
+        const response = await fetch(
+          `/api/projects/${projectName}/epics/${epicName}/stories`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(storyData),
+          }
+        )
 
-        // Refresh epics to get the new story
-        await fetchEpics()
+        const result = await response.json()
 
-        // In focus mode, return focus to the "+" icon row instead of selecting the new story
-        if (isFullscreen) {
-          // Keep the form open and clear the title for quick creation of another story
-          setShowNewStoryForm(epicName)
-          setNewStoryTitle('')
-          // Use setTimeout to ensure buildFocusableItems is updated after state changes
-          setTimeout(() => {
-            // Find the newStory item index for this epic
-            const newStoryIndex = buildFocusableItems.findIndex(
-              (item) => item.type === 'newStory' && item.epicName === epicName
-            )
-            if (newStoryIndex >= 0) {
-              setFocusedItemIndex(newStoryIndex)
+        if (result.success) {
+          // Update the story title with the ID prefix
+          if (result.data && result.data.id) {
+            const formattedTitle = formatStoryTitle(result.data.id, title)
+            if (formattedTitle !== result.data.title) {
+              // Update the story with the formatted title
+              await fetch(`/api/projects/${projectName}/epics/${epicName}/stories/${result.data.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...result.data, title: formattedTitle }),
+              })
             }
-          }, 0)
-        } else {
-          // In normal mode, select the newly created story
+          }
+
+          // Reset form
+          setNewStoryTitle('')
+          setNewStorySummary('')
+          setNewStoryStatus('todo')
+          setNewStoryPriority('medium')
+          setNewStoryManager('unassigned')
+          setShowNewStoryForm(null)
+
+          // Refresh epics to get the new story
+          await fetchEpics()
+
+          // Select the newly created story
           if (result.data && result.data.id) {
             navigateToStory(epicName, result.data.id)
           }
+        } else {
+          setError(result.error || 'Failed to create story')
         }
-      } else {
-        setError(result.error || 'Failed to create story')
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to create story')
+      } finally {
+        setCreatingStory(false)
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create story')
-    } finally {
-      setCreatingStory(false)
     }
   }
 

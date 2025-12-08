@@ -212,11 +212,30 @@ The analytics dashboard provides real-time insights including:
 
 ### Creating Stories
 
-**Manual Creation:**
+**In Focus Mode (Simplified & Instant):**
+1. Navigate to the "+" icon row under an expanded epic
+2. Press Enter to open the story creation form
+3. Type the story title (only field required)
+4. Press Enter to create, or ESC to cancel
+5. Focus automatically returns to "+" icon for quick creation of another story
+
+**Focus Mode Features:**
+- **Optimistic Updates**: Stories appear instantly in the UI with zero perceived delay. The API call happens in the background, and the story is updated with the real ID when the server responds.
+- **Simplified Form**: Only title field is shown (summary, priority, and manager fields are hidden)
+- **Smart Defaults**: Priority defaults to "Medium", manager defaults to the project manager (if available)
+- **Rapid Creation**: Form stays open after creation, allowing you to create multiple stories in quick succession without interruption
+
+**In Normal Mode (Full Form):**
 1. Open an epic
-2. Click "New Story"
-3. Fill in story details, acceptance criteria, etc.
-4. Save to create `/pm/{project-name}/{epic-name}/STORY-{id}.json`
+2. Click "New Story" (the "+" button at the bottom of the epic)
+3. Fill in story details (title and summary required)
+4. Set priority and manager
+5. Click "Create Story"
+
+**Story ID Format:**
+- Stories are assigned sequential IDs: STORY-001, STORY-002, etc.
+- Story titles always display with ID prefix: `[STORY-XXX] Story Title`
+- The prefix is hidden when editing for easier text manipulation
 
 **AI-Powered Creation:**
 1. Open an epic
@@ -261,10 +280,20 @@ ProjectManager/
 ```
 
 ### Data Flow
-1. UI components call API routes (`/api/projects`, `/api/epics`, `/api/stories`)
+1. UI components call API routes (`/api/projects`, `/api/epics`, `/api/stories`, `/api/people`, `/api/auth`)
 2. API routes use `pmRepository` to read/write JSON files
 3. All data validated with Zod schemas
-4. JSON files committed to Git for version control
+4. Authentication handled via httpOnly cookies and middleware
+5. JSON files committed to Git for version control
+
+### Optimistic Updates (Focus Mode)
+In Focus Mode, story creation uses **optimistic updates** for zero-delay user experience:
+- Stories appear instantly in the UI with a temporary ID (`TEMP-{timestamp}`)
+- Form clears immediately, allowing rapid creation of multiple stories
+- API call happens asynchronously in the background (non-blocking)
+- When the server responds, the temporary story is replaced with the real one (proper ID, formatted title)
+- If the API call fails, the optimistic story is automatically rolled back and an error is shown
+- This ensures the UI feels instant and responsive, even with network latency
 
 ## Development
 

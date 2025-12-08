@@ -467,7 +467,7 @@ export default function DocsPage() {
                 <p className="text-text-secondary mb-4">
                   To create a new epic within a project:
                 </p>
-                
+
                 <h3 className="text-xl font-semibold text-text-primary mb-3 mt-6">
                   In Focus Mode (Quick Creation)
                 </h3>
@@ -499,7 +499,7 @@ export default function DocsPage() {
                   <li>Set the priority and manager</li>
                   <li>Click &quot;Create Epic&quot;</li>
                 </ol>
-                
+
                 <p className="text-text-secondary mb-4">
                   New epics are automatically assigned a sequential ID (EPIC-0001, EPIC-0002, etc.) and start with
                   &quot;To Do&quot; status. In Focus Mode, epic titles display with the ID prefix: <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">[EPIC-XXXX] Epic Title</code>.
@@ -532,7 +532,7 @@ export default function DocsPage() {
                 <p className="text-text-secondary mb-4">
                   To create a new story within an epic:
                 </p>
-                
+
                 <h3 className="text-xl font-semibold text-text-primary mb-3 mt-6">
                   In Focus Mode (Simplified)
                 </h3>
@@ -548,9 +548,10 @@ export default function DocsPage() {
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
                   <li>Only the title field is shown (summary, priority, and manager fields are hidden)</li>
                   <li>Priority defaults to "Medium"</li>
-                  <li>Manager defaults to the project manager</li>
+                  <li>Manager defaults to the project manager (if a project manager is assigned)</li>
                   <li>No Create/Cancel buttons - use Enter to create, ESC to cancel</li>
                   <li>After creation, focus automatically returns to the "+" icon for quick creation of another story</li>
+                  <li><strong>Optimistic Updates:</strong> Stories appear instantly in the UI with zero perceived delay. The story is added to the list immediately, and the API call happens in the background. When the server responds, the story is updated with the real ID. This allows for rapid, uninterrupted story creation.</li>
                 </ul>
 
                 <h3 className="text-xl font-semibold text-text-primary mb-3 mt-6">
@@ -563,7 +564,7 @@ export default function DocsPage() {
                   <li>Set the priority and manager</li>
                   <li>Click &quot;Create Story&quot;</li>
                 </ol>
-                
+
                 <p className="text-text-secondary mb-4">
                   New stories are automatically assigned a sequential ID (STORY-001, STORY-002, etc.) and start with
                   &quot;To Do&quot; status. Story titles always display with the ID prefix: <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">[STORY-XXX] Story Title</code>. You can add more details like acceptance criteria and files after creation.
