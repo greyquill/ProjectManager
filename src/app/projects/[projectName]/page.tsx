@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Header } from '@/components/Header'
@@ -59,6 +59,11 @@ export default function ProjectDetailPage() {
   const [saving, setSaving] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [focusedItemIndex, setFocusedItemIndex] = useState<number | null>(null)
+  const [editingEpicTitle, setEditingEpicTitle] = useState<string | null>(null)
+  const [editingStoryTitle, setEditingStoryTitle] = useState<{ epicName: string; storyId: string } | null>(null)
+  const [tempEpicTitle, setTempEpicTitle] = useState('')
+  const [tempStoryTitle, setTempStoryTitle] = useState('')
 
   // Epic edit state
   const [epicTitle, setEpicTitle] = useState('')
@@ -268,6 +273,107 @@ export default function ProjectDetailPage() {
   function selectStory(epicName: string, story: Story) {
     navigateToStory(epicName, story.id)
   }
+
+  // Build flat list of focusable items (epics and stories) for keyboard navigation
+  type FocusableItem = { type: 'epic'; epicName: string; index: number } | { type: 'story'; epicName: string; storyId: string; index: number }
+
+  const buildFocusableItems = useMemo((): FocusableItem[] => {
+    const items: FocusableItem[] = []
+    let globalIndex = 0
+
+    epics.forEach((epic) => {
+      // Add epic
+      items.push({ type: 'epic', epicName: epic._name, index: globalIndex++ })
+
+      // Add stories if epic is expanded
+      if (expandedEpics.has(epic._name)) {
+        epic.stories.forEach((story) => {
+          items.push({ type: 'story', epicName: epic._name, storyId: story.id, index: globalIndex++ })
+        })
+      }
+    })
+
+    return items
+  }, [epics, expandedEpics])
+
+  const selectEpicCallback = useCallback((epic: Epic & { _name: string; stories: Story[] }) => {
+    navigateToEpic(epic._name)
+  }, [projectName])
+
+  const selectStoryCallback = useCallback((epicName: string, story: Story) => {
+    navigateToStory(epicName, story.id)
+  }, [projectName])
+
+  // Handle keyboard navigation in focus mode
+  useEffect(() => {
+    if (!isFullscreen) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
+
+      e.preventDefault()
+      if (buildFocusableItems.length === 0) return
+
+      let currentIndex = focusedItemIndex
+
+      // If no item is focused, start with first item
+      if (currentIndex === null) {
+        currentIndex = 0
+      } else {
+        // Navigate up or down
+        if (e.key === 'ArrowDown') {
+          currentIndex = (currentIndex + 1) % buildFocusableItems.length
+        } else {
+          currentIndex = currentIndex === 0 ? buildFocusableItems.length - 1 : currentIndex - 1
+        }
+      }
+
+      const focusedItem = buildFocusableItems[currentIndex]
+      setFocusedItemIndex(currentIndex)
+
+      // Expand epic if needed
+      if (focusedItem.type === 'epic' && !expandedEpics.has(focusedItem.epicName)) {
+        setExpandedEpics((prev) => new Set([...prev, focusedItem.epicName]))
+      }
+
+      // Navigate to the focused item
+      if (focusedItem.type === 'epic') {
+        const epic = epics.find((e) => e._name === focusedItem.epicName)
+        if (epic) {
+          selectEpicCallback(epic)
+        }
+      } else {
+        const story = epics
+          .find((e) => e._name === focusedItem.epicName)
+          ?.stories.find((s) => s.id === focusedItem.storyId)
+        if (story) {
+          selectStoryCallback(focusedItem.epicName, story)
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isFullscreen, focusedItemIndex, buildFocusableItems, epics, expandedEpics, selectEpicCallback, selectStoryCallback])
+
+  // Reset focus when exiting fullscreen or when selection changes
+  useEffect(() => {
+    if (!isFullscreen) {
+      setFocusedItemIndex(null)
+    } else {
+      // Set initial focus based on current selection
+      const currentIndex = buildFocusableItems.findIndex((item) => {
+        if (selection.type === 'epic' && item.type === 'epic' && item.epicName === selection.epicName) {
+          return true
+        }
+        if (selection.type === 'story' && item.type === 'story' && item.epicName === selection.epicName && item.storyId === selection.storyId) {
+          return true
+        }
+        return false
+      })
+      setFocusedItemIndex(currentIndex >= 0 ? currentIndex : null)
+    }
+  }, [isFullscreen, selection, buildFocusableItems])
 
   // Helper functions for status and priority colors
   function getStatusColor(status: 'todo' | 'in_progress' | 'blocked' | 'done'): string {
@@ -907,8 +1013,11 @@ export default function ProjectDetailPage() {
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-semibold text-text-primary">Epics & Stories</h2>
                 <button
-                  onClick={() => setIsFullscreen(!isFullscreen)}
-                  className="p-1.5 rounded hover:bg-surface-hover transition-colors"
+                  onClick={(e) => {
+                    setIsFullscreen(!isFullscreen)
+                    e.currentTarget.blur() // Remove focus after click
+                  }}
+                  className="p-1.5 rounded hover:bg-surface-hover transition-colors focus:outline-none"
                   title={isFullscreen ? "Exit focus mode" : "Focus mode"}
                 >
                   {isFullscreen ? (
@@ -1054,19 +1163,29 @@ export default function ProjectDetailPage() {
 
                   const statusColor = getStatusColor(epic.status as 'todo' | 'in_progress' | 'blocked' | 'done')
 
+                  const epicFocusIndex = buildFocusableItems.findIndex(
+                    (item) => item.type === 'epic' && item.epicName === epic._name
+                  )
+                  const isFocused = isFullscreen && focusedItemIndex === epicFocusIndex
+
                   return (
                     <Card
                       key={epic._name}
                       className={`overflow-hidden border-l-4 ${
                         isSelected ? 'ring-2 ring-primary' : ''
-                      } ${statusColor}`}
+                      } ${statusColor} ${isFocused ? 'ring-2 ring-blue-500 ring-offset-2' : ''}`}
                     >
                       {/* Epic Row */}
                       <div
-                        className={`cursor-pointer hover:bg-surface-muted transition-colors ${isFullscreen ? 'p-2' : 'p-4'}`}
+                        className={`cursor-pointer hover:bg-surface-muted transition-colors ${isFullscreen ? 'p-2' : 'p-4'} ${isFocused ? 'bg-blue-50' : ''}`}
                         onClick={() => {
                           toggleEpic(epic._name)
                           selectEpic(epic)
+                        }}
+                        ref={(el) => {
+                          if (isFocused && el) {
+                            el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+                          }
                         }}
                       >
                         <div className="flex items-center justify-between">
@@ -1076,7 +1195,8 @@ export default function ProjectDetailPage() {
                                 e.stopPropagation()
                                 toggleEpic(epic._name)
                               }}
-                              className="flex-shrink-0"
+                              className="flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded"
+                              tabIndex={isFullscreen ? 0 : -1}
                             >
                               {isExpanded ? (
                                 <ChevronDown className={`text-text-secondary ${isFullscreen ? 'h-3 w-3' : 'h-4 w-4'}`} />
@@ -1086,9 +1206,56 @@ export default function ProjectDetailPage() {
                             </button>
                             <Target className={`text-primary flex-shrink-0 ${isFullscreen ? 'h-3 w-3' : 'h-4 w-4'}`} />
                             <div className="flex-1 min-w-0">
-                              <div className={`font-semibold text-text-primary truncate ${isFullscreen ? 'text-sm' : ''}`}>
-                                {epic.title}
-                              </div>
+                              {isFullscreen && editingEpicTitle === epic._name ? (
+                                <input
+                                  type="text"
+                                  value={tempEpicTitle}
+                                  onChange={(e) => setTempEpicTitle(e.target.value)}
+                                  onBlur={async () => {
+                                    if (tempEpicTitle.trim() && tempEpicTitle !== epic.title) {
+                                      // Save the epic title
+                                      const updatedEpic = { ...epic, title: tempEpicTitle.trim() }
+                                      try {
+                                        const response = await fetch(`/api/projects/${projectName}/epics/${epic._name}`, {
+                                          method: 'PUT',
+                                          headers: { 'Content-Type': 'application/json' },
+                                          body: JSON.stringify(updatedEpic),
+                                        })
+                                        if (response.ok) {
+                                          await fetchEpics()
+                                        }
+                                      } catch (err) {
+                                        console.error('Failed to update epic title:', err)
+                                      }
+                                    }
+                                    setEditingEpicTitle(null)
+                                    setTempEpicTitle('')
+                                  }}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      e.currentTarget.blur()
+                                    } else if (e.key === 'Escape') {
+                                      setEditingEpicTitle(null)
+                                      setTempEpicTitle('')
+                                    }
+                                  }}
+                                  className="w-full font-semibold text-text-primary text-sm bg-transparent border-b-2 border-blue-500 focus:outline-none px-1"
+                                  autoFocus
+                                />
+                              ) : (
+                                <div
+                                  className={`font-semibold text-text-primary truncate ${isFullscreen ? 'text-sm' : ''} ${isFullscreen ? 'cursor-text hover:bg-blue-50 px-1 rounded' : ''}`}
+                                  onClick={(e) => {
+                                    if (isFullscreen) {
+                                      e.stopPropagation()
+                                      setEditingEpicTitle(epic._name)
+                                      setTempEpicTitle(epic.title)
+                                    }
+                                  }}
+                                >
+                                  {epic.title}
+                                </div>
+                              )}
                               {!isFullscreen && (
                               <div className="flex items-center gap-2 mt-1">
                                 <Badge status={epic.status as any} />
@@ -1125,15 +1292,25 @@ export default function ProjectDetailPage() {
                                   selection.storyId === story.id
                                 const storyStatusColor = getStatusColor(story.status as 'todo' | 'in_progress' | 'blocked' | 'done')
 
+                                const storyFocusIndex = buildFocusableItems.findIndex(
+                                  (item) => item.type === 'story' && item.epicName === epic._name && item.storyId === story.id
+                                )
+                                const isStoryFocused = isFullscreen && focusedItemIndex === storyFocusIndex
+
                                 return (
                                   <div
                                     key={story.id}
                                     className={`cursor-pointer hover:bg-surface-muted transition-colors border-l-4 border-b border-border-light last:border-b-0 ${
                                       isStorySelected ? 'bg-primary/5' : ''
-                                    } ${storyStatusColor} ${isFullscreen ? 'p-2 pl-8' : 'p-3 pl-12'}`}
+                                    } ${storyStatusColor} ${isFullscreen ? 'p-2 pl-8' : 'p-3 pl-12'} ${isStoryFocused ? 'ring-2 ring-blue-500 ring-offset-2 bg-blue-50' : ''}`}
                                     onClick={(e) => {
                                       e.stopPropagation()
                                       selectStory(epic._name, story)
+                                    }}
+                                    ref={(el) => {
+                                      if (isStoryFocused && el) {
+                                        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+                                      }
                                     }}
                                   >
                                     <div className="flex items-center justify-between">
@@ -1141,9 +1318,56 @@ export default function ProjectDetailPage() {
                                         {getStatusIcon(story.status)}
                                         <FileText className={`text-text-secondary flex-shrink-0 ${isFullscreen ? 'h-2.5 w-2.5' : 'h-3 w-3'}`} />
                                         <div className="flex-1 min-w-0">
-                                          <div className={`font-medium text-text-primary truncate ${isFullscreen ? 'text-xs' : 'text-sm'}`}>
-                                            {story.title}
-                                          </div>
+                                          {isFullscreen && editingStoryTitle?.epicName === epic._name && editingStoryTitle?.storyId === story.id ? (
+                                            <input
+                                              type="text"
+                                              value={tempStoryTitle}
+                                              onChange={(e) => setTempStoryTitle(e.target.value)}
+                                              onBlur={async () => {
+                                                if (tempStoryTitle.trim() && tempStoryTitle !== story.title) {
+                                                  // Save the story title
+                                                  const updatedStory = { ...story, title: tempStoryTitle.trim() }
+                                                  try {
+                                                    const response = await fetch(`/api/projects/${projectName}/epics/${epic._name}/stories/${story.id}`, {
+                                                      method: 'PUT',
+                                                      headers: { 'Content-Type': 'application/json' },
+                                                      body: JSON.stringify(updatedStory),
+                                                    })
+                                                    if (response.ok) {
+                                                      await fetchEpics()
+                                                    }
+                                                  } catch (err) {
+                                                    console.error('Failed to update story title:', err)
+                                                  }
+                                                }
+                                                setEditingStoryTitle(null)
+                                                setTempStoryTitle('')
+                                              }}
+                                              onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                  e.currentTarget.blur()
+                                                } else if (e.key === 'Escape') {
+                                                  setEditingStoryTitle(null)
+                                                  setTempStoryTitle('')
+                                                }
+                                              }}
+                                              className="w-full font-medium text-text-primary text-xs bg-transparent border-b-2 border-blue-500 focus:outline-none px-1"
+                                              autoFocus
+                                            />
+                                          ) : (
+                                            <div
+                                              className={`font-medium text-text-primary truncate ${isFullscreen ? 'text-xs' : 'text-sm'} ${isFullscreen ? 'cursor-text hover:bg-blue-50 px-1 rounded' : ''}`}
+                                              onClick={(e) => {
+                                                if (isFullscreen) {
+                                                  e.stopPropagation()
+                                                  setEditingStoryTitle({ epicName: epic._name, storyId: story.id })
+                                                  setTempStoryTitle(story.title)
+                                                }
+                                              }}
+                                            >
+                                              {story.title}
+                                            </div>
+                                          )}
                                           {!isFullscreen && story.manager && story.manager !== 'unassigned' && (
                                             <div className="flex items-center gap-1 mt-1">
                                               <User className="h-3 w-3 text-text-secondary" />
