@@ -33,9 +33,9 @@ Vercel has moved KV/Redis to the Marketplace. We support both **Upstash Redis** 
 1. Search for **"Vercel KV"** in the Marketplace
 2. Follow the same steps as above
 
-### Step 2: Environment Variables (Automatic)
+### Step 2: Verify Environment Variables
 
-Vercel will automatically add the required environment variables to your project:
+After installing Redis from the Marketplace, Vercel should automatically add the required environment variables. However, you need to verify they're set correctly:
 
 **For Upstash Redis:**
 - `UPSTASH_REDIS_REST_URL`
@@ -46,13 +46,25 @@ Vercel will automatically add the required environment variables to your project
 - `KV_REST_API_TOKEN`
 - `KV_REST_API_READ_ONLY_TOKEN`
 
-These are automatically available in your Next.js API routes - no manual configuration needed!
+**To verify:**
+1. Go to your Vercel project dashboard
+2. Navigate to **Settings** → **Environment Variables**
+3. Check that the variables are listed
+4. **IMPORTANT**: Make sure they're available for **Production** environment (not just Preview/Development)
+5. If they're missing or not set for Production:
+   - Click **Add** to add them manually
+   - Or reconnect the Redis integration and ensure it's linked to Production
 
-The application automatically detects which provider you're using and configures itself accordingly.
+### Step 3: Redeploy
 
-### Step 3: Deploy
+**CRITICAL**: After adding or updating environment variables, you **must redeploy** your project:
 
-The environment variables are automatically available in your Next.js API routes. No code changes needed!
+1. Go to **Deployments** tab
+2. Click the **"..."** menu on your latest deployment
+3. Select **"Redeploy"**
+4. Or push a new commit to trigger a new deployment
+
+Environment variables are only available to new deployments - existing deployments won't have access to newly added variables!
 
 ## Free Tier Limits
 
@@ -109,6 +121,29 @@ async function migrate() {
 
 ## Troubleshooting
 
+### Health Check Shows "no_env_vars"
+
+If `/api/health` shows `"redisStatus": "no_env_vars"`:
+
+1. **Check Environment Variables in Vercel**:
+   - Go to **Settings** → **Environment Variables**
+   - Verify `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` are present (or `KV_REST_API_URL` and `KV_REST_API_TOKEN`)
+   - **Ensure they're enabled for "Production"** (check the Production checkbox)
+
+2. **Redeploy Your Project**:
+   - Environment variables are only available to new deployments
+   - Go to **Deployments** → Click **"..."** → **"Redeploy"**
+   - Or push a new commit
+
+3. **Verify Integration is Connected**:
+   - Go to **Settings** → **Integrations**
+   - Ensure the Redis/Upstash integration shows as "Connected"
+   - If not, reconnect it
+
+4. **Check the Health Endpoint**:
+   - Visit `https://your-domain.vercel.app/api/health`
+   - Look at `envVarDetails.availableEnvVarNames` to see what Redis-related variables are actually available
+
 ### Error: "Vercel KV not available, falling back to file system"
 
 This warning appears when:
@@ -123,6 +158,16 @@ This warning appears when:
 This error occurs when trying to write files on Vercel's serverless functions.
 
 **Solution**: Ensure Vercel KV is properly configured. The app should automatically use KV in production.
+
+### Error: "Redis client error: Missing required environment variables"
+
+This means the environment variables are not available at runtime.
+
+**Solution**:
+1. Verify variables are set in Vercel (Settings → Environment Variables)
+2. Ensure they're enabled for Production environment
+3. **Redeploy your project** (this is critical - existing deployments don't get new env vars)
+4. Check `/api/health` endpoint to see what variables are actually available
 
 ## Verification
 

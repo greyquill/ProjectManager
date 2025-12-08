@@ -28,39 +28,53 @@ function getKVClient() {
   const hasVercelKV = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN)
 
   try {
-    // Try Vercel KV first if those env vars are present (most common case)
-    if (hasVercelKV) {
-      const vercelKv = require('@vercel/kv')
-      kvClient = vercelKv.kv
-      return kvClient
-    }
-
-    // Try Upstash Redis if those env vars are present (Marketplace integration)
+    // Prioritize Upstash Redis (Marketplace - recommended) over Vercel KV (legacy)
+    // Upstash Redis from Marketplace uses UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN
     if (hasUpstash) {
-      const { Redis } = require('@upstash/redis')
-      kvClient = Redis.fromEnv()
-      return kvClient
+      try {
+        const { Redis } = require('@upstash/redis')
+        kvClient = Redis.fromEnv()
+        return kvClient
+      } catch (error: any) {
+        console.warn('Failed to initialize Upstash Redis, trying Vercel KV:', error?.message)
+        // Fall through to try Vercel KV
+      }
     }
 
-    // If neither is explicitly available, try Vercel KV first (more common)
+    // Fall back to Vercel KV (legacy) if Upstash is not available
+    if (hasVercelKV) {
+      try {
+        const vercelKv = require('@vercel/kv')
+        kvClient = vercelKv.kv
+        return kvClient
+      } catch (error: any) {
+        console.warn('Failed to initialize Vercel KV:', error?.message)
+        // Fall through to try Upstash without env vars
+      }
+    }
+
+    // Last resort: try Upstash Redis without explicit env var check
+    // (Redis.fromEnv() will check for the env vars itself)
     try {
-      const vercelKv = require('@vercel/kv')
-      kvClient = vercelKv.kv
-      return kvClient
-    } catch {
-      // Then try Upstash Redis
       const { Redis } = require('@upstash/redis')
       kvClient = Redis.fromEnv()
       return kvClient
+    } catch (error: any) {
+      // If this fails, we'll throw a comprehensive error below
     }
+
+    // If we get here, neither client could be initialized
+    throw new Error(
+      `Neither Upstash Redis nor Vercel KV could be initialized. ` +
+      `Upstash env vars (UPSTASH_REDIS_REST_URL/UPSTASH_REDIS_REST_TOKEN): ${hasUpstash ? 'present' : 'missing'}. ` +
+      `Vercel KV env vars (KV_REST_API_URL/KV_REST_API_TOKEN): ${hasVercelKV ? 'present' : 'missing'}. ` +
+      `Please ensure Upstash Redis is installed from the Vercel Marketplace and environment variables are set.`
+    )
   } catch (error: any) {
     // Store error for better debugging
     initError = new Error(
-      `Redis/KV client initialization failed. ` +
-      `Vercel KV env vars: ${hasVercelKV ? 'present' : 'missing'}, ` +
-      `Upstash env vars: ${hasUpstash ? 'present' : 'missing'}. ` +
-      `Error: ${error?.message || String(error)}. ` +
-      `Please ensure Redis/KV is properly configured in Vercel.`
+      `Redis/KV client initialization failed: ${error?.message || String(error)}. ` +
+      `Please ensure Upstash Redis is installed from the Vercel Marketplace and environment variables are configured.`
     )
     throw initError
   }
