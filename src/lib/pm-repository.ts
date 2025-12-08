@@ -42,6 +42,13 @@ function getProjectDir(projectName: string): string {
 }
 
 /**
+ * Get global people file path
+ */
+function getGlobalPeopleFilePath(): string {
+  return path.join(PM_DATA_DIR, 'people.json')
+}
+
+/**
  * Get epic directory path
  */
 function getEpicDir(projectName: string, epicName: string): string {
@@ -246,7 +253,7 @@ export async function peopleExists(projectName: string): Promise<boolean> {
 }
 
 /**
- * Get all people from all projects
+ * Get all people from all projects (DEPRECATED - use readGlobalPeople instead)
  */
 export async function getAllPeople(): Promise<Array<{ person: Person; projectName: string }>> {
   const projectNames = await listProjects()
@@ -264,6 +271,49 @@ export async function getAllPeople(): Promise<Array<{ person: Person; projectNam
   }
 
   return allPeople
+}
+
+/**
+ * Read global people list
+ */
+export async function readGlobalPeople(): Promise<Person[]> {
+  const filePath = getGlobalPeopleFilePath()
+  try {
+    return await readJsonFile(filePath, parsePeople)
+  } catch (error) {
+    // If file doesn't exist, return empty array
+    if (error instanceof Error && error.message.includes('File not found')) {
+      return []
+    }
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return []
+    }
+    throw error
+  }
+}
+
+/**
+ * Write global people list
+ */
+export async function writeGlobalPeople(people: Person[]): Promise<void> {
+  const filePath = getGlobalPeopleFilePath()
+  // Validate before writing
+  parsePeople(people)
+  await ensureDirectory(PM_DATA_DIR)
+  await writeJsonFile(filePath, people)
+}
+
+/**
+ * Check if global people file exists
+ */
+export async function globalPeopleExists(): Promise<boolean> {
+  try {
+    const filePath = getGlobalPeopleFilePath()
+    await fs.access(filePath)
+    return true
+  } catch {
+    return false
+  }
 }
 
 /**
@@ -641,12 +691,17 @@ export const pmRepository = {
   projectExists,
   deleteProject,
 
-  // People
+  // People (per-project - deprecated)
   readPeople,
   writePeople,
   peopleExists,
   getAllPeople,
   checkPersonUsage,
+
+  // People (global)
+  readGlobalPeople,
+  writeGlobalPeople,
+  globalPeopleExists,
 
   // Epics
   readEpic,

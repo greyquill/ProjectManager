@@ -53,7 +53,6 @@ export default function PeoplePage() {
     roleInProject: '',
   })
   const [saving, setSaving] = useState(false)
-  const [selectedProject, setSelectedProject] = useState<string>('')
 
   useEffect(() => {
     fetchPeople()
@@ -72,7 +71,12 @@ export default function PeoplePage() {
       const result = await response.json()
 
       if (result.success) {
-        setPeople(result.data || [])
+        // Convert to expected format (global people don't have projectName)
+        const peopleWithProject = (result.data || []).map((person: any) => ({
+          person,
+          projectName: 'global',
+        }))
+        setPeople(peopleWithProject)
       } else {
         setError(result.error || 'Failed to load people')
       }
@@ -111,7 +115,6 @@ export default function PeoplePage() {
       designation: '',
       roleInProject: '',
     })
-    setSelectedProject('')
   }
 
   function cancelCreating() {
@@ -123,15 +126,9 @@ export default function PeoplePage() {
       designation: '',
       roleInProject: '',
     })
-    setSelectedProject('')
   }
 
   async function savePerson() {
-    if (!selectedProject) {
-      setError('Please select a project')
-      return
-    }
-
     if (!formData.name || !formData.email) {
       setError('Name and email are required')
       return
@@ -152,8 +149,8 @@ export default function PeoplePage() {
         roleInProject: formData.roleInProject,
       }
 
-      // Get existing people for the project
-      const response = await fetch(`/api/projects/${selectedProject}/people`)
+      // Get existing global people list
+      const response = await fetch('/api/people')
       const result = await response.json()
       const existingPeople = result.success ? result.data : []
 
@@ -163,11 +160,11 @@ export default function PeoplePage() {
         ? existingPeople.map((p: Person, i: number) => i === existingIndex ? newPerson : p)
         : [...existingPeople, newPerson]
 
-      // Save to project
-      const saveResponse = await fetch(`/api/projects/${selectedProject}/people`, {
-        method: 'POST',
+      // Save to global people list
+      const saveResponse = await fetch('/api/people', {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedPeople),
+        body: JSON.stringify({ people: updatedPeople }),
       })
 
       const saveResult = await saveResponse.json()
@@ -176,7 +173,7 @@ export default function PeoplePage() {
         await fetchPeople()
         cancelCreating()
         // Select the newly created person
-        const newPersonWithProject = { person: newPerson, projectName: selectedProject }
+        const newPersonWithProject = { person: newPerson, projectName: 'global' }
         selectPerson(newPersonWithProject)
       } else {
         setError(saveResult.error || 'Failed to save person')
@@ -219,17 +216,7 @@ export default function PeoplePage() {
     }
   }
 
-  // Get unique list of projects for dropdown
-  const projects = Array.from(new Set(people.map((p) => p.projectName)))
-
-  // Group people by project for display
-  const peopleByProject = people.reduce((acc, p) => {
-    if (!acc[p.projectName]) {
-      acc[p.projectName] = []
-    }
-    acc[p.projectName].push(p)
-    return acc
-  }, {} as Record<string, PersonWithProject[]>)
+  // All people are now global, no need for project grouping
 
   if (loading) {
     return (
@@ -270,40 +257,32 @@ export default function PeoplePage() {
             <Card className="p-4">
               <h2 className="text-lg font-semibold text-text-primary mb-4">People</h2>
               <div className="space-y-2 max-h-[calc(100vh-300px)] overflow-y-auto">
-                {Object.entries(peopleByProject).map(([projectName, projectPeople]) => (
-                  <div key={projectName} className="mb-4">
-                    <div className="text-xs font-medium text-text-secondary mb-2 uppercase">
-                      {projectName}
-                    </div>
-                    {projectPeople.map((p) => {
-                      const isSelected = selectedPerson?.person.id === p.person.id &&
-                        selectedPerson?.projectName === p.projectName
-                      return (
-                        <div
-                          key={`${p.person.id}-${p.projectName}`}
-                          className={`p-3 rounded-lg cursor-pointer transition-colors mb-2 ${
-                            isSelected
-                              ? 'bg-primary/10 border border-primary/20'
-                              : 'bg-surface-muted hover:bg-surface'
-                          }`}
-                          onClick={() => selectPerson(p)}
-                        >
-                          <div className="flex items-center gap-2">
-                            <UserCircle className="h-4 w-4 text-text-secondary flex-shrink-0" />
-                            <div className="flex-1 min-w-0">
-                              <div className="text-sm font-medium text-text-primary truncate">
-                                {p.person.name}
-                              </div>
-                              <div className="text-xs text-text-secondary truncate">
-                                {p.person.designation || 'No designation'}
-                              </div>
-                            </div>
+                {people.map((p) => {
+                  const isSelected = selectedPerson?.person.id === p.person.id
+                  return (
+                    <div
+                      key={p.person.id}
+                      className={`p-3 rounded-lg cursor-pointer transition-colors mb-2 ${
+                        isSelected
+                          ? 'bg-primary/10 border border-primary/20'
+                          : 'bg-surface-muted hover:bg-surface'
+                      }`}
+                      onClick={() => selectPerson(p)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <UserCircle className="h-4 w-4 text-text-secondary flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium text-text-primary truncate">
+                            {p.person.name}
+                          </div>
+                          <div className="text-xs text-text-secondary truncate">
+                            {p.person.designation || 'No designation'}
                           </div>
                         </div>
-                      )
-                    })}
-                  </div>
-                ))}
+                      </div>
+                    </div>
+                  )
+                })}
                 {people.length === 0 && !isCreating && (
                   <div className="text-center py-8 text-text-secondary text-sm">
                     No people found. Click &quot;Add Person&quot; to create one.
@@ -325,25 +304,6 @@ export default function PeoplePage() {
                 </div>
 
                 <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">
-                      Project <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={selectedProject}
-                      onChange={(e) => setSelectedProject(e.target.value)}
-                      className="input-field"
-                      required
-                    >
-                      <option value="">Select a project</option>
-                      {projects.map((proj) => (
-                        <option key={proj} value={proj}>
-                          {proj}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
                   <div>
                     <label className="block text-sm font-medium text-text-primary mb-1">
                       Name <span className="text-red-500">*</span>

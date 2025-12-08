@@ -25,6 +25,13 @@ export default function ProjectsPage() {
   const [error, setError] = useState<string | null>(null)
   const [loggingOut, setLoggingOut] = useState(false)
 
+  // New project modal state
+  const [showNewProjectModal, setShowNewProjectModal] = useState(false)
+  const [newProjectName, setNewProjectName] = useState('')
+  const [newProjectDescription, setNewProjectDescription] = useState('')
+  const [creating, setCreating] = useState(false)
+  const [createError, setCreateError] = useState<string | null>(null)
+
   useEffect(() => {
     fetchProjects()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -42,6 +49,57 @@ export default function ProjectsPage() {
       console.error('Logout failed:', err)
       setLoggingOut(false)
     }
+  }
+
+  async function handleCreateProject(e: React.FormEvent) {
+    e.preventDefault()
+    setCreateError(null)
+    setCreating(true)
+
+    try {
+      // Convert project name to folder name (kebab-case)
+      const folderName = newProjectName
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '')
+
+      const response = await fetch('/api/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: newProjectName.trim(),
+          description: newProjectDescription.trim(),
+          folderName,
+        }),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        // Close modal and reset form
+        setShowNewProjectModal(false)
+        setNewProjectName('')
+        setNewProjectDescription('')
+        // Refresh projects list
+        await fetchProjects()
+      } else {
+        setCreateError(result.error || 'Failed to create project')
+      }
+    } catch (err) {
+      setCreateError(err instanceof Error ? err.message : 'Failed to create project')
+    } finally {
+      setCreating(false)
+    }
+  }
+
+  function closeModal() {
+    setShowNewProjectModal(false)
+    setNewProjectName('')
+    setNewProjectDescription('')
+    setCreateError(null)
   }
 
   async function fetchProjects() {
@@ -104,7 +162,14 @@ export default function ProjectsPage() {
           })
         )
 
-        setProjects(projectsWithMetrics)
+        // Sort projects by createdAt (oldest first)
+        const sortedProjects = projectsWithMetrics.sort((a: any, b: any) => {
+          const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0
+          const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0
+          return aDate - bDate
+        })
+
+        setProjects(sortedProjects)
       } else {
         setError(result.error || 'Failed to load projects')
       }
@@ -151,7 +216,11 @@ export default function ProjectsPage() {
               Manage your projects, epics, and stories
             </p>
           </div>
-          <Button variant="primary" size="lg">
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={() => setShowNewProjectModal(true)}
+          >
             <Plus className="h-4 w-4 mr-2" />
             New Project
           </Button>
@@ -244,6 +313,76 @@ export default function ProjectsPage() {
                 </Link>
               )
             })}
+          </div>
+        )}
+
+        {/* New Project Modal */}
+        {showNewProjectModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+              <div className="p-6">
+                <h2 className="text-2xl font-bold text-text-primary mb-4">
+                  Create New Project
+                </h2>
+
+                <form onSubmit={handleCreateProject}>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-text-primary mb-1">
+                        Project Name *
+                      </label>
+                      <input
+                        type="text"
+                        value={newProjectName}
+                        onChange={(e) => setNewProjectName(e.target.value)}
+                        className="w-full px-3 py-2 border border-border-light rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        placeholder="e.g., Healthcare Platform"
+                        required
+                        autoFocus
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-text-primary mb-1">
+                        Description
+                      </label>
+                      <textarea
+                        value={newProjectDescription}
+                        onChange={(e) => setNewProjectDescription(e.target.value)}
+                        className="w-full px-3 py-2 border border-border-light rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        placeholder="Brief description of the project"
+                        rows={3}
+                      />
+                    </div>
+
+                    {createError && (
+                      <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <p className="text-sm text-red-600">{createError}</p>
+                      </div>
+                    )}
+
+                    <div className="flex gap-3 pt-4">
+                      <Button
+                        type="submit"
+                        variant="primary"
+                        className="flex-1"
+                        disabled={creating || !newProjectName.trim()}
+                      >
+                        {creating ? 'Creating...' : 'Create Project'}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={closeModal}
+                        disabled={creating}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
         )}
       </main>

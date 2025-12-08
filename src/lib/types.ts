@@ -166,6 +166,9 @@ export const ProjectSchema = z.object({
   ]),
   defaultPriorities: z.array(PrioritySchema).default(['low', 'medium', 'high', 'critical']),
 
+  createdAt: z.string().datetime().or(z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/)).optional(),
+  updatedAt: z.string().datetime().or(z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/)).optional(),
+
   metadata: ProjectMetadataSchema.default({
     manager: 'unassigned',
     contributors: [],
@@ -318,12 +321,15 @@ export function createEpic(overrides: Partial<Epic> = {}): Epic {
  * Create a new project with defaults
  */
 export function createProject(overrides: Partial<Project> = {}): Project {
+  const now = generateTimestamp()
   return {
     name: '',
     description: '',
     epicIds: [],
     defaultStatuses: ['todo', 'in_progress', 'blocked', 'done'],
     defaultPriorities: ['low', 'medium', 'high', 'critical'],
+    createdAt: now,
+    updatedAt: now,
     metadata: {
       manager: 'unassigned',
       contributors: [],

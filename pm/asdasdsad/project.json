@@ -1,0 +1,24 @@
+{
+  "name": "asdasdsad",
+  "description": "sdfas",
+  "epicIds": [],
+  "defaultStatuses": [
+    "todo",
+    "in_progress",
+    "blocked",
+    "done"
+  ],
+  "defaultPriorities": [
+    "low",
+    "medium",
+    "high",
+    "critical"
+  ],
+  "createdAt": "2024-12-08T14:30:00Z",
+  "updatedAt": "2024-12-08T14:30:00Z",
+  "metadata": {
+    "manager": "person-004",
+    "contributors": [],
+    "custom": {}
+  }
+}
