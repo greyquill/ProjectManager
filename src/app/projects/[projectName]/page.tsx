@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Header } from '@/components/Header'
 import { Card } from '@/components/Card'
@@ -38,7 +38,12 @@ type Selection = {
 export default function ProjectDetailPage() {
   const params = useParams()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const projectName = params.projectName as string
+
+  // Get epic and story from URL params
+  const epicNameFromUrl = searchParams.get('epic')
+  const storyIdFromUrl = searchParams.get('story')
 
   const [project, setProject] = useState<Project | null>(null)
   const [epics, setEpics] = useState<(Epic & { _name: string; stories: Story[] })[]>([])
@@ -46,7 +51,6 @@ export default function ProjectDetailPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [expandedEpics, setExpandedEpics] = useState<Set<string>>(new Set())
-  const [selection, setSelection] = useState<Selection>({ type: null })
   const [saving, setSaving] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
 
@@ -87,6 +91,51 @@ export default function ProjectDetailPage() {
       fetchPeople()
     }
   }, [projectName])
+
+  // Derive selection from URL params
+  const selection: Selection = epicNameFromUrl && storyIdFromUrl
+    ? { type: 'story', epicName: epicNameFromUrl, storyId: storyIdFromUrl }
+    : epicNameFromUrl
+    ? { type: 'epic', epicName: epicNameFromUrl }
+    : { type: null }
+
+  // Update form state when URL params change
+  useEffect(() => {
+    if (selection.type === 'epic' && selection.epicName && epics.length > 0) {
+      const epic = epics.find((e) => e._name === selection.epicName)
+      if (epic) {
+        setEpicTitle(epic.title)
+        setEpicSummary(epic.summary)
+        setEpicDescription(epic.description || '')
+        setEpicStatus(epic.status)
+        setEpicPriority(epic.priority)
+        setEpicManager(epic.manager || '')
+        setEpicTargetRelease(epic.targetRelease || '')
+        setHasChanges(false)
+      }
+    } else if (selection.type === 'story' && selection.epicName && selection.storyId && epics.length > 0) {
+      const epic = epics.find((e) => e._name === selection.epicName)
+      const story = epic?.stories.find((s) => s.id === selection.storyId)
+      if (story) {
+        setStoryTitle(story.title)
+        setStorySummary(story.summary)
+        setStoryDescription(story.description || '')
+        setStoryStatus(story.status)
+        setStoryPriority(story.priority)
+        setStoryManager(story.manager || '')
+        setStoryDueDate(story.dueDate || '')
+        setStoryTags(story.tags || [])
+        setStoryPoints(story.estimate?.storyPoints || 0)
+        setAcceptanceCriteria(
+          story.acceptanceCriteria && story.acceptanceCriteria.length > 0
+            ? story.acceptanceCriteria
+            : ['']
+        )
+        setFiles(story.files || [])
+        setHasChanges(false)
+      }
+    }
+  }, [epicNameFromUrl, storyIdFromUrl, epics])
 
   async function fetchPeople() {
     try {
@@ -147,8 +196,16 @@ export default function ProjectDetailPage() {
   }
 
   function clearSelection() {
-    setSelection({ type: null })
+    router.push(`/projects/${projectName}`)
     setHasChanges(false)
+  }
+
+  function navigateToEpic(epicName: string) {
+    router.push(`/projects/${projectName}?epic=${encodeURIComponent(epicName)}`)
+  }
+
+  function navigateToStory(epicName: string, storyId: string) {
+    router.push(`/projects/${projectName}?epic=${encodeURIComponent(epicName)}&story=${encodeURIComponent(storyId)}`)
   }
 
   function toggleEpic(epicName: string) {
@@ -162,35 +219,11 @@ export default function ProjectDetailPage() {
   }
 
   function selectEpic(epic: Epic & { _name: string; stories: Story[] }) {
-    setSelection({ type: 'epic', epicName: epic._name })
-    setEpicTitle(epic.title)
-    setEpicSummary(epic.summary)
-    setEpicDescription(epic.description || '')
-    setEpicStatus(epic.status)
-    setEpicPriority(epic.priority)
-    setEpicManager(epic.manager || '')
-    setEpicTargetRelease(epic.targetRelease || '')
-    setHasChanges(false)
+    navigateToEpic(epic._name)
   }
 
   function selectStory(epicName: string, story: Story) {
-    setSelection({ type: 'story', epicName, storyId: story.id })
-    setStoryTitle(story.title)
-    setStorySummary(story.summary)
-    setStoryDescription(story.description || '')
-    setStoryStatus(story.status)
-    setStoryPriority(story.priority)
-    setStoryManager(story.manager || '')
-    setStoryDueDate(story.dueDate || '')
-    setStoryTags(story.tags || [])
-    setStoryPoints(story.estimate?.storyPoints || 0)
-    setAcceptanceCriteria(
-      story.acceptanceCriteria && story.acceptanceCriteria.length > 0
-        ? story.acceptanceCriteria
-        : ['']
-    )
-    setFiles(story.files || [])
-    setHasChanges(false)
+    navigateToStory(epicName, story.id)
   }
 
   async function saveEpic() {
@@ -760,6 +793,13 @@ export default function ProjectDetailPage() {
               <Card className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex-1">
+                    {/* Breadcrumb */}
+                    {selection.epicName && (
+                      <div className="text-sm text-text-secondary mb-2">
+                        {selection.epicName}
+                      </div>
+                    )}
+                    {/* Title as heading */}
                     <input
                       type="text"
                       value={epicTitle}
@@ -954,10 +994,16 @@ export default function ProjectDetailPage() {
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex-1">
                     {/* Breadcrumb */}
-                    {selection.epicName && (
+                    {selection.epicName && selection.storyId && (
                       <div className="text-sm text-text-secondary mb-2">
-                        {epics.find(e => e._name === selection.epicName)?.title || selection.epicName}
+                        <button
+                          onClick={() => navigateToEpic(selection.epicName!)}
+                          className="hover:text-text-primary transition-colors"
+                        >
+                          {selection.epicName}
+                        </button>
                         <span className="mx-2">/</span>
+                        <span>{selection.storyId}</span>
                       </div>
                     )}
                     {/* Title as heading */}
