@@ -12,25 +12,43 @@ The detection is based on:
 - `process.env.VERCEL === '1'` (automatically set by Vercel)
 - `process.env.KV_REST_API_URL` (Vercel KV environment variable)
 
-## Setting Up Vercel KV
+## Setting Up Redis/KV Storage
 
-### Step 1: Create Vercel KV Database
+### Step 1: Add Redis via Marketplace
 
+Vercel has moved KV/Redis to the Marketplace. We support both **Upstash Redis** (recommended) and **Vercel KV** (legacy):
+
+**Option A: Upstash Redis (Recommended)**
 1. Go to your Vercel project dashboard
-2. Navigate to **Storage** → **Create Database**
-3. Select **KV** (Redis)
-4. Choose a name for your database (e.g., "project-manager-kv")
-5. Select your region
-6. Click **Create**
+2. Navigate to **Settings** → **Integrations** (or go to [vercel.com/marketplace](https://vercel.com/marketplace))
+3. Search for **"Upstash Redis"** or **"Redis"**
+4. Click **"Add Integration"** or **"Install"**
+5. Select your project
+6. Follow the prompts to create the Redis database
+7. Choose a name for your database (e.g., "project-manager-redis")
+8. Select your region
+9. Click **Create** or **Add**
 
-### Step 2: Link to Your Project
+**Option B: Vercel KV (If Available)**
+1. Search for **"Vercel KV"** in the Marketplace
+2. Follow the same steps as above
 
-1. In your Vercel project settings, go to **Storage**
-2. Find your KV database and click **Connect**
-3. Vercel will automatically add the required environment variables:
-   - `KV_REST_API_URL`
-   - `KV_REST_API_TOKEN`
-   - `KV_REST_API_READ_ONLY_TOKEN`
+### Step 2: Environment Variables (Automatic)
+
+Vercel will automatically add the required environment variables to your project:
+
+**For Upstash Redis:**
+- `UPSTASH_REDIS_REST_URL`
+- `UPSTASH_REDIS_REST_TOKEN`
+
+**For Vercel KV (legacy):**
+- `KV_REST_API_URL`
+- `KV_REST_API_TOKEN`
+- `KV_REST_API_READ_ONLY_TOKEN`
+
+These are automatically available in your Next.js API routes - no manual configuration needed!
+
+The application automatically detects which provider you're using and configures itself accordingly.
 
 ### Step 3: Deploy
 

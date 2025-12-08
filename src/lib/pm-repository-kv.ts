@@ -1,4 +1,3 @@
-import { kv } from '@vercel/kv'
 import {
   Project,
   Epic,
@@ -10,6 +9,46 @@ import {
   parsePeople,
   generateTimestamp,
 } from './types'
+
+// ============================================================================
+// Redis/KV Client Setup
+// ============================================================================
+
+// Support both @upstash/redis (Marketplace - recommended) and @vercel/kv (legacy)
+// Lazy initialization to avoid build-time errors
+let kvClient: any = null
+
+function getKVClient() {
+  if (kvClient) return kvClient
+  
+  try {
+    // Try Upstash Redis first (Marketplace integration - recommended)
+    const { Redis } = require('@upstash/redis')
+    kvClient = Redis.fromEnv()
+    return kvClient
+  } catch {
+    try {
+      // Fallback to Vercel KV (legacy)
+      const vercelKv = require('@vercel/kv')
+      kvClient = vercelKv.kv
+      return kvClient
+    } catch {
+      // During build, packages might not be available - that's okay
+      // Will be available at runtime in Vercel
+      return null
+    }
+  }
+}
+
+const kv = new Proxy({} as any, {
+  get(_target, prop) {
+    const client = getKVClient()
+    if (!client) {
+      throw new Error('Redis/KV client not available. Please install @upstash/redis from the Vercel Marketplace.')
+    }
+    return client[prop]
+  }
+})
 
 // ============================================================================
 // Key Helpers
@@ -49,7 +88,7 @@ function getStoriesListKey(projectName: string, epicName: string): string {
 
 export async function readProject(projectName: string): Promise<Project> {
   const key = getProjectKey(projectName)
-  const data = await kv.get<unknown>(key)
+  const data = await kv.get(key)
   if (!data) {
     throw new Error(`Project "${projectName}" not found`)
   }
@@ -61,7 +100,7 @@ export async function writeProject(projectName: string, project: Project): Promi
   parseProject(project)
   
   // Update projects list
-  const projectsList = await kv.get<string[]>(getProjectsListKey()) || []
+  const projectsList = await kv.get(getProjectsListKey()) || []
   if (!projectsList.includes(projectName)) {
     projectsList.push(projectName)
     await kv.set(getProjectsListKey(), projectsList)
@@ -71,14 +110,15 @@ export async function writeProject(projectName: string, project: Project): Promi
 }
 
 export async function listProjects(): Promise<string[]> {
-  const projectsList = await kv.get<string[]>(getProjectsListKey())
+  const projectsList = await kv.get(getProjectsListKey())
   return projectsList || []
 }
 
 export async function projectExists(projectName: string): Promise<boolean> {
   const key = getProjectKey(projectName)
-  const exists = await kv.exists(key)
-  return exists === 1
+  const result = await kv.exists(key)
+  // Upstash returns number (0 or 1), Vercel KV returns boolean
+  return typeof result === 'number' ? result === 1 : Boolean(result)
 }
 
 export async function deleteProject(projectName: string): Promise<void> {
@@ -101,8 +141,8 @@ export async function deleteProject(projectName: string): Promise<void> {
   await kv.del(getEpicsListKey(projectName))
   
   // Remove from projects list
-  const projectsList = await kv.get<string[]>(getProjectsListKey()) || []
-  const updatedList = projectsList.filter(p => p !== projectName)
+  const projectsList = await kv.get(getProjectsListKey()) || []
+  const updatedList = projectsList.filter((p: string) => p !== projectName)
   await kv.set(getProjectsListKey(), updatedList)
 }
 
@@ -112,7 +152,7 @@ export async function deleteProject(projectName: string): Promise<void> {
 
 export async function readGlobalPeople(): Promise<Person[]> {
   const key = getPeopleKey()
-  const data = await kv.get<unknown>(key)
+  const data = await kv.get(key)
   if (!data) {
     return []
   }
@@ -127,8 +167,9 @@ export async function writeGlobalPeople(people: Person[]): Promise<void> {
 
 export async function globalPeopleExists(): Promise<boolean> {
   const key = getPeopleKey()
-  const exists = await kv.exists(key)
-  return exists === 1
+  const result = await kv.exists(key)
+  // Upstash returns number (0 or 1), Vercel KV returns boolean
+  return typeof result === 'number' ? result === 1 : Boolean(result)
 }
 
 // Legacy per-project people (for compatibility)
@@ -193,7 +234,7 @@ export async function checkPersonUsage(personId: string): Promise<{
 
 export async function readEpic(projectName: string, epicName: string): Promise<Epic> {
   const key = getEpicKey(projectName, epicName)
-  const data = await kv.get<unknown>(key)
+  const data = await kv.get(key)
   if (!data) {
     throw new Error(`Epic "${epicName}" not found in project "${projectName}"`)
   }
@@ -205,7 +246,7 @@ export async function writeEpic(projectName: string, epicName: string, epic: Epi
   parseEpic(epic)
   
   // Update epics list
-  const epicsList = await kv.get<string[]>(getEpicsListKey(projectName)) || []
+  const epicsList = await kv.get(getEpicsListKey(projectName)) || []
   if (!epicsList.includes(epicName)) {
     epicsList.push(epicName)
     await kv.set(getEpicsListKey(projectName), epicsList)
@@ -215,14 +256,15 @@ export async function writeEpic(projectName: string, epicName: string, epic: Epi
 }
 
 export async function listEpics(projectName: string): Promise<string[]> {
-  const epicsList = await kv.get<string[]>(getEpicsListKey(projectName))
+  const epicsList = await kv.get(getEpicsListKey(projectName))
   return epicsList || []
 }
 
 export async function epicExists(projectName: string, epicName: string): Promise<boolean> {
   const key = getEpicKey(projectName, epicName)
-  const exists = await kv.exists(key)
-  return exists === 1
+  const result = await kv.exists(key)
+  // Upstash returns number (0 or 1), Vercel KV returns boolean
+  return typeof result === 'number' ? result === 1 : Boolean(result)
 }
 
 export async function deleteEpic(projectName: string, epicName: string): Promise<void> {
@@ -238,8 +280,8 @@ export async function deleteEpic(projectName: string, epicName: string): Promise
   await kv.del(getStoriesListKey(projectName, epicName))
   
   // Remove from epics list
-  const epicsList = await kv.get<string[]>(getEpicsListKey(projectName)) || []
-  const updatedList = epicsList.filter(e => e !== epicName)
+  const epicsList = await kv.get(getEpicsListKey(projectName)) || []
+  const updatedList = epicsList.filter((e: string) => e !== epicName)
   await kv.set(getEpicsListKey(projectName), updatedList)
 }
 
@@ -253,7 +295,7 @@ export async function readStory(
   storyId: string
 ): Promise<Story> {
   const key = getStoryKey(projectName, epicName, storyId)
-  const data = await kv.get<unknown>(key)
+  const data = await kv.get(key)
   if (!data) {
     throw new Error(`Story "${storyId}" not found in epic "${epicName}"`)
   }
@@ -278,7 +320,7 @@ export async function writeStory(
   story.updatedAt = generateTimestamp()
   
   // Update stories list
-  const storiesList = await kv.get<string[]>(getStoriesListKey(projectName, epicName)) || []
+  const storiesList = await kv.get(getStoriesListKey(projectName, epicName)) || []
   if (!storiesList.includes(storyId)) {
     storiesList.push(storyId)
     await kv.set(getStoriesListKey(projectName, epicName), storiesList)
@@ -291,7 +333,7 @@ export async function listStories(
   projectName: string,
   epicName: string
 ): Promise<string[]> {
-  const storiesList = await kv.get<string[]>(getStoriesListKey(projectName, epicName))
+  const storiesList = await kv.get(getStoriesListKey(projectName, epicName))
   return storiesList || []
 }
 
@@ -301,8 +343,9 @@ export async function storyExists(
   storyId: string
 ): Promise<boolean> {
   const key = getStoryKey(projectName, epicName, storyId)
-  const exists = await kv.exists(key)
-  return exists === 1
+  const result = await kv.exists(key)
+  // Upstash returns number (0 or 1), Vercel KV returns boolean
+  return typeof result === 'number' ? result === 1 : Boolean(result)
 }
 
 export async function deleteStory(
@@ -314,8 +357,8 @@ export async function deleteStory(
   await kv.del(key)
   
   // Remove from stories list
-  const storiesList = await kv.get<string[]>(getStoriesListKey(projectName, epicName)) || []
-  const updatedList = storiesList.filter(s => s !== storyId)
+  const storiesList = await kv.get(getStoriesListKey(projectName, epicName)) || []
+  const updatedList = storiesList.filter((s: string) => s !== storyId)
   await kv.set(getStoriesListKey(projectName, epicName), updatedList)
 }
 
@@ -326,7 +369,7 @@ export async function deleteStory(
 export async function generateNextEpicId(projectName: string): Promise<string> {
   const epics = await listEpics(projectName)
   const existingNumbers = epics
-    .map(name => {
+    .map((name: string) => {
       // Try to extract EPIC-XXXX from epic name or read the epic to get its ID
       const match = name.match(/^EPIC-(\d{4})$/)
       return match ? parseInt(match[1], 10) : null
@@ -352,7 +395,7 @@ export async function generateNextStoryId(
 ): Promise<string> {
   const stories = await listStories(projectName, epicName)
   const existingNumbers = stories
-    .map(id => {
+    .map((id: string) => {
       const match = id.match(/^STORY-(\d{3})$/)
       return match ? parseInt(match[1], 10) : null
     })
@@ -453,4 +496,3 @@ export const pmRepositoryKV = {
   deleteStory,
   createStory,
 }
-

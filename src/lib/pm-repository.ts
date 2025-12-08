@@ -19,8 +19,11 @@ import {
 
 const PM_DATA_DIR = path.join(process.cwd(), 'pm')
 
-// Determine storage backend: use KV in production (Vercel), files in development
-const USE_KV = process.env.VERCEL === '1' || process.env.KV_REST_API_URL !== undefined
+// Determine storage backend: use Redis/KV in production (Vercel), files in development
+// Supports both Upstash Redis (Marketplace) and Vercel KV (legacy)
+const USE_KV = process.env.VERCEL === '1' || 
+               process.env.KV_REST_API_URL !== undefined || 
+               process.env.UPSTASH_REDIS_REST_URL !== undefined
 
 // Lazy-load KV repository
 let kvRepositoryPromise: Promise<typeof import('./pm-repository-kv').pmRepositoryKV | null> | null = null
