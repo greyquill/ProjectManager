@@ -125,11 +125,12 @@ The application supports comprehensive keyboard navigation, especially in **Focu
 **Activating Focus Mode:**
 - Click the `<>` icon next to "Epics & Stories" to enter focus mode
 - The sidebar expands to full width for dedicated epic and story management
+- A "Focus Mode" indicator appears centered between the heading and "+ Epic" button
 - Click `><` to exit focus mode
 
 **Navigating Items:**
-- **Arrow Up (↑)**: Move focus to the previous epic or story
-- **Arrow Down (↓)**: Move focus to the next epic or story
+- **Arrow Up (↑)**: Move focus to the previous epic or story. Wraps to "+ Add Epic" row when at the top
+- **Arrow Down (↓)**: Move focus to the next epic or story. Wraps to first item when at "+ Add Epic" row
 - Focus automatically wraps around (from last item to first, and vice versa)
 
 **Expanding/Collapsing Epics:**
@@ -139,12 +140,21 @@ The application supports comprehensive keyboard navigation, especially in **Focu
 
 **Editing Titles:**
 - **Enter**:
-  - If not editing: Enter edit mode for the focused epic/story title
-  - If already editing: Save changes and exit edit mode
-- **Escape**: Cancel editing and discard changes
+  - If focused on epic/story: Enter edit mode for the title (if not editing) or save and exit (if editing)
+  - If focused on "+" icon row: Open the story creation form
+  - If focused on "+ Add Epic" input: Create the epic with the entered title
+  - If focused on story creation form: Create the story (title only required in focus mode)
+  - If focused on a dropdown: Open the dropdown menu
+  - If focused on Save button: Save the current epic/story
+- **Escape**: Cancel editing, close forms, or discard changes
+
+**Creating Items:**
+- **Stories in Focus Mode**: Navigate to "+" icon row, press Enter, type title, press Enter to create. Form is simplified (title only, priority defaults to Medium, manager defaults to project manager). Focus returns to "+" icon after creation.
+- **Epics in Focus Mode**: Navigate to "+ Add Epic" row at bottom, type title, press Enter to create. Focus returns to input after creation.
 
 **Visual Feedback:**
 - Focused items are highlighted with a blue ring and background
+- The "+ Add Epic" row shows a prominent thick blue border (border-4) when focused
 - Items automatically scroll into view when focused
 - Edit mode shows an input field with a blue underline
 
@@ -181,11 +191,24 @@ The analytics dashboard provides real-time insights including:
 
 ### Creating an Epic
 
+**In Focus Mode (Quick Creation):**
+1. Navigate to the "+ Add Epic" row at the bottom (light blue bar)
+2. Type the epic title
+3. Press Enter to create
+4. Focus returns to input for creating another epic
+5. New epics appear at the bottom with ID prefix [EPIC-XXXX]
+
+**In Normal Mode (Full Form):**
 1. Open a project
-2. Click "New Epic"
-3. Provide epic title and description
-4. Optionally use AI to generate stories from the epic description
-5. Save to create `/pm/{project-name}/{epic-name}/epic.json`
+2. Click "+ Epic" button
+3. Fill in epic details (title, summary, description)
+4. Set priority and manager
+5. Click "Create Epic"
+
+**Epic ID Format:**
+- Epics are assigned sequential IDs: EPIC-0001, EPIC-0002, etc.
+- In Focus Mode, epic titles display with ID prefix: `[EPIC-XXXX] Epic Title`
+- The prefix is hidden when editing for easier text manipulation
 
 ### Creating Stories
 

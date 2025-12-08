@@ -467,6 +467,31 @@ export default function DocsPage() {
                 <p className="text-text-secondary mb-4">
                   To create a new epic within a project:
                 </p>
+                
+                <h3 className="text-xl font-semibold text-text-primary mb-3 mt-6">
+                  In Focus Mode (Quick Creation)
+                </h3>
+                <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
+                  <li>Navigate to the "+ Add Epic" row at the bottom of the epic list (light blue bar)</li>
+                  <li>Type the epic title in the input field</li>
+                  <li>Press <kbd className="bg-surface-muted px-2 py-1 rounded border border-border-light font-mono text-sm">Enter</kbd> to create the epic</li>
+                </ol>
+                <p className="text-text-secondary mb-4">
+                  In Focus Mode, the quick epic creation bar:
+                </p>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
+                  <li>Appears as a full-width light blue bar at the bottom of all epics</li>
+                  <li>Shows a prominent blue border when focused</li>
+                  <li>Automatically sets summary to match the title</li>
+                  <li>Defaults priority to "Medium" and status to "To Do"</li>
+                  <li>Uses project manager as the epic manager (if available)</li>
+                  <li>New epics appear at the bottom of the list with ID prefix [EPIC-XXXX]</li>
+                  <li>After creation, focus returns to the input for creating another epic</li>
+                </ul>
+
+                <h3 className="text-xl font-semibold text-text-primary mb-3 mt-6">
+                  In Normal Mode (Full Form)
+                </h3>
                 <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
                   <li>Open the project detail page</li>
                   <li>Click the &quot;+ Epic&quot; button in the left panel</li>
@@ -474,9 +499,10 @@ export default function DocsPage() {
                   <li>Set the priority and manager</li>
                   <li>Click &quot;Create Epic&quot;</li>
                 </ol>
+                
                 <p className="text-text-secondary mb-4">
                   New epics are automatically assigned a sequential ID (EPIC-0001, EPIC-0002, etc.) and start with
-                  &quot;To Do&quot; status.
+                  &quot;To Do&quot; status. In Focus Mode, epic titles display with the ID prefix: <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">[EPIC-XXXX] Epic Title</code>.
                 </p>
               </section>
 
@@ -506,16 +532,41 @@ export default function DocsPage() {
                 <p className="text-text-secondary mb-4">
                   To create a new story within an epic:
                 </p>
+                
+                <h3 className="text-xl font-semibold text-text-primary mb-3 mt-6">
+                  In Focus Mode (Simplified)
+                </h3>
+                <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
+                  <li>Navigate to the "+" icon row under an expanded epic (or press Enter when focused on it)</li>
+                  <li>Type the story title in the input field</li>
+                  <li>Press <kbd className="bg-surface-muted px-2 py-1 rounded border border-border-light font-mono text-sm">Enter</kbd> to create the story</li>
+                  <li>Press <kbd className="bg-surface-muted px-2 py-1 rounded border border-border-light font-mono text-sm">Esc</kbd> to cancel</li>
+                </ol>
+                <p className="text-text-secondary mb-4">
+                  In Focus Mode, the story creation form is simplified:
+                </p>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
+                  <li>Only the title field is shown (summary, priority, and manager fields are hidden)</li>
+                  <li>Priority defaults to "Medium"</li>
+                  <li>Manager defaults to the project manager</li>
+                  <li>No Create/Cancel buttons - use Enter to create, ESC to cancel</li>
+                  <li>After creation, focus automatically returns to the "+" icon for quick creation of another story</li>
+                </ul>
+
+                <h3 className="text-xl font-semibold text-text-primary mb-3 mt-6">
+                  In Normal Mode (Full Form)
+                </h3>
                 <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
                   <li>Expand an epic in the accordion list</li>
-                  <li>Click the &quot;+&quot; button at the bottom of the epic</li>
+                  <li>Click the "+" button at the bottom of the epic</li>
                   <li>Fill in the story details (title and summary are required)</li>
                   <li>Set the priority and manager</li>
                   <li>Click &quot;Create Story&quot;</li>
                 </ol>
+                
                 <p className="text-text-secondary mb-4">
                   New stories are automatically assigned a sequential ID (STORY-001, STORY-002, etc.) and start with
-                  &quot;To Do&quot; status. You can add more details like acceptance criteria and files after creation.
+                  &quot;To Do&quot; status. Story titles always display with the ID prefix: <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">[STORY-XXX] Story Title</code>. You can add more details like acceptance criteria and files after creation.
                 </p>
               </section>
 
@@ -850,11 +901,11 @@ export default function DocsPage() {
                     <tbody className="text-text-secondary">
                       <tr className="border-b border-border-light">
                         <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">↑</kbd> Arrow Up</td>
-                        <td className="py-2 px-3">Move focus to the previous epic or story</td>
+                        <td className="py-2 px-3">Move focus to the previous epic or story. Wraps to "+ Add Epic" row when at the top.</td>
                       </tr>
                       <tr className="border-b border-border-light">
                         <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">↓</kbd> Arrow Down</td>
-                        <td className="py-2 px-3">Move focus to the next epic or story</td>
+                        <td className="py-2 px-3">Move focus to the next epic or story. Wraps to first item when at "+ Add Epic" row.</td>
                       </tr>
                       <tr className="border-b border-border-light">
                         <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">→</kbd> Arrow Right</td>
@@ -872,14 +923,24 @@ export default function DocsPage() {
                         <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">Enter</kbd></td>
                         <td className="py-2 px-3">
                           <ul className="list-disc list-inside ml-4 mt-1">
-                            <li>If not editing: Enter edit mode for the focused epic/story title</li>
-                            <li>If already editing: Save changes and exit edit mode</li>
+                            <li>If focused on epic/story: Enter edit mode for the title (if not editing) or save and exit (if editing)</li>
+                            <li>If focused on "+" icon row: Open the story creation form</li>
+                            <li>If focused on "+ Add Epic" input: Create the epic with the entered title</li>
+                            <li>If focused on story creation form: Create the story (title only required in focus mode)</li>
+                            <li>If focused on a dropdown: Open the dropdown menu</li>
+                            <li>If focused on Save button: Save the current epic/story</li>
                           </ul>
                         </td>
                       </tr>
                       <tr>
                         <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">Esc</kbd></td>
-                        <td className="py-2 px-3">Cancel editing and discard changes (only works when in edit mode)</td>
+                        <td className="py-2 px-3">
+                          <ul className="list-disc list-inside ml-4 mt-1">
+                            <li>Cancel editing and discard changes (when in edit mode)</li>
+                            <li>Close story creation form (when form is open)</li>
+                            <li>Close epic creation form (when form is open)</li>
+                          </ul>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -900,13 +961,39 @@ export default function DocsPage() {
                 </ol>
 
                 <h4 className="text-xl font-semibold text-text-primary mb-3 mt-6">
+                  Creating Items in Focus Mode
+                </h4>
+                <p className="text-text-secondary mb-4">
+                  Focus Mode provides streamlined creation workflows:
+                </p>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
+                  <li><strong>Creating Stories:</strong> Navigate to the "+" icon row under an epic, press Enter to open the form. Type the title and press Enter to create (or ESC to cancel). The form is simplified - only title is required, priority defaults to Medium, and manager defaults to project manager. After creation, focus automatically returns to the "+" icon for quick creation of another story.</li>
+                  <li><strong>Creating Epics:</strong> Navigate to the "+ Add Epic" row at the bottom (light blue bar), type the epic title, and press Enter to create. Focus returns to the input for creating another epic. New epics appear at the bottom of the list with their ID prefix [EPIC-XXXX].</li>
+                </ul>
+
+                <h4 className="text-xl font-semibold text-text-primary mb-3 mt-6">
+                  ID Prefixing
+                </h4>
+                <p className="text-text-secondary mb-4">
+                  For easy identification, items display their IDs:
+                </p>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
+                  <li><strong>Stories:</strong> Always display as <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">[STORY-XXX] Story Title</code> (e.g., [STORY-125] Implement patient creation form)</li>
+                  <li><strong>Epics:</strong> In Focus Mode, display as <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">[EPIC-XXXX] Epic Title</code> (e.g., [EPIC-0001] Patient Management Module)</li>
+                  <li>When editing titles, the ID prefix is hidden for easier editing</li>
+                  <li>The prefix is automatically added back when saving</li>
+                </ul>
+
+                <h4 className="text-xl font-semibold text-text-primary mb-3 mt-6">
                   Visual Feedback
                 </h4>
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
                   <li>Focused items are highlighted with a blue ring and light blue background</li>
+                  <li>The "+ Add Epic" row shows a prominent thick blue border (border-4) when focused</li>
                   <li>Items automatically scroll into view when focused</li>
                   <li>Edit mode shows an input field with a blue underline border</li>
                   <li>The chevron button (for expanding/collapsing) has a focus ring when focused</li>
+                  <li>A "Focus Mode" indicator appears centered between the heading and "+ Epic" button</li>
                 </ul>
 
                 <h3 className="text-2xl font-semibold text-text-primary mb-3 mt-8">
@@ -940,11 +1027,12 @@ export default function DocsPage() {
                   General Navigation Tips
                 </h3>
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
-                  <li>Focus automatically wraps around: pressing Down on the last item moves to the first, and vice versa</li>
-                  <li>When an epic is expanded, its stories are included in the navigation sequence</li>
+                  <li>Focus automatically wraps around: pressing Down on the last item ("+ Add Epic") moves to the first epic, and pressing Up on the first epic moves to "+ Add Epic"</li>
+                  <li>When an epic is expanded, its stories and the "+" icon row are included in the navigation sequence</li>
                   <li>Epics automatically expand when you navigate to them (if they have stories)</li>
                   <li>Focus is maintained on the same epic when expanding/collapsing it</li>
-                  <li>Arrow key navigation is disabled while editing titles to prevent conflicts</li>
+                  <li>Arrow key navigation is disabled while editing titles or when forms are open to prevent conflicts</li>
+                  <li>After creating a story, focus automatically returns to the "+" icon row for quick creation of another story</li>
                   <li>All keyboard actions work seamlessly with the visual interface</li>
                 </ul>
 

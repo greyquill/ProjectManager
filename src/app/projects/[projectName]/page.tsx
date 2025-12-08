@@ -125,6 +125,9 @@ export default function ProjectDetailPage() {
   const [newStoryManager, setNewStoryManager] = useState('unassigned')
   const [creatingStory, setCreatingStory] = useState(false)
 
+  // Quick epic creation in focus mode
+  const [quickEpicTitle, setQuickEpicTitle] = useState('')
+
   useEffect(() => {
     if (projectName) {
       fetchProject()
@@ -283,6 +286,7 @@ export default function ProjectDetailPage() {
     | { type: 'epic'; epicName: string; index: number }
     | { type: 'story'; epicName: string; storyId: string; index: number }
     | { type: 'newStory'; epicName: string; index: number }
+    | { type: 'newEpic'; index: number }
 
   const buildFocusableItems = useMemo((): FocusableItem[] => {
     const items: FocusableItem[] = []
@@ -302,8 +306,13 @@ export default function ProjectDetailPage() {
       }
     })
 
+    // Add "New Epic" button at the end in focus mode
+    if (isFullscreen) {
+      items.push({ type: 'newEpic', index: globalIndex++ })
+    }
+
     return items
-  }, [epics, expandedEpics])
+  }, [epics, expandedEpics, isFullscreen])
 
   const selectEpicCallback = useCallback((epic: Epic & { _name: string; stories: Story[] }) => {
     navigateToEpic(epic._name)
@@ -514,6 +523,12 @@ export default function ProjectDetailPage() {
             // Ensure epic is expanded
             if (!expandedEpics.has(focusedItem.epicName)) {
               setExpandedEpics((prev) => new Set([...prev, focusedItem.epicName]))
+            }
+          } else if (focusedItem.type === 'newEpic') {
+            // Focus on the quick epic creation input
+            const input = document.querySelector('input[placeholder="+ Add Epic"]') as HTMLInputElement
+            if (input) {
+              input.focus()
             }
           }
           return
@@ -1183,9 +1198,26 @@ export default function ProjectDetailPage() {
         // Refresh epics to get the new story
         await fetchEpics()
 
-        // Select the new story
-        if (result.data && result.data.id) {
-          navigateToStory(epicName, result.data.id)
+        // In focus mode, return focus to the "+" icon row instead of selecting the new story
+        if (isFullscreen) {
+          // Keep the form open and clear the title for quick creation of another story
+          setShowNewStoryForm(epicName)
+          setNewStoryTitle('')
+          // Use setTimeout to ensure buildFocusableItems is updated after state changes
+          setTimeout(() => {
+            // Find the newStory item index for this epic
+            const newStoryIndex = buildFocusableItems.findIndex(
+              (item) => item.type === 'newStory' && item.epicName === epicName
+            )
+            if (newStoryIndex >= 0) {
+              setFocusedItemIndex(newStoryIndex)
+            }
+          }, 0)
+        } else {
+          // In normal mode, select the newly created story
+          if (result.data && result.data.id) {
+            navigateToStory(epicName, result.data.id)
+          }
         }
       } else {
         setError(result.error || 'Failed to create story')
@@ -1600,7 +1632,7 @@ export default function ProjectDetailPage() {
                 <p className="text-sm text-text-secondary">No epics yet</p>
               </Card>
             ) : (
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 {epics.map((epic) => {
                   const isExpanded = expandedEpics.has(epic._name)
                   const isSelected = selection.type === 'epic' && selection.epicName === epic._name
@@ -1629,7 +1661,7 @@ export default function ProjectDetailPage() {
                     >
                       {/* Epic Row */}
                       <div
-                        className={`cursor-pointer hover:bg-surface-muted transition-colors ${isFullscreen ? 'p-2' : 'p-4'} ${isFocused ? 'bg-blue-50' : ''}`}
+                        className={`cursor-pointer hover:bg-surface-muted transition-colors ${isFullscreen ? 'p-1.5' : 'p-2'} ${isFocused ? 'bg-blue-50' : ''}`}
                         onClick={() => {
                           toggleEpic(epic._name)
                           selectEpic(epic)
@@ -1676,12 +1708,12 @@ export default function ProjectDetailPage() {
                                       setTempEpicTitle('')
                                     }
                                   }}
-                                  className="w-full font-semibold text-text-primary text-sm bg-transparent border-b-2 border-blue-500 focus:outline-none px-1"
+                                  className="w-full font-semibold text-blue-500 text-sm bg-transparent border-b-2 border-blue-500 focus:outline-none px-1"
                                   autoFocus
                                 />
                               ) : (
                                 <div
-                                  className={`font-semibold text-text-primary truncate ${isFullscreen ? 'text-sm' : ''} ${isFullscreen ? 'cursor-text hover:bg-blue-50 px-1 rounded' : ''}`}
+                                  className={`font-semibold text-blue-500 truncate ${isFullscreen ? 'text-sm' : 'text-sm'} ${isFullscreen ? 'cursor-text hover:bg-blue-50 px-1 rounded' : ''}`}
                                   onClick={(e) => {
                                     if (isFullscreen) {
                                       e.stopPropagation()
@@ -1690,7 +1722,7 @@ export default function ProjectDetailPage() {
                                     }
                                   }}
                                 >
-                                  {epic.title}
+                                  {isFullscreen && epic.id ? `[${epic.id}] ${epic.title}` : epic.title}
                                 </div>
                               )}
                               {!isFullscreen && (
@@ -1739,7 +1771,7 @@ export default function ProjectDetailPage() {
                                     key={story.id}
                                     className={`cursor-pointer hover:bg-surface-muted transition-colors border-l-4 border-b border-border-light last:border-b-0 ${
                                       isStorySelected ? 'bg-primary/5' : ''
-                                    } ${storyStatusColor} ${isFullscreen ? 'p-2 pl-8' : 'p-3 pl-12'} ${isStoryFocused ? 'ring-2 ring-blue-500 ring-offset-2 bg-blue-50' : ''}`}
+                                    } ${storyStatusColor} ${isFullscreen ? 'p-1.5 pl-6' : 'p-2 pl-8'} ${isStoryFocused ? 'ring-2 ring-blue-500 ring-offset-2 bg-blue-50' : ''}`}
                                     onClick={(e) => {
                                       e.stopPropagation()
                                       selectStory(epic._name, story)
@@ -1773,12 +1805,12 @@ export default function ProjectDetailPage() {
                                                   setTempStoryTitle('')
                                                 }
                                               }}
-                                              className="w-full font-medium text-text-primary text-xs bg-transparent border-b-2 border-blue-500 focus:outline-none px-1"
+                                              className="w-full font-medium text-text-primary text-[11px] bg-transparent border-b-2 border-blue-500 focus:outline-none px-1"
                                               autoFocus
                                             />
                                           ) : (
                                             <div
-                                              className={`font-medium text-text-primary truncate ${isFullscreen ? 'text-xs' : 'text-sm'} ${isFullscreen ? 'cursor-text hover:bg-blue-50 px-1 rounded' : ''}`}
+                                              className={`font-medium text-text-primary truncate text-xs ${isFullscreen ? 'cursor-text hover:bg-blue-50 px-1 rounded' : ''}`}
                                               onClick={(e) => {
                                                 if (isFullscreen) {
                                                   e.stopPropagation()
@@ -1832,6 +1864,7 @@ export default function ProjectDetailPage() {
                               <div className="space-y-3">
                                 <div className="flex items-center justify-between">
                                   <h4 className="text-xs font-semibold text-text-primary">New Story</h4>
+                                  {!isFullscreen && (
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation()
@@ -1841,6 +1874,7 @@ export default function ProjectDetailPage() {
                                   >
                                     <X className="h-3 w-3" />
                                   </button>
+                                  )}
                                 </div>
 
                                 <div>
@@ -1848,6 +1882,13 @@ export default function ProjectDetailPage() {
                                     type="text"
                                     value={newStoryTitle}
                                     onChange={(e) => setNewStoryTitle(e.target.value)}
+                                    onKeyDown={async (e) => {
+                                      if (e.key === 'Enter' && newStoryTitle.trim()) {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                        await createNewStory(epic._name)
+                                      }
+                                    }}
                                     placeholder="Story title *"
                                     className="input-field text-sm w-full"
                                     autoFocus
@@ -1866,6 +1907,7 @@ export default function ProjectDetailPage() {
                                 </div>
                                 )}
 
+                                {!isFullscreen && (
                                 <div>
                                   <label className="block text-xs text-text-secondary mb-1">Priority</label>
                                   <div className="flex gap-2">
@@ -1884,6 +1926,7 @@ export default function ProjectDetailPage() {
                                     ))}
                                   </div>
                                 </div>
+                                )}
 
                                 {!isFullscreen && (
                                 <div>
@@ -1902,6 +1945,7 @@ export default function ProjectDetailPage() {
                                 </div>
                                 )}
 
+                                {!isFullscreen && (
                                 <div className="flex items-center gap-2">
                                   <Button
                                     variant="primary"
@@ -1911,7 +1955,7 @@ export default function ProjectDetailPage() {
                                       createNewStory(epic._name)
                                     }}
                                     isLoading={creatingStory}
-                                    disabled={!newStoryTitle.trim() || (!isFullscreen && !newStorySummary.trim())}
+                                    disabled={!newStoryTitle.trim() || !newStorySummary.trim()}
                                   >
                                     Create Story
                                   </Button>
@@ -1927,6 +1971,13 @@ export default function ProjectDetailPage() {
                                     Cancel
                                   </Button>
                                 </div>
+                                )}
+
+                                {isFullscreen && (
+                                  <div className="text-xs text-text-secondary mt-1">
+                                    Press Enter to create, ESC to cancel
+                                  </div>
+                                )}
                               </div>
                             </div>
                           )}
@@ -1971,6 +2022,110 @@ export default function ProjectDetailPage() {
                     </Card>
                   )
                 })}
+              </div>
+            )}
+
+            {/* Quick Add Epic Bar in Focus Mode */}
+            {isFullscreen && (
+              <div
+                className={`w-full rounded p-2 mt-2 transition-all ${
+                  focusedItemIndex !== null && buildFocusableItems[focusedItemIndex]?.type === 'newEpic'
+                    ? 'bg-blue-100 border-4 border-blue-500 ring-2 ring-blue-300'
+                    : 'bg-blue-50 border border-blue-200'
+                }`}
+                ref={(el) => {
+                  if (isFullscreen && focusedItemIndex !== null && buildFocusableItems[focusedItemIndex]?.type === 'newEpic' && el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+                  }
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  <Plus className="h-4 w-4 text-blue-600" />
+                  <input
+                    type="text"
+                    value={quickEpicTitle}
+                    onChange={(e) => setQuickEpicTitle(e.target.value)}
+                    ref={(el) => {
+                      if (isFullscreen && focusedItemIndex !== null && buildFocusableItems[focusedItemIndex]?.type === 'newEpic' && el) {
+                        setTimeout(() => el.focus(), 0)
+                      }
+                    }}
+                    onKeyDown={async (e) => {
+                      if (e.key === 'Enter' && quickEpicTitle.trim()) {
+                        e.preventDefault()
+                        // Create epic with the entered title
+                        try {
+                          setCreatingEpic(true)
+                          setError(null)
+
+                          const now = new Date().toISOString()
+                          const epicData = {
+                            title: quickEpicTitle.trim(),
+                            summary: quickEpicTitle.trim(), // Use title as summary
+                            description: '',
+                            status: 'todo' as const,
+                            priority: 'medium' as const,
+                            manager: project?.metadata?.manager && project.metadata.manager !== 'unassigned'
+                              ? project.metadata.manager
+                              : 'unassigned',
+                            createdAt: now,
+                            updatedAt: now,
+                            targetRelease: null,
+                            tags: [],
+                            storyIds: [],
+                            metrics: {
+                              totalStoryPoints: 0,
+                              completedStoryPoints: 0,
+                            },
+                            metadata: {
+                              createdBy: 'user',
+                              custom: {},
+                            },
+                          }
+
+                          const response = await fetch(`/api/projects/${projectName}/epics`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(epicData),
+                          })
+
+                          const result = await response.json()
+
+                          if (result.success) {
+                            setQuickEpicTitle('')
+                            await fetchEpics()
+                            // In focus mode, return focus to the newEpic input
+                            if (isFullscreen) {
+                              setTimeout(() => {
+                                const newEpicIndex = buildFocusableItems.findIndex(
+                                  (item) => item.type === 'newEpic'
+                                )
+                                if (newEpicIndex >= 0) {
+                                  setFocusedItemIndex(newEpicIndex)
+                                }
+                              }, 0)
+                            } else {
+                              // In normal mode, select the newly created epic
+                              const epicId = result.data?.name || result.data?.id
+                              if (epicId) {
+                                navigateToEpic(epicId)
+                              }
+                            }
+                          } else {
+                            setError(result.error || 'Failed to create epic')
+                          }
+                        } catch (err) {
+                          setError(err instanceof Error ? err.message : 'Failed to create epic')
+                        } finally {
+                          setCreatingEpic(false)
+                        }
+                      }
+                    }}
+                    placeholder="+ Add Epic"
+                    className="flex-1 bg-transparent border-none outline-none text-sm text-blue-700 placeholder-blue-400 focus:ring-0"
+                    disabled={creatingEpic}
+                  />
+                </div>
               </div>
             )}
           </div>
