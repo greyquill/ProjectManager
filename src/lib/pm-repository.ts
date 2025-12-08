@@ -163,6 +163,10 @@ async function writeJsonFile(filePath: string, data: unknown): Promise<void> {
  * Read a project by name
  */
 export async function readProject(projectName: string): Promise<Project> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.readProject(projectName)
+  }
   const filePath = getProjectFilePath(projectName)
   return readJsonFile(filePath, parseProject)
 }
