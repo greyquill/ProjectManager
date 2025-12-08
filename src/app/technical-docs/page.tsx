@@ -17,6 +17,7 @@ const docStructure: DocSection[] = [
     title: 'Getting Started',
     children: [
       { id: 'introduction', title: 'Introduction' },
+      { id: 'installation', title: 'Installation' },
       { id: 'quick-start', title: 'Quick Start' },
     ],
   },
@@ -24,6 +25,7 @@ const docStructure: DocSection[] = [
     id: 'core-concepts',
     title: 'Core Concepts',
     children: [
+      { id: 'file-based-storage', title: 'File-Based Storage' },
       { id: 'projects', title: 'Projects' },
       { id: 'epics', title: 'Epics' },
       { id: 'stories', title: 'Stories' },
@@ -44,6 +46,7 @@ const docStructure: DocSection[] = [
     title: 'Working with Epics',
     children: [
       { id: 'creating-epics', title: 'Creating Epics' },
+      { id: 'epic-structure', title: 'Epic Structure' },
       { id: 'epic-metrics', title: 'Epic Metrics' },
     ],
   },
@@ -69,12 +72,24 @@ const docStructure: DocSection[] = [
     ],
   },
   {
+    id: 'data-model',
+    title: 'Data Model',
+    children: [
+      { id: 'json-schema', title: 'JSON Schema' },
+      { id: 'project-json', title: 'project.json' },
+      { id: 'epic-json', title: 'epic.json' },
+      { id: 'story-json', title: 'STORY-*.json' },
+      { id: 'people-json', title: 'people.json' },
+    ],
+  },
+  {
     id: 'best-practices',
     title: 'Best Practices',
     children: [
       { id: 'organizing-epics', title: 'Organizing Epics' },
       { id: 'writing-stories', title: 'Writing Good Stories' },
       { id: 'acceptance-criteria-tips', title: 'Acceptance Criteria Tips' },
+      { id: 'version-control', title: 'Version Control' },
     ],
   },
   {
@@ -83,6 +98,7 @@ const docStructure: DocSection[] = [
     children: [
       { id: 'direct-url-navigation', title: 'Direct URL Navigation' },
       { id: 'keyboard-shortcuts', title: 'Keyboard Shortcuts' },
+      { id: 'ai-integration', title: 'AI Integration (Future)' },
     ],
   },
 ]
@@ -209,7 +225,7 @@ export default function DocsPage() {
             <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
               <div className="flex items-center gap-2 mb-6">
                 <BookOpen className="h-5 w-5 text-primary" />
-                <h2 className="text-lg font-semibold text-text-primary">Documentation</h2>
+                <h2 className="text-lg font-semibold text-text-primary">Technical Documentation</h2>
               </div>
               <nav>{docStructure.map((item) => renderSidebarItem(item))}</nav>
             </div>
@@ -244,23 +260,61 @@ export default function DocsPage() {
             <div id="doc-content" className="prose prose-slate max-w-none">
               {/* Getting Started */}
               <section id="introduction">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                  <p className="text-sm text-blue-800">
+                    <strong>Note:</strong> This is technical documentation for developers. For user-facing documentation on how to use the application, see{' '}
+                    <Link href="/docs" className="text-blue-600 hover:underline font-medium">
+                      User Documentation
+                    </Link>.
+                  </p>
+                </div>
                 <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light">
                   Introduction
                 </h2>
                 <p className="text-text-secondary mb-4">
-                  Welcome to Project Manager, a powerful project management tool designed to help you organize and track
-                  your work efficiently.
+                  Welcome to Project Manager, an AI-native, file-based project management tool designed specifically
+                  for developers who want to keep their project planning close to their code.
                 </p>
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Philosophy</h3>
                 <p className="text-text-secondary mb-4">
-                  Project Manager helps you:
+                  Project Manager is built on a simple but powerful philosophy: <strong>every epic and story is a
+                  JSON file in your repository</strong>. This approach gives you:
                 </p>
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
-                  <li>Organize work into <strong>Projects</strong>, <strong>Epics</strong>, and <strong>Stories</strong></li>
-                  <li>Track progress with status updates and metrics</li>
-                  <li>Manage your team and assign work</li>
-                  <li>Define clear acceptance criteria for each story</li>
-                  <li>Link code files to stories for better organization</li>
+                  <li><strong>Full version control</strong> - Track changes to requirements over time with Git</li>
+                  <li><strong>Type safety</strong> - TypeScript types and Zod validation for all data</li>
+                  <li><strong>AI integration</strong> - Use Cursor AI to expand epics, generate stories, and refine acceptance criteria</li>
+                  <li><strong>Developer-friendly</strong> - No separate PM tool; everything lives with your code</li>
+                  <li><strong>Simple architecture</strong> - Clean UI on top of JSON files, no database needed</li>
                 </ul>
+              </section>
+
+              <section id="installation">
+                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                  Installation
+                </h2>
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Prerequisites</h3>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li>Node.js 18+ and npm 9+</li>
+                  <li>Git for version control</li>
+                </ul>
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Setup Steps</h3>
+                <div className="bg-surface border border-border-light rounded-lg p-4 mb-4">
+                  <code className="text-sm">
+                    <div className="mb-2"># 1. Clone the repository</div>
+                    <div className="mb-2">git clone &lt;your-repo-url&gt;</div>
+                    <div className="mb-2">cd ProjectManager</div>
+                    <div className="mb-4">&nbsp;</div>
+                    <div className="mb-2"># 2. Install dependencies</div>
+                    <div className="mb-2">npm install</div>
+                    <div className="mb-4">&nbsp;</div>
+                    <div className="mb-2"># 3. Run the development server</div>
+                    <div className="mb-2">npm run dev</div>
+                    <div className="mb-4">&nbsp;</div>
+                    <div className="mb-2"># 4. Open in browser</div>
+                    <div>http://localhost:3004</div>
+                  </code>
+                </div>
               </section>
 
               <section id="quick-start">
@@ -274,13 +328,44 @@ export default function DocsPage() {
                   <li><strong>Navigate to Projects</strong> - Click &quot;Projects&quot; in the header</li>
                   <li><strong>Create a Project</strong> - Click &quot;New Project&quot; and fill in the details</li>
                   <li><strong>Add People</strong> - Go to &quot;People&quot; and add team members to your projects</li>
-                  <li><strong>Create Epics</strong> - Open your project and click &quot;+ Epic&quot;</li>
-                  <li><strong>Add Stories</strong> - Expand an epic and click the &quot;+&quot; button to add a story</li>
+                  <li><strong>Create Epics</strong> - Open your project and click &quot;New Epic&quot;</li>
+                  <li><strong>Add Stories</strong> - Expand an epic and click &quot;New Story&quot;</li>
                   <li><strong>Edit In-Place</strong> - Click any epic or story to edit it in the right panel</li>
                 </ol>
               </section>
 
               {/* Core Concepts */}
+              <section id="file-based-storage">
+                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                  File-Based Storage
+                </h2>
+                <p className="text-text-secondary mb-4">
+                  All project data is stored as JSON files in a hierarchical <code>/pm</code> directory within your
+                  repository. This structure makes it easy to navigate, organize, and version control your project
+                  management data.
+                </p>
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Directory Structure</h3>
+                <div className="bg-surface border border-border-light rounded-lg p-4 mb-4">
+                  <code className="text-sm">
+                    <div>/pm</div>
+                    <div>&nbsp;&nbsp;/[project-name]/</div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;project.json&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Project metadata</div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;people.json&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Project team</div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;/[epic-name]/</div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;epic.json&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Epic metadata</div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;STORY-*.json&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Story files</div>
+                  </code>
+                </div>
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Benefits</h3>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li>Navigate related items (project → epics → stories)</li>
+                  <li>Organize by feature or module</li>
+                  <li>Perform bulk operations on epics or projects</li>
+                  <li>Clear separation of concerns</li>
+                  <li>Easy to backup, share, and migrate</li>
+                </ul>
+              </section>
+
               <section id="projects">
                 <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
                   Projects
@@ -293,8 +378,10 @@ export default function DocsPage() {
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
                   <li><strong>Name</strong> - Unique identifier for the project</li>
                   <li><strong>Description</strong> - Markdown description of the project</li>
-                  <li><strong>Manager</strong> - Person responsible for the project</li>
-                  <li><strong>Contributors</strong> - Team members working on the project</li>
+                  <li><strong>Manager</strong> - Person ID of the project manager</li>
+                  <li><strong>Contributors</strong> - Array of Person IDs for team members</li>
+                  <li><strong>Default Statuses</strong> - Custom status options for this project</li>
+                  <li><strong>Default Priorities</strong> - Custom priority levels for this project</li>
                 </ul>
               </section>
 
@@ -308,12 +395,13 @@ export default function DocsPage() {
                 </p>
                 <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Epic Properties</h3>
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li><strong>ID</strong> - Unique identifier (e.g., EPIC-1)</li>
                   <li><strong>Title</strong> - Short, descriptive name</li>
                   <li><strong>Summary</strong> - One-line description</li>
                   <li><strong>Description</strong> - Detailed markdown description</li>
-                  <li><strong>Status</strong> - Current state (To Do, In Progress, Blocked, Done)</li>
-                  <li><strong>Priority</strong> - Importance level (Low, Medium, High, Critical)</li>
-                  <li><strong>Manager</strong> - Person responsible for the epic</li>
+                  <li><strong>Status</strong> - Current state (todo, in_progress, blocked, done, archived)</li>
+                  <li><strong>Priority</strong> - Importance level</li>
+                  <li><strong>Manager</strong> - Person ID of the epic manager</li>
                   <li><strong>Target Release</strong> - Target completion date</li>
                 </ul>
                 <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Epic Metrics</h3>
@@ -338,13 +426,15 @@ export default function DocsPage() {
                 </p>
                 <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Story Properties</h3>
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li><strong>ID</strong> - Unique identifier (STORY-timestamp-random)</li>
+                  <li><strong>Epic ID</strong> - Link to parent epic</li>
                   <li><strong>Title</strong> - Descriptive name</li>
                   <li><strong>Summary</strong> - Brief description</li>
                   <li><strong>Description</strong> - Detailed markdown description</li>
                   <li><strong>Acceptance Criteria</strong> - List of completion requirements</li>
-                  <li><strong>Status</strong> - Current state (To Do, In Progress, Blocked, Done)</li>
+                  <li><strong>Status</strong> - Current state</li>
                   <li><strong>Priority</strong> - Importance level</li>
-                  <li><strong>Manager</strong> - Person responsible for the story</li>
+                  <li><strong>Manager</strong> - Person ID of the story manager</li>
                   <li><strong>Story Points</strong> - Effort estimate</li>
                   <li><strong>Tags</strong> - Categorization labels</li>
                   <li><strong>Due Date</strong> - Target completion date</li>
@@ -357,11 +447,12 @@ export default function DocsPage() {
                   People Management
                 </h2>
                 <p className="text-text-secondary mb-4">
-                  Each project maintains a team of people who can be assigned as managers or contributors across
-                  projects, epics, and stories.
+                  Each project maintains a <code>people.json</code> file that stores information about team members.
+                  These people can be assigned as managers or contributors across projects, epics, and stories.
                 </p>
                 <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Person Properties</h3>
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li><strong>ID</strong> - Unique identifier (person-timestamp-random)</li>
                   <li><strong>Name</strong> - Full name</li>
                   <li><strong>Email</strong> - Contact email</li>
                   <li><strong>Designation</strong> - Job title or role</li>
@@ -393,6 +484,10 @@ export default function DocsPage() {
                   <li>Fill in the project name and description</li>
                   <li>Click Save</li>
                 </ol>
+                <p className="text-text-secondary mb-4">
+                  This creates a new directory in <code>/pm/[project-name]/</code> with a <code>project.json</code> file
+                  and an empty <code>people.json</code> file.
+                </p>
               </section>
 
               <section id="project-metadata">
@@ -400,14 +495,16 @@ export default function DocsPage() {
                   Project Metadata
                 </h2>
                 <p className="text-text-secondary mb-4">
-                  When viewing a project, you can edit its metadata:
+                  The <code>project.json</code> file contains all project-level information:
                 </p>
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
-                  <li><strong>Name</strong> - Must be unique</li>
+                  <li><strong>Name</strong> - Must be unique and URL-friendly</li>
                   <li><strong>Description</strong> - Supports markdown formatting</li>
                   <li><strong>Manager</strong> - Select from people in the project</li>
                   <li><strong>Contributors</strong> - Multiple people can be selected</li>
                   <li><strong>Repository URL</strong> - Optional link to code repository</li>
+                  <li><strong>Default Statuses</strong> - Customize available status options</li>
+                  <li><strong>Default Priorities</strong> - Customize priority levels</li>
                 </ul>
               </section>
 
@@ -441,14 +538,31 @@ export default function DocsPage() {
                 </p>
                 <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
                   <li>Open the project detail page</li>
-                  <li>Click the &quot;+ Epic&quot; button in the left panel</li>
+                  <li>Click the &quot;New Epic&quot; button</li>
                   <li>Fill in the epic details (title, summary, description)</li>
-                  <li>Set the priority and manager</li>
-                  <li>Click &quot;Create Epic&quot;</li>
+                  <li>Set the status, priority, and manager</li>
+                  <li>Click Save</li>
                 </ol>
                 <p className="text-text-secondary mb-4">
-                  New epics are automatically assigned a sequential ID (EPIC-0001, EPIC-0002, etc.) and start with
-                  &quot;To Do&quot; status.
+                  This creates a new directory in <code>/pm/[project-name]/[epic-name]/</code> with an
+                  <code>epic.json</code> file.
+                </p>
+              </section>
+
+              <section id="epic-structure">
+                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                  Epic Structure
+                </h2>
+                <p className="text-text-secondary mb-4">
+                  Each epic folder contains:
+                </p>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li><code>epic.json</code> - Epic metadata and properties</li>
+                  <li><code>STORY-*.json</code> - One file per story in the epic</li>
+                </ul>
+                <p className="text-text-secondary mb-4">
+                  The folder name is derived from the epic title (lowercase, hyphenated) and serves as the epic&apos;s
+                  identifier in URLs.
                 </p>
               </section>
 
@@ -480,14 +594,14 @@ export default function DocsPage() {
                 </p>
                 <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
                   <li>Expand an epic in the accordion list</li>
-                  <li>Click the &quot;+&quot; button at the bottom of the epic</li>
-                  <li>Fill in the story details (title and summary are required)</li>
-                  <li>Set the priority and manager</li>
-                  <li>Click &quot;Create Story&quot;</li>
+                  <li>Click the &quot;New Story&quot; button</li>
+                  <li>Fill in the story details</li>
+                  <li>Add acceptance criteria</li>
+                  <li>Link relevant code files (optional)</li>
+                  <li>Click Save</li>
                 </ol>
                 <p className="text-text-secondary mb-4">
-                  New stories are automatically assigned a sequential ID (STORY-001, STORY-002, etc.) and start with
-                  &quot;To Do&quot; status. You can add more details like acceptance criteria and files after creation.
+                  This creates a new <code>STORY-[timestamp]-[random].json</code> file in the epic&apos;s folder.
                 </p>
               </section>
 
@@ -500,16 +614,13 @@ export default function DocsPage() {
                 </p>
                 <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Metadata Fields</h3>
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
-                  <li><strong>Status</strong> - Select from available statuses (To Do, In Progress, Blocked, Done)</li>
-                  <li><strong>Priority</strong> - Select from available priorities (Low, Medium, High, Critical)</li>
+                  <li><strong>Status</strong> - Select from project&apos;s default statuses</li>
+                  <li><strong>Priority</strong> - Select from project&apos;s default priorities</li>
                   <li><strong>Manager</strong> - Select from project&apos;s people</li>
                   <li><strong>Due Date</strong> - Optional target completion date</li>
                   <li><strong>Story Points</strong> - Numeric effort estimate</li>
-                  <li><strong>Tags</strong> - Add tags for categorization</li>
+                  <li><strong>Tags</strong> - Comma-separated labels</li>
                 </ul>
-                <p className="text-text-secondary mb-4">
-                  <strong>Note:</strong> Status and Priority changes are automatically saved when you select them.
-                </p>
                 <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Content Fields</h3>
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
                   <li><strong>Title</strong> - Short, descriptive name</li>
@@ -528,7 +639,6 @@ export default function DocsPage() {
                 </p>
                 <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Adding Criteria</h3>
                 <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
-                  <li>Scroll to the &quot;Acceptance Criteria&quot; section</li>
                   <li>Click &quot;Add Criterion&quot; button</li>
                   <li>Enter the requirement in the text field</li>
                   <li>Click the plus icon or press Enter</li>
@@ -598,7 +708,7 @@ export default function DocsPage() {
                 </p>
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
                   <li>Epic title</li>
-                  <li>Status indicator (colored icon and left border)</li>
+                  <li>Status badge</li>
                   <li>Story count</li>
                   <li>Total story points</li>
                   <li>Progress percentage</li>
@@ -609,12 +719,12 @@ export default function DocsPage() {
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
                   <li>Story title</li>
                   <li>Manager name</li>
-                  <li>Status indicator</li>
+                  <li>Status badge</li>
                 </ul>
                 <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Right Panel - Detail View</h3>
                 <p className="text-text-secondary mb-4">
                   Displays the full details of the selected epic or story, or the project overview if nothing is
-                  selected. You can edit all fields directly in this panel.
+                  selected.
                 </p>
               </section>
 
@@ -645,8 +755,8 @@ export default function DocsPage() {
                   <li>Select an epic or story from the accordion</li>
                   <li>Edit fields in the right panel</li>
                   <li>The Save button becomes enabled when changes are detected</li>
-                  <li>Click Save to persist changes</li>
-                  <li>Status and Priority changes are saved automatically</li>
+                  <li>Click Save to persist changes to the JSON file</li>
+                  <li>Changes are saved immediately to disk</li>
                 </ol>
                 <p className="text-text-secondary mb-4">
                   No separate edit pages or modals - everything is inline for a seamless experience.
@@ -685,6 +795,170 @@ export default function DocsPage() {
                 </div>
               </section>
 
+              {/* Data Model */}
+              <section id="json-schema">
+                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                  JSON Schema
+                </h2>
+                <p className="text-text-secondary mb-4">
+                  All data in Project Manager is validated using Zod schemas. This ensures type safety and prevents
+                  invalid data from being saved.
+                </p>
+                <p className="text-text-secondary mb-4">
+                  The schemas are defined in <code>src/lib/types.ts</code> and include:
+                </p>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li>ProjectSchema</li>
+                  <li>EpicSchema</li>
+                  <li>StorySchema</li>
+                  <li>PersonSchema</li>
+                  <li>StoryFileSchema</li>
+                </ul>
+              </section>
+
+              <section id="project-json">
+                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                  project.json
+                </h2>
+                <p className="text-text-secondary mb-4">
+                  Example structure:
+                </p>
+                <div className="bg-surface border border-border-light rounded-lg p-4 mb-4 overflow-x-auto">
+                  <pre className="text-sm">
+{`{
+  "name": "Healthcare Workflow Platform",
+  "description": "Platform for hospital management.",
+  "epicIds": [],
+  "defaultStatuses": [
+    "todo",
+    "in_progress",
+    "blocked",
+    "done",
+    "archived"
+  ],
+  "defaultPriorities": [
+    "low",
+    "medium",
+    "high",
+    "critical"
+  ],
+  "metadata": {
+    "manager": "person-001",
+    "contributors": ["person-002", "person-003"],
+    "repoUrl": "https://github.com/org/repo",
+    "custom": {}
+  }
+}`}
+                  </pre>
+                </div>
+              </section>
+
+              <section id="epic-json">
+                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                  epic.json
+                </h2>
+                <p className="text-text-secondary mb-4">
+                  Example structure:
+                </p>
+                <div className="bg-surface border border-border-light rounded-lg p-4 mb-4 overflow-x-auto">
+                  <pre className="text-sm">
+{`{
+  "id": "EPIC-1",
+  "title": "Patient Management System",
+  "summary": "Build patient management features",
+  "description": "Detailed description...",
+  "status": "in_progress",
+  "priority": "high",
+  "manager": "person-001",
+  "createdAt": "2025-01-05T10:00:00Z",
+  "updatedAt": "2025-01-10T14:30:00Z",
+  "targetRelease": "2025-03-01",
+  "tags": ["frontend", "backend"],
+  "metadata": {
+    "createdBy": "person-001",
+    "custom": {}
+  }
+}`}
+                  </pre>
+                </div>
+              </section>
+
+              <section id="story-json">
+                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                  STORY-*.json
+                </h2>
+                <p className="text-text-secondary mb-4">
+                  Example structure:
+                </p>
+                <div className="bg-surface border border-border-light rounded-lg p-4 mb-4 overflow-x-auto">
+                  <pre className="text-sm">
+{`{
+  "id": "STORY-1733664268523-456",
+  "epicId": "EPIC-1",
+  "title": "Create patient profile form",
+  "summary": "User can create patient profiles",
+  "description": "Detailed description...",
+  "acceptanceCriteria": [
+    "Form validates required fields",
+    "Success shows confirmation",
+    "Patient appears in list"
+  ],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-002",
+  "createdAt": "2025-01-05T10:00:00Z",
+  "updatedAt": "2025-01-05T10:00:00Z",
+  "dueDate": "2025-01-20",
+  "tags": ["frontend", "patients"],
+  "estimate": {
+    "storyPoints": 5,
+    "confidence": "high"
+  },
+  "files": [
+    {
+      "path": "src/app/patients/new/page.tsx",
+      "role": "primary"
+    }
+  ],
+  "relatedStories": [],
+  "metadata": {
+    "createdBy": "person-001",
+    "custom": {}
+  }
+}`}
+                  </pre>
+                </div>
+              </section>
+
+              <section id="people-json">
+                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                  people.json
+                </h2>
+                <p className="text-text-secondary mb-4">
+                  Example structure:
+                </p>
+                <div className="bg-surface border border-border-light rounded-lg p-4 mb-4 overflow-x-auto">
+                  <pre className="text-sm">
+{`[
+  {
+    "id": "person-001",
+    "name": "John Smith",
+    "email": "john@example.com",
+    "designation": "Senior Developer",
+    "roleInProject": "Tech Lead"
+  },
+  {
+    "id": "person-002",
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "designation": "Product Manager",
+    "roleInProject": "Project Lead"
+  }
+]`}
+                  </pre>
+                </div>
+              </section>
+
               {/* Best Practices */}
               <section id="organizing-epics">
                 <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
@@ -696,7 +970,7 @@ export default function DocsPage() {
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
                   <li><strong>Group by feature</strong> - Each epic should represent a cohesive feature or module</li>
                   <li><strong>Keep them independent</strong> - Minimize dependencies between epics</li>
-                  <li><strong>Use descriptive names</strong> - Epic names should clearly indicate their purpose</li>
+                  <li><strong>Use descriptive names</strong> - Epic names become folder names, so keep them clear</li>
                   <li><strong>Set clear goals</strong> - Write a detailed description of what success looks like</li>
                   <li><strong>Track progress</strong> - Regularly update epic status based on story completion</li>
                 </ul>
@@ -748,6 +1022,37 @@ export default function DocsPage() {
                 </ul>
               </section>
 
+              <section id="version-control">
+                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                  Version Control
+                </h2>
+                <p className="text-text-secondary mb-4">
+                  Since all project data is stored as JSON files, you can use Git to track changes:
+                </p>
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Committing Changes</h3>
+                <div className="bg-surface border border-border-light rounded-lg p-4 mb-4">
+                  <code className="text-sm">
+                    <div># View changes to project management data</div>
+                    <div>git status</div>
+                    <div>&nbsp;</div>
+                    <div># Review specific changes</div>
+                    <div>git diff pm/</div>
+                    <div>&nbsp;</div>
+                    <div># Commit changes</div>
+                    <div>git add pm/</div>
+                    <div>git commit -m &quot;Add user authentication epic with 3 stories&quot;</div>
+                  </code>
+                </div>
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Benefits</h3>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li><strong>History</strong> - Track how requirements evolve over time</li>
+                  <li><strong>Collaboration</strong> - Multiple team members can edit and merge changes</li>
+                  <li><strong>Branching</strong> - Work on planning in feature branches</li>
+                  <li><strong>Blame/Annotations</strong> - See who changed what and when</li>
+                  <li><strong>Rollback</strong> - Revert to previous versions if needed</li>
+                </ul>
+              </section>
+
               {/* Advanced */}
               <section id="direct-url-navigation">
                 <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
@@ -763,18 +1068,18 @@ export default function DocsPage() {
                     <div>/projects/[project-name]</div>
                     <div>&nbsp;</div>
                     <div># View a specific epic</div>
-                    <div>/projects/[project-name]?epic=[epic-id]</div>
+                    <div>/projects/[project-name]?epic=[epic-name]</div>
                     <div>&nbsp;</div>
                     <div># View a specific story</div>
-                    <div>/projects/[project-name]?epic=[epic-id]&story=[story-id]</div>
+                    <div>/projects/[project-name]?epic=[epic-name]&story=[story-id]</div>
                   </code>
                 </div>
                 <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Examples</h3>
                 <div className="bg-surface border border-border-light rounded-lg p-4 mb-4">
                   <code className="text-sm">
                     <div>/projects/healthcare-platform</div>
-                    <div>/projects/healthcare-platform?epic=EPIC-0001</div>
-                    <div>/projects/healthcare-platform?epic=EPIC-0001&story=STORY-001</div>
+                    <div>/projects/healthcare-platform?epic=appointment-scheduling</div>
+                    <div>/projects/healthcare-platform?epic=appointment-scheduling&story=STORY-125</div>
                   </code>
                 </div>
                 <p className="text-text-secondary mb-4">
@@ -798,13 +1103,42 @@ export default function DocsPage() {
                 </ul>
               </section>
 
+              <section id="ai-integration">
+                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                  AI Integration (Future)
+                </h2>
+                <p className="text-text-secondary mb-4">
+                  Future versions will include AI-powered features:
+                </p>
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Planned Features</h3>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li><strong>Epic Expansion</strong> - Generate stories from an epic description</li>
+                  <li><strong>Acceptance Criteria</strong> - AI suggests acceptance criteria for stories</li>
+                  <li><strong>File Path Suggestions</strong> - AI recommends relevant code files</li>
+                  <li><strong>Technical Breakdown</strong> - Convert user stories into technical tasks</li>
+                  <li><strong>Story Estimation</strong> - AI assists with story point estimation</li>
+                  <li><strong>Dependency Detection</strong> - Identify dependencies between stories</li>
+                </ul>
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Cursor AI Integration</h3>
+                <p className="text-text-secondary mb-4">
+                  Project Manager is designed to work seamlessly with Cursor AI. You can already use Cursor to:
+                </p>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li>Read JSON files and understand project structure</li>
+                  <li>Generate code based on story descriptions</li>
+                  <li>Suggest improvements to acceptance criteria</li>
+                  <li>Create new stories and epics via conversation</li>
+                </ul>
+              </section>
+
               {/* Footer */}
               <section className="mt-12 pt-8 border-t border-border-light">
                 <p className="text-text-secondary text-sm">
-                  For technical documentation including installation, file structure, and JSON schemas, see{' '}
-                  <Link href="/technical-docs" className="text-primary hover:underline">
-                    Technical Documentation
-                  </Link>.
+                  For more information, check out the{' '}
+                  <Link href="https://github.com" className="text-primary hover:underline">
+                    GitHub repository
+                  </Link>{' '}
+                  or reach out to the development team.
                 </p>
               </section>
             </div>
@@ -838,3 +1172,4 @@ export default function DocsPage() {
     </div>
   )
 }
+
