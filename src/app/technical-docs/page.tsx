@@ -93,6 +93,15 @@ const docStructure: DocSection[] = [
     ],
   },
   {
+    id: 'analytics',
+    title: 'Analytics Implementation',
+    children: [
+      { id: 'analytics-architecture', title: 'Architecture' },
+      { id: 'analytics-calculations', title: 'Metric Calculations' },
+      { id: 'risk-scoring', title: 'Risk Scoring Algorithm' },
+    ],
+  },
+  {
     id: 'advanced',
     title: 'Advanced',
     children: [

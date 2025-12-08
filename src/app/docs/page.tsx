@@ -58,6 +58,16 @@ const docStructure: DocSection[] = [
     ],
   },
   {
+    id: 'analytics',
+    title: 'Analytics & Metrics',
+    children: [
+      { id: 'analytics-overview', title: 'Analytics Overview' },
+      { id: 'key-metrics', title: 'Key Metrics' },
+      { id: 'status-distribution', title: 'Status Distribution' },
+      { id: 'risk-analysis', title: 'Risk Analysis' },
+    ],
+  },
+  {
     id: 'user-interface',
     title: 'User Interface',
     children: [

@@ -50,11 +50,38 @@ This hierarchical structure makes it easy to:
   - Links to code files
   - Tags for organization
 
-### 📊 Tracking & Metrics
-- Epic-level progress tracking
-- Story point completion
-- Status breakdowns
-- Timeline visualization
+### 📊 Analytics & Metrics
+The application includes a comprehensive analytics dashboard that provides real-time insights:
+
+#### Key Metrics
+- **Completion**: Overall project progress with visual progress bars
+- **Velocity**: Story points completed in the last 2 weeks
+- **Burn Rate**: Average story points completed per day
+- **Critical Items**: Count of high-priority pending work
+
+#### Status Distribution
+- Visual breakdown of stories by status (To Do, In Progress, Blocked, Done)
+- Color-coded progress bars for quick insights
+- Percentage calculations for each status
+
+#### Epic Progress Tracking
+- Completion percentage for each epic
+- Story count and total points per epic
+- Color-coded progress indicators (green=complete, blue=50%+, yellow=<50%)
+
+#### Risk Analysis
+- **Top 5 Stories at Risk**: Identifies stories needing attention based on:
+  - Blocked status (+50 risk points)
+  - Critical priority (+30 points)
+  - High priority (+20 points)
+  - Overdue status (+40 points)
+  - Age > 30 days (+10 points)
+
+#### Additional Metrics
+- Total epics count
+- Average story age (in days)
+- Team size (contributors)
+- Average stories per epic
 
 ## Quick Start
 
@@ -88,6 +115,23 @@ This hierarchical structure makes it easy to:
 The application will create the `/pm` directory structure on first run with sample data to help you get started.
 
 ## Usage
+
+### Accessing Analytics
+
+**From Header Navigation:**
+1. Click "Analytics" in the header
+2. Select a project tab to view its metrics
+
+**From Project Page:**
+1. Open any project
+2. Click the analytics icon (bar chart) next to the project title
+
+The analytics dashboard provides real-time insights including:
+- Key performance metrics (completion, velocity, burn rate)
+- Status distribution charts
+- Epic progress overview
+- Top 5 stories at risk
+- Additional project metrics
 
 ### Creating a Project
 
@@ -234,7 +278,12 @@ Currently minimal configuration is needed. Future additions may include:
 - [x] Basic CRUD operations
 - [x] Clean UI with forms and editors
 
-### Phase 2: Enhanced Features (In Progress)
+### Phase 2: Enhanced Features ✅
+- [x] Analytics dashboard with real-time metrics
+- [x] Risk analysis for identifying at-risk stories
+- [x] Velocity and burn rate tracking
+- [x] Epic progress visualization
+- [x] Status distribution charts
 - [ ] Rich markdown editor for descriptions
 - [ ] Drag-and-drop story prioritization
 - [ ] Epic and story templates

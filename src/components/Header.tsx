@@ -13,26 +13,32 @@ export function Header() {
             </h1>
           </Link>
 
-          <nav className="flex items-center gap-6">
-            <Link
-              href="/projects"
-              className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
-            >
-              Projects
-            </Link>
-            <Link
-              href="/people"
-              className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
-            >
-              People
-            </Link>
-            <Link
-              href="/docs"
-              className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
-            >
-              Docs
-            </Link>
-          </nav>
+                <nav className="flex items-center gap-6">
+                  <Link
+                    href="/projects"
+                    className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+                  >
+                    Projects
+                  </Link>
+                  <Link
+                    href="/analytics"
+                    className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+                  >
+                    Analytics
+                  </Link>
+                  <Link
+                    href="/people"
+                    className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+                  >
+                    People
+                  </Link>
+                  <Link
+                    href="/docs"
+                    className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+                  >
+                    Docs
+                  </Link>
+                </nav>
         </div>
       </div>
     </header>

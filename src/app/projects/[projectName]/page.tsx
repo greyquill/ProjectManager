@@ -25,6 +25,7 @@ import {
   Tag,
   Eye,
   Edit,
+  BarChart3,
 } from 'lucide-react'
 import type { Project, Epic, Story, StoryFile, Person } from '@/lib/types'
 
@@ -839,9 +840,13 @@ export default function ProjectDetailPage() {
         {/* Project Header - Compact */}
         <div className="mb-6">
           <div className="flex items-center gap-3 flex-wrap">
-            <div className="h-8 w-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
-              <FolderKanban className="h-4 w-4" />
-            </div>
+            <Link
+              href="/analytics"
+              className="h-8 w-8 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 flex items-center justify-center flex-shrink-0 transition-colors"
+              title="View Analytics"
+            >
+              <BarChart3 className="h-4 w-4" />
+            </Link>
             <h1
               className="text-lg font-semibold text-text-primary cursor-pointer hover:text-primary transition-colors"
               onClick={clearSelection}
