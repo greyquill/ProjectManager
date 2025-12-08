@@ -58,7 +58,7 @@ export const StorySchema = z.object({
   epicId: z.string().optional(), // Optional for hierarchical structure (epic name is in path)
 
   title: z.string().min(1, 'Title is required'),
-  summary: z.string().min(1, 'Summary is required'),
+  summary: z.string().default(''), // Allow empty summary for focus mode
   description: z.string().default(''),
   acceptanceCriteria: z.array(z.string()).default([]),
 

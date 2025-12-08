@@ -427,26 +427,41 @@ export default function ProjectDetailPage() {
       if (e.key === 'Enter') {
         const activeElement = document.activeElement
 
-        // If focus is on a select dropdown, open it by programmatically clicking
+        // If focus is on a select dropdown, open it
         if (activeElement && activeElement.tagName === 'SELECT') {
           e.preventDefault()
-          // Click to open the dropdown (works in most browsers)
           const select = activeElement as HTMLSelectElement
+          // Try to open dropdown by setting size temporarily (works in most browsers)
+          const originalSize = select.size
+          select.size = select.options.length > 10 ? 10 : select.options.length
           select.focus()
-          // Use setTimeout to ensure focus is set before clicking
+          // Reset size after a brief moment to show dropdown
           setTimeout(() => {
+            select.size = originalSize
+            // Also try clicking as fallback
             select.click()
-          }, 0)
+          }, 10)
           return
         }
 
-        // If focus is on the Save button, trigger click
+        // If focus is on a button (Save, Create Story, etc.), trigger click
         if (activeElement && (activeElement.tagName === 'BUTTON' || activeElement.closest('button'))) {
           const button = activeElement.tagName === 'BUTTON' ? activeElement : activeElement.closest('button')
-          if (button && (button.getAttribute('data-save-button') === 'true' || button.textContent?.includes('Save'))) {
-            e.preventDefault()
-            button.click()
-            return
+          if (button) {
+            const buttonText = button.textContent || ''
+            const hasSaveAttribute = button.getAttribute('data-save-button') === 'true'
+            const hasCreateAttribute = button.getAttribute('data-create-button') === 'true'
+            const isSaveButton = hasSaveAttribute || buttonText.includes('Save')
+            const isCreateButton = hasCreateAttribute || buttonText.includes('Create Story') || buttonText.includes('Create Epic')
+
+            if (isSaveButton || isCreateButton) {
+              e.preventDefault()
+              // Check if button is not disabled
+              if (!button.hasAttribute('disabled') && !button.classList.contains('opacity-50')) {
+                button.click()
+              }
+              return
+            }
           }
         }
 
@@ -492,6 +507,10 @@ export default function ProjectDetailPage() {
           } else if (focusedItem.type === 'newStory') {
             // Open new story form for this epic
             setShowNewStoryForm(focusedItem.epicName)
+            // Set default manager to project manager in focus mode
+            if (isFullscreen && project?.metadata?.manager && project.metadata.manager !== 'unassigned') {
+              setNewStoryManager(project.metadata.manager)
+            }
             // Ensure epic is expanded
             if (!expandedEpics.has(focusedItem.epicName)) {
               setExpandedEpics((prev) => new Set([...prev, focusedItem.epicName]))
@@ -1089,8 +1108,8 @@ export default function ProjectDetailPage() {
   }
 
   async function createNewStory(epicName: string) {
-    if (!newStoryTitle.trim() || !newStorySummary.trim()) {
-      setError('Story title and summary are required')
+    if (!newStoryTitle.trim() || (!isFullscreen && !newStorySummary.trim())) {
+      setError(isFullscreen ? 'Story title is required' : 'Story title and summary are required')
       return
     }
 
@@ -1103,11 +1122,13 @@ export default function ProjectDetailPage() {
       // For now, we'll let the API generate the ID and update the title after creation
       const storyData = {
         title: newStoryTitle.trim(),
-        summary: newStorySummary.trim(),
+        summary: isFullscreen ? '' : newStorySummary.trim(),
         description: '',
         status: newStoryStatus,
         priority: newStoryPriority,
-        manager: newStoryManager,
+        manager: isFullscreen && newStoryManager === 'unassigned' && project?.metadata?.manager && project.metadata.manager !== 'unassigned'
+          ? project.metadata.manager
+          : newStoryManager,
         createdAt: now,
         updatedAt: now,
         dueDate: null,
@@ -1435,7 +1456,7 @@ export default function ProjectDetailPage() {
         <div className={`grid gap-6 ${isFullscreen ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-3'}`}>
           {/* Left: Epic/Story Accordion */}
           <div className={`space-y-2 ${isFullscreen ? 'col-span-1' : 'lg:col-span-1'}`}>
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-4 relative">
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-semibold text-text-primary">Epics & Stories</h2>
                 <button
@@ -1453,6 +1474,11 @@ export default function ProjectDetailPage() {
                   )}
                 </button>
               </div>
+              {isFullscreen && (
+                <div className="absolute left-1/2 transform -translate-x-1/2">
+                  <span className="text-xs text-blue-500 font-medium">Focus Mode</span>
+                </div>
+              )}
               {!showNewEpicForm && (
                 <Button
                   variant="outline"
@@ -1828,6 +1854,7 @@ export default function ProjectDetailPage() {
                                   />
                                 </div>
 
+                                {!isFullscreen && (
                                 <div>
                                   <input
                                     type="text"
@@ -1837,6 +1864,7 @@ export default function ProjectDetailPage() {
                                     className="input-field text-sm w-full"
                                   />
                                 </div>
+                                )}
 
                                 <div>
                                   <label className="block text-xs text-text-secondary mb-1">Priority</label>
@@ -1857,6 +1885,7 @@ export default function ProjectDetailPage() {
                                   </div>
                                 </div>
 
+                                {!isFullscreen && (
                                 <div>
                                   <select
                                     value={newStoryManager}
@@ -1871,6 +1900,7 @@ export default function ProjectDetailPage() {
                                     ))}
                                   </select>
                                 </div>
+                                )}
 
                                 <div className="flex items-center gap-2">
                                   <Button
@@ -1881,7 +1911,7 @@ export default function ProjectDetailPage() {
                                       createNewStory(epic._name)
                                     }}
                                     isLoading={creatingStory}
-                                    disabled={!newStoryTitle.trim() || !newStorySummary.trim()}
+                                    disabled={!newStoryTitle.trim() || (!isFullscreen && !newStorySummary.trim())}
                                   >
                                     Create Story
                                   </Button>
@@ -1912,6 +1942,10 @@ export default function ProjectDetailPage() {
                               onClick={(e) => {
                                 e.stopPropagation()
                                 setShowNewStoryForm(epic._name)
+                                // Set default manager to project manager in focus mode
+                                if (isFullscreen && project?.metadata?.manager && project.metadata.manager !== 'unassigned') {
+                                  setNewStoryManager(project.metadata.manager)
+                                }
                                 // Ensure epic is expanded
                                 if (!isExpanded) {
                                   toggleEpic(epic._name)
