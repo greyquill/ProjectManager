@@ -14,7 +14,7 @@ export async function GET() {
     const isVercel = process.env.VERCEL === '1'
 
     // Collect all available env var names (without values for security)
-    const allEnvVars = Object.keys(process.env).filter(key => 
+    const allEnvVars = Object.keys(process.env).filter(key =>
       key.includes('REDIS') || key.includes('KV') || key.includes('UPSTASH')
     )
 
