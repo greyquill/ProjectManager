@@ -116,6 +116,45 @@ The application will create the `/pm` directory structure on first run with samp
 
 ## Usage
 
+### Keyboard Navigation
+
+The application supports comprehensive keyboard navigation, especially in **Focus Mode** (activated by clicking the `<>` icon next to "Epics & Stories").
+
+#### Focus Mode Navigation
+
+**Activating Focus Mode:**
+- Click the `<>` icon next to "Epics & Stories" to enter focus mode
+- The sidebar expands to full width for dedicated epic and story management
+- Click `><` to exit focus mode
+
+**Navigating Items:**
+- **Arrow Up (↑)**: Move focus to the previous epic or story
+- **Arrow Down (↓)**: Move focus to the next epic or story
+- Focus automatically wraps around (from last item to first, and vice versa)
+
+**Expanding/Collapsing Epics:**
+- **Arrow Right (→)**: Expand the focused epic (show its stories)
+- **Arrow Left (←)**: Collapse the focused epic (hide its stories)
+- **Space**: Toggle expand/collapse for the focused epic
+
+**Editing Titles:**
+- **Enter**:
+  - If not editing: Enter edit mode for the focused epic/story title
+  - If already editing: Save changes and exit edit mode
+- **Escape**: Cancel editing and discard changes
+
+**Visual Feedback:**
+- Focused items are highlighted with a blue ring and background
+- Items automatically scroll into view when focused
+- Edit mode shows an input field with a blue underline
+
+#### Normal Mode
+
+In normal (non-focus) mode, you can:
+- Click on epics and stories to select them
+- Use the right panel to edit details
+- Click epic titles to expand/collapse
+
 ### Accessing Analytics
 
 **From Header Navigation:**
