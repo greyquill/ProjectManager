@@ -1831,12 +1831,12 @@ export default function ProjectDetailPage() {
                                       setTempEpicTitle('')
                                     }
                                   }}
-                                  className="w-full font-semibold text-blue-500 text-sm bg-transparent border-b-2 border-blue-500 focus:outline-none px-1"
+                                  className="w-full font-semibold text-primary text-sm bg-transparent border-b-2 border-primary focus:outline-none px-1"
                                   autoFocus
                                 />
                               ) : (
                                 <div
-                                  className={`font-semibold text-blue-500 truncate ${isFullscreen ? 'text-sm' : 'text-sm'} ${isFullscreen ? 'cursor-text hover:bg-blue-50 px-1 rounded' : ''}`}
+                                  className={`font-semibold text-primary truncate ${isFullscreen ? 'text-sm' : 'text-sm'} ${isFullscreen ? 'cursor-text hover:bg-blue-50 px-1 rounded' : ''}`}
                                   onClick={(e) => {
                                     if (isFullscreen) {
                                       e.stopPropagation()
@@ -1933,7 +1933,7 @@ export default function ProjectDetailPage() {
                                             />
                                           ) : (
                                             <div
-                                              className={`font-medium text-text-primary truncate text-xs ${isFullscreen ? 'cursor-text hover:bg-blue-50 px-1 rounded' : ''}`}
+                                              className={`font-medium text-text-primary truncate text-xs ${isStorySelected ? 'underline' : ''} ${isFullscreen ? 'cursor-text hover:bg-blue-50 px-1 rounded' : ''}`}
                                               onClick={(e) => {
                                                 if (isFullscreen) {
                                                   e.stopPropagation()
