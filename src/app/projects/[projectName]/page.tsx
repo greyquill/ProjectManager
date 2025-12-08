@@ -128,7 +128,24 @@ export default function ProjectDetailPage() {
   // Quick epic creation in focus mode
   const [quickEpicTitle, setQuickEpicTitle] = useState('')
 
-  // Will be set up after function declarations
+  // Helper functions for story title formatting
+  const extractStoryTitle = useCallback((storyId: string, title: string): string => {
+    // Remove the prefix if it exists for editing
+    const prefix = `[${storyId}]`
+    if (title.startsWith(prefix)) {
+      return title.substring(prefix.length).trim()
+    }
+    return title
+  }, [])
+
+  const formatStoryTitle = useCallback((storyId: string, title: string): string => {
+    // Add prefix if it doesn't exist
+    const prefix = `[${storyId}]`
+    if (!title.startsWith(prefix)) {
+      return `${prefix} ${title}`
+    }
+    return title
+  }, [])
 
   // Derive selection from URL params
   const selection: Selection = useMemo(() => epicNameFromUrl && storyIdFromUrl
@@ -184,8 +201,7 @@ export default function ProjectDetailPage() {
         setHasChanges(false)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [epicNameFromUrl, storyIdFromUrl, epics])
+  }, [epicNameFromUrl, storyIdFromUrl, epics, selection.type, selection.epicName, selection.storyId, extractStoryTitle])
 
   const fetchPeople = useCallback(async () => {
     try {
@@ -368,24 +384,6 @@ export default function ProjectDetailPage() {
   }, [epics, projectName])
 
   // Save story title function
-  // Helper functions for story title formatting
-  const formatStoryTitle = useCallback((storyId: string, title: string): string => {
-    // If title already has the prefix, return as is
-    if (title.startsWith(`[${storyId}]`)) {
-      return title
-    }
-    // Otherwise, add the prefix
-    return `[${storyId}] ${title.trim()}`
-  }, [])
-
-  const extractStoryTitle = useCallback((storyId: string, title: string): string => {
-    // Remove the prefix if it exists for editing
-    const prefix = `[${storyId}]`
-    if (title.startsWith(prefix)) {
-      return title.substring(prefix.length).trim()
-    }
-    return title.trim()
-  }, [])
 
   const saveStoryTitle = useCallback(async (epicName: string, storyId: string, newTitle: string, currentTitle: string) => {
     // Ensure the title has the prefix

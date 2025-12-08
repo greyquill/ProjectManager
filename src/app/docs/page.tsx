@@ -559,7 +559,7 @@ export default function DocsPage() {
                 </h3>
                 <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
                   <li>Expand an epic in the accordion list</li>
-                  <li>Click the "+" button at the bottom of the epic</li>
+                  <li>Click the &quot;+&quot; button at the bottom of the epic</li>
                   <li>Fill in the story details (title and summary are required)</li>
                   <li>Set the priority and manager</li>
                   <li>Click &quot;Create Story&quot;</li>
@@ -875,7 +875,7 @@ export default function DocsPage() {
                   Focus Mode
                 </h3>
                 <p className="text-text-secondary mb-4">
-                  Focus Mode is a dedicated full-screen view for managing epics and stories. Activate it by clicking the <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">&lt;&gt;</code> icon next to "Epics & Stories" on any project page.
+                  Focus Mode is a dedicated full-screen view for managing epics and stories. Activate it by clicking the <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">&lt;&gt;</code> icon next to &quot;Epics & Stories&quot; on any project page.
                 </p>
 
                 <h4 className="text-xl font-semibold text-text-primary mb-3 mt-6">
@@ -902,11 +902,11 @@ export default function DocsPage() {
                     <tbody className="text-text-secondary">
                       <tr className="border-b border-border-light">
                         <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">↑</kbd> Arrow Up</td>
-                        <td className="py-2 px-3">Move focus to the previous epic or story. Wraps to "+ Add Epic" row when at the top.</td>
+                        <td className="py-2 px-3">Move focus to the previous epic or story. Wraps to &quot;+ Add Epic&quot; row when at the top.</td>
                       </tr>
                       <tr className="border-b border-border-light">
                         <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">↓</kbd> Arrow Down</td>
-                        <td className="py-2 px-3">Move focus to the next epic or story. Wraps to first item when at "+ Add Epic" row.</td>
+                        <td className="py-2 px-3">Move focus to the next epic or story. Wraps to first item when at &quot;+ Add Epic&quot; row.</td>
                       </tr>
                       <tr className="border-b border-border-light">
                         <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">→</kbd> Arrow Right</td>
@@ -925,8 +925,8 @@ export default function DocsPage() {
                         <td className="py-2 px-3">
                           <ul className="list-disc list-inside ml-4 mt-1">
                             <li>If focused on epic/story: Enter edit mode for the title (if not editing) or save and exit (if editing)</li>
-                            <li>If focused on "+" icon row: Open the story creation form</li>
-                            <li>If focused on "+ Add Epic" input: Create the epic with the entered title</li>
+                            <li>If focused on &quot;+&quot; icon row: Open the story creation form</li>
+                            <li>If focused on &quot;+ Add Epic&quot; input: Create the epic with the entered title</li>
                             <li>If focused on story creation form: Create the story (title only required in focus mode)</li>
                             <li>If focused on a dropdown: Open the dropdown menu</li>
                             <li>If focused on Save button: Save the current epic/story</li>
@@ -968,8 +968,8 @@ export default function DocsPage() {
                   Focus Mode provides streamlined creation workflows:
                 </p>
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
-                  <li><strong>Creating Stories:</strong> Navigate to the "+" icon row under an epic, press Enter to open the form. Type the title and press Enter to create (or ESC to cancel). The form is simplified - only title is required, priority defaults to Medium, and manager defaults to project manager. After creation, focus automatically returns to the "+" icon for quick creation of another story.</li>
-                  <li><strong>Creating Epics:</strong> Navigate to the "+ Add Epic" row at the bottom (light blue bar), type the epic title, and press Enter to create. Focus returns to the input for creating another epic. New epics appear at the bottom of the list with their ID prefix [EPIC-XXXX].</li>
+                  <li><strong>Creating Stories:</strong> Navigate to the &quot;+&quot; icon row under an epic, press Enter to open the form. Type the title and press Enter to create (or ESC to cancel). The form is simplified - only title is required, priority defaults to Medium, and manager defaults to project manager. After creation, focus automatically returns to the &quot;+&quot; icon for quick creation of another story.</li>
+                  <li><strong>Creating Epics:</strong> Navigate to the &quot;+ Add Epic&quot; row at the bottom (light blue bar), type the epic title, and press Enter to create. Focus returns to the input for creating another epic. New epics appear at the bottom of the list with their ID prefix [EPIC-XXXX].</li>
                 </ul>
 
                 <h4 className="text-xl font-semibold text-text-primary mb-3 mt-6">
@@ -990,11 +990,11 @@ export default function DocsPage() {
                 </h4>
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
                   <li>Focused items are highlighted with a blue ring and light blue background</li>
-                  <li>The "+ Add Epic" row shows a prominent thick blue border (border-4) when focused</li>
+                  <li>The &quot;+ Add Epic&quot; row shows a prominent thick blue border (border-4) when focused</li>
                   <li>Items automatically scroll into view when focused</li>
                   <li>Edit mode shows an input field with a blue underline border</li>
                   <li>The chevron button (for expanding/collapsing) has a focus ring when focused</li>
-                  <li>A "Focus Mode" indicator appears centered between the heading and "+ Epic" button</li>
+                  <li>A &quot;Focus Mode&quot; indicator appears centered between the heading and &quot;+ Epic&quot; button</li>
                 </ul>
 
                 <h3 className="text-2xl font-semibold text-text-primary mb-3 mt-8">

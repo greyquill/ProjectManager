@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Header } from '@/components/Header'
 import { Card } from '@/components/Card'
@@ -109,7 +109,7 @@ interface ProjectInfo {
   name: string // Display name from project.json
 }
 
-export default function AnalyticsPage() {
+function AnalyticsPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const projectFromUrl = searchParams.get('project')
@@ -1282,6 +1282,18 @@ export default function AnalyticsPage() {
         )}
       </main>
     </div>
+  )
+}
+
+export default function AnalyticsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    }>
+      <AnalyticsPageContent />
+    </Suspense>
   )
 }
 
