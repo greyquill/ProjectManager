@@ -425,6 +425,31 @@ export default function ProjectDetailPage() {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Handle Enter key - enter edit mode or save if already editing
       if (e.key === 'Enter') {
+        const activeElement = document.activeElement
+
+        // If focus is on a select dropdown, open it by programmatically clicking
+        if (activeElement && activeElement.tagName === 'SELECT') {
+          e.preventDefault()
+          // Click to open the dropdown (works in most browsers)
+          const select = activeElement as HTMLSelectElement
+          select.focus()
+          // Use setTimeout to ensure focus is set before clicking
+          setTimeout(() => {
+            select.click()
+          }, 0)
+          return
+        }
+
+        // If focus is on the Save button, trigger click
+        if (activeElement && (activeElement.tagName === 'BUTTON' || activeElement.closest('button'))) {
+          const button = activeElement.tagName === 'BUTTON' ? activeElement : activeElement.closest('button')
+          if (button && (button.getAttribute('data-save-button') === 'true' || button.textContent?.includes('Save'))) {
+            e.preventDefault()
+            button.click()
+            return
+          }
+        }
+
         // If we're in edit mode, save and exit
         if (editingEpicTitle) {
           const epic = epics.find((e) => e._name === editingEpicTitle)
@@ -2346,6 +2371,7 @@ export default function ProjectDetailPage() {
                       onClick={() => saveStory(false)}
                       isLoading={saving}
                       disabled={!hasChanges}
+                      data-save-button="true"
                     >
                       <Save className="h-4 w-4 mr-2" />
                       Save
