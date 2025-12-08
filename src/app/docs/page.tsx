@@ -98,12 +98,30 @@ const docStructure: DocSection[] = [
 ]
 
 export default function DocsPage() {
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(['getting-started', 'core-concepts'])
-  )
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set())
   const [activeSection, setActiveSection] = useState('introduction')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [headings, setHeadings] = useState<Array<{ id: string; title: string; level: number }>>([])
+
+  // Find which parent section contains the active section
+  const getParentSection = (sectionId: string): string | null => {
+    for (const parent of docStructure) {
+      if (parent.children) {
+        if (parent.children.some((child) => child.id === sectionId)) {
+          return parent.id
+        }
+      }
+    }
+    return null
+  }
+
+  // Auto-expand parent section based on active section
+  useEffect(() => {
+    const parentId = getParentSection(activeSection)
+    if (parentId) {
+      setExpandedSections(new Set([parentId]))
+    }
+  }, [activeSection])
 
   const toggleSection = (id: string) => {
     const newExpanded = new Set(expandedSections)
@@ -820,27 +838,207 @@ export default function DocsPage() {
             </div>
           </main>
 
-          {/* Right Sidebar - Table of Contents - Desktop Only */}
+          {/* Right Sidebar - External Resources - Desktop Only */}
           <aside className="hidden xl:block w-64 flex-shrink-0">
             <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
-              <h3 className="text-sm font-semibold text-text-primary mb-3">On This Page</h3>
-              <nav className="space-y-1">
-                {headings.map((heading) => (
-                  <button
-                    key={heading.id}
-                    onClick={() => scrollToSection(heading.id)}
-                    className={`block w-full text-left py-1 text-xs transition-colors ${
-                      heading.level === 3 ? 'pl-3' : ''
-                    } ${
-                      activeSection === heading.id
-                        ? 'text-primary font-medium'
-                        : 'text-text-secondary hover:text-text-primary'
-                    }`}
+              <h3 className="text-sm font-semibold text-text-primary mb-4">External Resources</h3>
+
+              {/* Project Management */}
+              <div className="mb-6">
+                <h4 className="text-xs font-semibold text-text-primary mb-2 uppercase tracking-wide">
+                  Project Management
+                </h4>
+                <nav className="space-y-2">
+                  <a
+                    href="https://www.pmi.org/learning/library"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
                   >
-                    {heading.title}
-                  </button>
-                ))}
-              </nav>
+                    PMI Knowledge Center
+                  </a>
+                  <a
+                    href="https://www.atlassian.com/agile/project-management"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    Atlassian Agile Guide
+                  </a>
+                  <a
+                    href="https://www.productplan.com/learn/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    ProductPlan Learning Center
+                  </a>
+                  <a
+                    href="https://www.mindtools.com/pages/main/newMN_PPM.htm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    Mind Tools: Project Management
+                  </a>
+                </nav>
+              </div>
+
+              {/* Scrum & Agile */}
+              <div className="mb-6">
+                <h4 className="text-xs font-semibold text-text-primary mb-2 uppercase tracking-wide">
+                  Scrum & Agile
+                </h4>
+                <nav className="space-y-2">
+                  <a
+                    href="https://scrumguides.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    Official Scrum Guide
+                  </a>
+                  <a
+                    href="https://www.scrum.org/resources/blog"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    Scrum.org Blog
+                  </a>
+                  <a
+                    href="https://www.mountaingoatsoftware.com/blog"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    Mountain Goat Software Blog
+                  </a>
+                  <a
+                    href="https://www.atlassian.com/agile/scrum"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    Atlassian Scrum Guide
+                  </a>
+                  <a
+                    href="https://age-of-product.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    Age of Product
+                  </a>
+                </nav>
+              </div>
+
+              {/* People Management */}
+              <div className="mb-6">
+                <h4 className="text-xs font-semibold text-text-primary mb-2 uppercase tracking-wide">
+                  People Management
+                </h4>
+                <nav className="space-y-2">
+                  <a
+                    href="https://www.manager-tools.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    Manager Tools
+                  </a>
+                  <a
+                    href="https://hbr.org/topic/managing-people"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    HBR: Managing People
+                  </a>
+                  <a
+                    href="https://www.gallup.com/workplace/management.aspx"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    Gallup Workplace Insights
+                  </a>
+                  <a
+                    href="https://rework.withgoogle.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    re:Work by Google
+                  </a>
+                </nav>
+              </div>
+
+              {/* User Stories & Requirements */}
+              <div className="mb-6">
+                <h4 className="text-xs font-semibold text-text-primary mb-2 uppercase tracking-wide">
+                  User Stories
+                </h4>
+                <nav className="space-y-2">
+                  <a
+                    href="https://www.romanpichler.com/blog/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    Roman Pichler Blog
+                  </a>
+                  <a
+                    href="https://www.userstorymap.io/resources"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    User Story Mapping Resources
+                  </a>
+                  <a
+                    href="https://www.nngroup.com/articles/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    Nielsen Norman Group
+                  </a>
+                </nav>
+              </div>
+
+              {/* Metrics & Analytics */}
+              <div>
+                <h4 className="text-xs font-semibold text-text-primary mb-2 uppercase tracking-wide">
+                  Metrics & Analytics
+                </h4>
+                <nav className="space-y-2">
+                  <a
+                    href="https://www.projectmanagement.com/blog/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    ProjectManagement.com Blog
+                  </a>
+                  <a
+                    href="https://medium.com/agileinsider"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    Agile Insider (Medium)
+                  </a>
+                  <a
+                    href="https://www.scruminc.com/blog/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs text-text-secondary hover:text-primary transition-colors"
+                  >
+                    Scrum Inc. Blog
+                  </a>
+                </nav>
+              </div>
             </div>
           </aside>
         </div>
