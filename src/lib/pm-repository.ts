@@ -19,6 +19,25 @@ import {
 
 const PM_DATA_DIR = path.join(process.cwd(), 'pm')
 
+// Determine storage backend: use KV in production (Vercel), files in development
+const USE_KV = process.env.VERCEL === '1' || process.env.KV_REST_API_URL !== undefined
+
+// Lazy-load KV repository
+let kvRepositoryPromise: Promise<typeof import('./pm-repository-kv').pmRepositoryKV | null> | null = null
+
+async function getKVRepository() {
+  if (!USE_KV) return null
+  if (kvRepositoryPromise === null) {
+    kvRepositoryPromise = import('./pm-repository-kv')
+      .then(module => module.pmRepositoryKV)
+      .catch(error => {
+        console.warn('Vercel KV not available, falling back to file system:', error)
+        return null
+      })
+  }
+  return kvRepositoryPromise
+}
+
 // ============================================================================
 // Helper Functions
 // ============================================================================
@@ -151,6 +170,10 @@ export async function writeProject(
   projectName: string,
   project: Project
 ): Promise<void> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.writeProject(projectName, project)
+  }
   const filePath = getProjectFilePath(projectName)
   // Validate before writing
   parseProject(project)
@@ -161,6 +184,10 @@ export async function writeProject(
  * List all projects
  */
 export async function listProjects(): Promise<string[]> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.listProjects()
+  }
   try {
     const entries = await fs.readdir(PM_DATA_DIR, { withFileTypes: true })
     return entries
@@ -179,6 +206,10 @@ export async function listProjects(): Promise<string[]> {
  * Check if project exists
  */
 export async function projectExists(projectName: string): Promise<boolean> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.projectExists(projectName)
+  }
   try {
     const filePath = getProjectFilePath(projectName)
     await fs.access(filePath)
@@ -192,6 +223,10 @@ export async function projectExists(projectName: string): Promise<boolean> {
  * Delete a project (and all its epics and stories)
  */
 export async function deleteProject(projectName: string): Promise<void> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.deleteProject(projectName)
+  }
   const projectDir = getProjectDir(projectName)
   try {
     await fs.rm(projectDir, { recursive: true, force: true })
@@ -277,6 +312,10 @@ export async function getAllPeople(): Promise<Array<{ person: Person; projectNam
  * Read global people list
  */
 export async function readGlobalPeople(): Promise<Person[]> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.readGlobalPeople()
+  }
   const filePath = getGlobalPeopleFilePath()
   try {
     return await readJsonFile(filePath, parsePeople)
@@ -296,6 +335,10 @@ export async function readGlobalPeople(): Promise<Person[]> {
  * Write global people list
  */
 export async function writeGlobalPeople(people: Person[]): Promise<void> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.writeGlobalPeople(people)
+  }
   const filePath = getGlobalPeopleFilePath()
   // Validate before writing
   parsePeople(people)
@@ -307,6 +350,10 @@ export async function writeGlobalPeople(people: Person[]): Promise<void> {
  * Check if global people file exists
  */
 export async function globalPeopleExists(): Promise<boolean> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.globalPeopleExists()
+  }
   try {
     const filePath = getGlobalPeopleFilePath()
     await fs.access(filePath)
@@ -412,6 +459,10 @@ export async function readEpic(
   projectName: string,
   epicName: string
 ): Promise<Epic> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.readEpic(projectName, epicName)
+  }
   const filePath = getEpicFilePath(projectName, epicName)
   return readJsonFile(filePath, parseEpic)
 }
@@ -424,6 +475,10 @@ export async function writeEpic(
   epicName: string,
   epic: Epic
 ): Promise<void> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.writeEpic(projectName, epicName, epic)
+  }
   const filePath = getEpicFilePath(projectName, epicName)
   // Validate before writing
   parseEpic(epic)
@@ -437,6 +492,10 @@ export async function writeEpic(
  * Returns both old format (title-based) and new format (EPIC-XXXX) epics
  */
 export async function listEpics(projectName: string): Promise<string[]> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.listEpics(projectName)
+  }
   try {
     const projectDir = getProjectDir(projectName)
     const entries = await fs.readdir(projectDir, { withFileTypes: true })
@@ -458,6 +517,10 @@ export async function epicExists(
   projectName: string,
   epicName: string
 ): Promise<boolean> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.epicExists(projectName, epicName)
+  }
   try {
     const filePath = getEpicFilePath(projectName, epicName)
     await fs.access(filePath)
@@ -474,6 +537,10 @@ export async function deleteEpic(
   projectName: string,
   epicName: string
 ): Promise<void> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.deleteEpic(projectName, epicName)
+  }
   const epicDir = getEpicDir(projectName, epicName)
   try {
     await fs.rm(epicDir, { recursive: true, force: true })
@@ -496,6 +563,10 @@ export async function readStory(
   epicName: string,
   storyId: string
 ): Promise<Story> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.readStory(projectName, epicName, storyId)
+  }
   const filePath = getStoryFilePath(projectName, epicName, storyId)
   return readJsonFile(filePath, parseStory)
 }
@@ -509,6 +580,10 @@ export async function writeStory(
   storyId: string,
   story: Story
 ): Promise<void> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.writeStory(projectName, epicName, storyId, story)
+  }
   const filePath = getStoryFilePath(projectName, epicName, storyId)
   // Validate before writing
   parseStory(story)
@@ -528,6 +603,10 @@ export async function listStories(
   projectName: string,
   epicName: string
 ): Promise<string[]> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.listStories(projectName, epicName)
+  }
   try {
     const epicDir = getEpicDir(projectName, epicName)
     const entries = await fs.readdir(epicDir, { withFileTypes: true })
@@ -557,6 +636,10 @@ export async function storyExists(
   epicName: string,
   storyId: string
 ): Promise<boolean> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.storyExists(projectName, epicName, storyId)
+  }
   try {
     const filePath = getStoryFilePath(projectName, epicName, storyId)
     await fs.access(filePath)
@@ -574,6 +657,10 @@ export async function deleteStory(
   epicName: string,
   storyId: string
 ): Promise<void> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.deleteStory(projectName, epicName, storyId)
+  }
   const filePath = getStoryFilePath(projectName, epicName, storyId)
   try {
     await fs.unlink(filePath)
@@ -616,6 +703,10 @@ export async function generateNextStoryId(
   projectName: string,
   epicName: string
 ): Promise<string> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.generateNextStoryId(projectName, epicName)
+  }
   const storyIds = await listStories(projectName, epicName)
   const storyNumbers: number[] = []
 

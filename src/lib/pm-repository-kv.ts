@@ -1,0 +1,456 @@
+import { kv } from '@vercel/kv'
+import {
+  Project,
+  Epic,
+  Story,
+  Person,
+  parseProject,
+  parseEpic,
+  parseStory,
+  parsePeople,
+  generateTimestamp,
+} from './types'
+
+// ============================================================================
+// Key Helpers
+// ============================================================================
+
+function getProjectKey(projectName: string): string {
+  return `pm:project:${projectName}`
+}
+
+function getEpicKey(projectName: string, epicName: string): string {
+  return `pm:project:${projectName}:epic:${epicName}`
+}
+
+function getStoryKey(projectName: string, epicName: string, storyId: string): string {
+  return `pm:project:${projectName}:epic:${epicName}:story:${storyId}`
+}
+
+function getPeopleKey(): string {
+  return `pm:people`
+}
+
+function getProjectsListKey(): string {
+  return `pm:projects:list`
+}
+
+function getEpicsListKey(projectName: string): string {
+  return `pm:project:${projectName}:epics:list`
+}
+
+function getStoriesListKey(projectName: string, epicName: string): string {
+  return `pm:project:${projectName}:epic:${epicName}:stories:list`
+}
+
+// ============================================================================
+// Project Operations
+// ============================================================================
+
+export async function readProject(projectName: string): Promise<Project> {
+  const key = getProjectKey(projectName)
+  const data = await kv.get<unknown>(key)
+  if (!data) {
+    throw new Error(`Project "${projectName}" not found`)
+  }
+  return parseProject(data)
+}
+
+export async function writeProject(projectName: string, project: Project): Promise<void> {
+  const key = getProjectKey(projectName)
+  parseProject(project)
+  
+  // Update projects list
+  const projectsList = await kv.get<string[]>(getProjectsListKey()) || []
+  if (!projectsList.includes(projectName)) {
+    projectsList.push(projectName)
+    await kv.set(getProjectsListKey(), projectsList)
+  }
+  
+  await kv.set(key, project)
+}
+
+export async function listProjects(): Promise<string[]> {
+  const projectsList = await kv.get<string[]>(getProjectsListKey())
+  return projectsList || []
+}
+
+export async function projectExists(projectName: string): Promise<boolean> {
+  const key = getProjectKey(projectName)
+  const exists = await kv.exists(key)
+  return exists === 1
+}
+
+export async function deleteProject(projectName: string): Promise<void> {
+  const key = getProjectKey(projectName)
+  
+  // Get all epics for this project
+  const epics = await listEpics(projectName)
+  
+  // Delete all stories and epics
+  for (const epicName of epics) {
+    const stories = await listStories(projectName, epicName)
+    for (const storyId of stories) {
+      await kv.del(getStoryKey(projectName, epicName, storyId))
+    }
+    await kv.del(getEpicKey(projectName, epicName))
+    await kv.del(getStoriesListKey(projectName, epicName))
+  }
+  
+  await kv.del(key)
+  await kv.del(getEpicsListKey(projectName))
+  
+  // Remove from projects list
+  const projectsList = await kv.get<string[]>(getProjectsListKey()) || []
+  const updatedList = projectsList.filter(p => p !== projectName)
+  await kv.set(getProjectsListKey(), updatedList)
+}
+
+// ============================================================================
+// People Operations (Global)
+// ============================================================================
+
+export async function readGlobalPeople(): Promise<Person[]> {
+  const key = getPeopleKey()
+  const data = await kv.get<unknown>(key)
+  if (!data) {
+    return []
+  }
+  return parsePeople(data)
+}
+
+export async function writeGlobalPeople(people: Person[]): Promise<void> {
+  const key = getPeopleKey()
+  parsePeople(people)
+  await kv.set(key, people)
+}
+
+export async function globalPeopleExists(): Promise<boolean> {
+  const key = getPeopleKey()
+  const exists = await kv.exists(key)
+  return exists === 1
+}
+
+// Legacy per-project people (for compatibility)
+export async function readPeople(projectName: string): Promise<Person[]> {
+  // In KV, we use global people
+  return readGlobalPeople()
+}
+
+export async function writePeople(projectName: string, people: Person[]): Promise<void> {
+  // In KV, we use global people
+  await writeGlobalPeople(people)
+}
+
+export async function peopleExists(projectName: string): Promise<boolean> {
+  return globalPeopleExists()
+}
+
+export async function getAllPeople(): Promise<Person[]> {
+  return readGlobalPeople()
+}
+
+export async function checkPersonUsage(personId: string): Promise<{
+  projects: string[]
+  epics: { projectName: string; epicName: string }[]
+  stories: { projectName: string; epicName: string; storyId: string }[]
+}> {
+  const projects: string[] = []
+  const epics: { projectName: string; epicName: string }[] = []
+  const stories: { projectName: string; epicName: string; storyId: string }[] = []
+  
+  const projectNames = await listProjects()
+  
+  for (const projectName of projectNames) {
+    const project = await readProject(projectName)
+    if (project.metadata?.manager === personId || project.metadata?.contributors?.includes(personId)) {
+      projects.push(projectName)
+    }
+    
+    const epicNames = await listEpics(projectName)
+    for (const epicName of epicNames) {
+      const epic = await readEpic(projectName, epicName)
+      if (epic.manager === personId) {
+        epics.push({ projectName, epicName })
+      }
+      
+      const storyIds = await listStories(projectName, epicName)
+      for (const storyId of storyIds) {
+        const story = await readStory(projectName, epicName, storyId)
+        if (story.manager === personId) {
+          stories.push({ projectName, epicName, storyId })
+        }
+      }
+    }
+  }
+  
+  return { projects, epics, stories }
+}
+
+// ============================================================================
+// Epic Operations
+// ============================================================================
+
+export async function readEpic(projectName: string, epicName: string): Promise<Epic> {
+  const key = getEpicKey(projectName, epicName)
+  const data = await kv.get<unknown>(key)
+  if (!data) {
+    throw new Error(`Epic "${epicName}" not found in project "${projectName}"`)
+  }
+  return parseEpic(data)
+}
+
+export async function writeEpic(projectName: string, epicName: string, epic: Epic): Promise<void> {
+  const key = getEpicKey(projectName, epicName)
+  parseEpic(epic)
+  
+  // Update epics list
+  const epicsList = await kv.get<string[]>(getEpicsListKey(projectName)) || []
+  if (!epicsList.includes(epicName)) {
+    epicsList.push(epicName)
+    await kv.set(getEpicsListKey(projectName), epicsList)
+  }
+  
+  await kv.set(key, epic)
+}
+
+export async function listEpics(projectName: string): Promise<string[]> {
+  const epicsList = await kv.get<string[]>(getEpicsListKey(projectName))
+  return epicsList || []
+}
+
+export async function epicExists(projectName: string, epicName: string): Promise<boolean> {
+  const key = getEpicKey(projectName, epicName)
+  const exists = await kv.exists(key)
+  return exists === 1
+}
+
+export async function deleteEpic(projectName: string, epicName: string): Promise<void> {
+  const key = getEpicKey(projectName, epicName)
+  
+  // Delete all stories
+  const stories = await listStories(projectName, epicName)
+  for (const storyId of stories) {
+    await kv.del(getStoryKey(projectName, epicName, storyId))
+  }
+  
+  await kv.del(key)
+  await kv.del(getStoriesListKey(projectName, epicName))
+  
+  // Remove from epics list
+  const epicsList = await kv.get<string[]>(getEpicsListKey(projectName)) || []
+  const updatedList = epicsList.filter(e => e !== epicName)
+  await kv.set(getEpicsListKey(projectName), updatedList)
+}
+
+// ============================================================================
+// Story Operations
+// ============================================================================
+
+export async function readStory(
+  projectName: string,
+  epicName: string,
+  storyId: string
+): Promise<Story> {
+  const key = getStoryKey(projectName, epicName, storyId)
+  const data = await kv.get<unknown>(key)
+  if (!data) {
+    throw new Error(`Story "${storyId}" not found in epic "${epicName}"`)
+  }
+  return parseStory(data)
+}
+
+export async function writeStory(
+  projectName: string,
+  epicName: string,
+  storyId: string,
+  story: Story
+): Promise<void> {
+  const key = getStoryKey(projectName, epicName, storyId)
+  parseStory(story)
+  
+  // Ensure ID matches
+  if (story.id !== storyId) {
+    story.id = storyId
+  }
+  
+  // Update timestamp
+  story.updatedAt = generateTimestamp()
+  
+  // Update stories list
+  const storiesList = await kv.get<string[]>(getStoriesListKey(projectName, epicName)) || []
+  if (!storiesList.includes(storyId)) {
+    storiesList.push(storyId)
+    await kv.set(getStoriesListKey(projectName, epicName), storiesList)
+  }
+  
+  await kv.set(key, story)
+}
+
+export async function listStories(
+  projectName: string,
+  epicName: string
+): Promise<string[]> {
+  const storiesList = await kv.get<string[]>(getStoriesListKey(projectName, epicName))
+  return storiesList || []
+}
+
+export async function storyExists(
+  projectName: string,
+  epicName: string,
+  storyId: string
+): Promise<boolean> {
+  const key = getStoryKey(projectName, epicName, storyId)
+  const exists = await kv.exists(key)
+  return exists === 1
+}
+
+export async function deleteStory(
+  projectName: string,
+  epicName: string,
+  storyId: string
+): Promise<void> {
+  const key = getStoryKey(projectName, epicName, storyId)
+  await kv.del(key)
+  
+  // Remove from stories list
+  const storiesList = await kv.get<string[]>(getStoriesListKey(projectName, epicName)) || []
+  const updatedList = storiesList.filter(s => s !== storyId)
+  await kv.set(getStoriesListKey(projectName, epicName), updatedList)
+}
+
+// ============================================================================
+// ID Generation
+// ============================================================================
+
+export async function generateNextEpicId(projectName: string): Promise<string> {
+  const epics = await listEpics(projectName)
+  const existingNumbers = epics
+    .map(name => {
+      // Try to extract EPIC-XXXX from epic name or read the epic to get its ID
+      const match = name.match(/^EPIC-(\d{4})$/)
+      return match ? parseInt(match[1], 10) : null
+    })
+    .filter((n): n is number => n !== null)
+  
+  let nextNumber = 1
+  if (existingNumbers.length > 0) {
+    const maxNumber = Math.max(...existingNumbers)
+    nextNumber = maxNumber + 1
+  }
+  
+  if (nextNumber > 9999) {
+    throw new Error('Maximum number of epics (9999) reached')
+  }
+  
+  return `EPIC-${nextNumber.toString().padStart(4, '0')}`
+}
+
+export async function generateNextStoryId(
+  projectName: string,
+  epicName: string
+): Promise<string> {
+  const stories = await listStories(projectName, epicName)
+  const existingNumbers = stories
+    .map(id => {
+      const match = id.match(/^STORY-(\d{3})$/)
+      return match ? parseInt(match[1], 10) : null
+    })
+    .filter((n): n is number => n !== null)
+  
+  let nextNumber = 1
+  if (existingNumbers.length > 0) {
+    const maxNumber = Math.max(...existingNumbers)
+    nextNumber = maxNumber + 1
+  }
+  
+  if (nextNumber > 999) {
+    throw new Error('Maximum number of stories (999) reached')
+  }
+  
+  return `STORY-${nextNumber.toString().padStart(3, '0')}`
+}
+
+// ============================================================================
+// Story Creation
+// ============================================================================
+
+export async function createStory(
+  projectName: string,
+  epicName: string,
+  storyData: Partial<Story> = {}
+): Promise<Story> {
+  const storyId = await generateNextStoryId(projectName, epicName)
+  const now = generateTimestamp()
+
+  const story: Story = {
+    id: storyId,
+    title: storyData.title || '',
+    summary: storyData.summary || '',
+    description: storyData.description || '',
+    acceptanceCriteria: storyData.acceptanceCriteria || [],
+    status: storyData.status || 'todo',
+    priority: storyData.priority || 'medium',
+    manager: storyData.manager || 'unassigned',
+    createdAt: now,
+    updatedAt: now,
+    tags: storyData.tags || [],
+    estimate: storyData.estimate || { storyPoints: 0 },
+    relatedStories: storyData.relatedStories || [],
+    mentions: storyData.mentions || [],
+    files: storyData.files || [],
+    metadata: storyData.metadata || {
+      createdBy: 'unassigned',
+      lastEditedBy: 'unassigned',
+      custom: {},
+    },
+    ...storyData,
+  }
+
+  await writeStory(projectName, epicName, storyId, story)
+  return story
+}
+
+// ============================================================================
+// Repository Object (for convenience)
+// ============================================================================
+
+export const pmRepositoryKV = {
+  // ID Generation
+  generateNextEpicId,
+  generateNextStoryId,
+  // Projects
+  readProject,
+  writeProject,
+  listProjects,
+  projectExists,
+  deleteProject,
+
+  // People (per-project - deprecated, uses global)
+  readPeople,
+  writePeople,
+  peopleExists,
+  getAllPeople,
+  checkPersonUsage,
+
+  // People (global)
+  readGlobalPeople,
+  writeGlobalPeople,
+  globalPeopleExists,
+
+  // Epics
+  readEpic,
+  writeEpic,
+  listEpics,
+  epicExists,
+  deleteEpic,
+
+  // Stories
+  readStory,
+  writeStory,
+  listStories,
+  storyExists,
+  deleteStory,
+  createStory,
+}
+
