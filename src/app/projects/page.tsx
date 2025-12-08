@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -8,18 +9,40 @@ import Link from 'next/link'
 import { Header } from '@/components/Header'
 import { Card } from '@/components/Card'
 import { Button } from '@/components/Button'
-import { FolderKanban, Plus, ArrowRight } from 'lucide-react'
+import { FolderKanban, Plus, ArrowRight, LogOut } from 'lucide-react'
 import type { Project } from '@/lib/types'
 
+interface ProjectWithMetrics extends Project {
+  _name?: string
+  epicCount?: number
+  managerName?: string
+}
+
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>([])
+  const router = useRouter()
+  const [projects, setProjects] = useState<ProjectWithMetrics[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [loggingOut, setLoggingOut] = useState(false)
 
   useEffect(() => {
     fetchProjects()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  async function handleLogout() {
+    setLoggingOut(true)
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+      })
+      // Redirect to home page
+      router.push('/')
+    } catch (err) {
+      console.error('Logout failed:', err)
+      setLoggingOut(false)
+    }
+  }
 
   async function fetchProjects() {
     try {
@@ -38,7 +61,50 @@ export default function ProjectsPage() {
 
       if (result.success) {
         console.log('Setting projects:', result.data?.length || 0)
-        setProjects(result.data || [])
+
+        // Fetch additional data for each project (epic count and manager name)
+        const projectsWithMetrics = await Promise.all(
+          result.data.map(async (project: any) => {
+            const projectName = project._name || project.name
+
+            // Fetch epics count
+            let epicCount = 0
+            try {
+              const epicsResponse = await fetch(`/api/projects/${projectName}/epics`)
+              const epicsResult = await epicsResponse.json()
+              if (epicsResult.success) {
+                epicCount = epicsResult.data?.length || 0
+              }
+            } catch (err) {
+              console.error(`Failed to fetch epics for ${projectName}:`, err)
+            }
+
+            // Fetch manager name
+            let managerName = 'unassigned'
+            if (project.metadata?.manager && project.metadata.manager !== 'unassigned') {
+              try {
+                const peopleResponse = await fetch(`/api/projects/${projectName}/people`)
+                const peopleResult = await peopleResponse.json()
+                if (peopleResult.success) {
+                  const manager = peopleResult.data?.find((p: any) => p.id === project.metadata.manager)
+                  if (manager) {
+                    managerName = manager.name
+                  }
+                }
+              } catch (err) {
+                console.error(`Failed to fetch people for ${projectName}:`, err)
+              }
+            }
+
+            return {
+              ...project,
+              epicCount,
+              managerName,
+            }
+          })
+        )
+
+        setProjects(projectsWithMetrics)
       } else {
         setError(result.error || 'Failed to load projects')
       }
@@ -67,9 +133,20 @@ export default function ProjectsPage() {
         {/* Page Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-text-primary mb-2">
-              Projects
-            </h1>
+            <div className="flex items-center gap-2 mb-2">
+              <h1 className="text-3xl font-bold text-text-primary">
+                Projects
+              </h1>
+              <button
+                onClick={handleLogout}
+                disabled={loggingOut}
+                className="flex items-center gap-2 px-3 py-1.5 text-sm text-text-secondary hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Logout"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>{loggingOut ? 'Logging out...' : 'Logout'}</span>
+              </button>
+            </div>
             <p className="text-text-secondary">
               Manage your projects, epics, and stories
             </p>
@@ -155,12 +232,12 @@ export default function ProjectsPage() {
                     <div className="flex items-center justify-between pt-4 border-t border-border-light">
                       <div className="text-sm text-text-secondary">
                         <span className="font-medium">
-                          {project.epicIds?.length || 0}
+                          {project.epicCount || 0}
                         </span>{' '}
-                        {project.epicIds?.length === 1 ? 'epic' : 'epics'}
+                        {project.epicCount === 1 ? 'epic' : 'epics'}
                       </div>
                       <div className="text-sm text-text-secondary">
-                        {project.metadata?.manager || 'unassigned'}
+                        {project.managerName || 'unassigned'}
                       </div>
                     </div>
                   </Card>

@@ -1,9 +1,84 @@
 'use client'
 
-import Link from 'next/link'
-import { FolderKanban } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { FolderKanban, Lock } from 'lucide-react'
 
 export default function HomePage() {
+  const router = useRouter()
+  const [code, setCode] = useState('')
+  const [showError, setShowError] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [checking, setChecking] = useState(true)
+
+  useEffect(() => {
+    // Check if already authenticated
+    checkAuth()
+  }, [])
+
+  async function checkAuth() {
+    try {
+      const response = await fetch('/api/auth/check')
+      const result = await response.json()
+
+      if (result.authenticated) {
+        // Already authenticated, redirect to projects
+        router.push('/projects')
+      }
+    } catch (err) {
+      console.error('Auth check failed:', err)
+    } finally {
+      setChecking(false)
+    }
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setShowError(false)
+    setLoading(true)
+
+    try {
+      const response = await fetch('/api/auth/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code }),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        // Redirect to projects page
+        router.push('/projects')
+      } else {
+        setShowError(true)
+        setCode('')
+        // Auto-hide after 2 seconds
+        setTimeout(() => {
+          setShowError(false)
+        }, 2000)
+      }
+    } catch (err) {
+      setShowError(true)
+      setCode('')
+      // Auto-hide after 2 seconds
+      setTimeout(() => {
+        setShowError(false)
+      }, 2000)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (checking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -31,14 +106,70 @@ export default function HomePage() {
             and seamless team collaboration. Everything you need to deliver projects on time.
           </p>
 
-          <div className="flex gap-4 justify-center mb-16">
-            <Link href="/projects" className="btn-primary">
-              View Projects
-            </Link>
-            <Link href="/projects" className="btn-outline">
-              Get Started
-            </Link>
-          </div>
+          <div className="max-w-md mx-auto mb-16">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="password"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  placeholder="Enter login code"
+                  className="w-full pl-10 pr-4 py-3 border border-border-light rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-center text-lg"
+                  required
+                  disabled={loading}
+                />
+              </div>
+              <div className="relative">
+                <button
+                  type="submit"
+                  disabled={loading || !code}
+                  className="w-full btn-primary py-3 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? 'Verifying...' : 'View Projects'}
+                </button>
+
+                {/* Toast error message */}
+                <div
+                  className={`absolute left-0 right-0 mt-3 text-center transition-opacity duration-200 ${
+                    showError
+                      ? 'opacity-100 animate-fade-out'
+                      : 'opacity-0 pointer-events-none'
+                  }`}
+                  style={{
+                    animation: showError ? 'fadeInOut 2s ease-in-out' : 'none',
+                  }}
+                >
+                  <span className="inline-block px-4 py-2 bg-red-100 text-red-600 rounded-lg text-sm font-medium">
+                    Nope!
+                  </span>
+                </div>
+              </div>
+            </form>
+              </div>
+
+          <style jsx>{`
+            @keyframes fadeInOut {
+              0% {
+                opacity: 0;
+                transform: translateY(-10px);
+              }
+              10% {
+                opacity: 1;
+                transform: translateY(0);
+              }
+              90% {
+                opacity: 1;
+                transform: translateY(0);
+              }
+              100% {
+                opacity: 0;
+                transform: translateY(-10px);
+              }
+            }
+          `}</style>
 
           {/* Features Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
