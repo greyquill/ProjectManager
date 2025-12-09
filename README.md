@@ -252,6 +252,74 @@ The analytics dashboard provides real-time insights including:
 4. Changes are saved immediately to the JSON file
 5. Commit changes to Git like any other code change
 
+### Deleting Stories and Epics
+
+**Deleting Stories:**
+1. Open a story in the detail panel
+2. Scroll to the bottom left of the card
+3. Click the "Delete Story" button (red, with trash icon)
+4. A modal will appear requesting your login code (2341)
+5. Enter the code and click "Delete" to confirm
+6. The story is **soft-deleted** (marked as `deleted: true` in the JSON file)
+7. Soft-deleted stories are:
+   - Removed from the UI immediately
+   - Preserved in the file system/KV for ID sequencing
+   - Not included in story lists or counts
+   - Can be recovered by manually editing the JSON file
+
+**Deleting Epics:**
+1. Open an epic in the detail panel
+2. Scroll to the bottom left of the card
+3. Click the "Delete Epic" button (red, with trash icon)
+4. **Validation Check**: If the epic contains active stories, a validation modal will appear explaining that all stories must be removed or moved first
+5. If validation passes, a modal will appear requesting your login code (2341)
+6. Enter the code and click "Delete" to confirm
+7. The epic is **hard-deleted** (completely removed from storage)
+
+**Delete Functionality Details:**
+
+**Security:**
+- All deletions require login code verification (2341)
+- Login code is validated server-side
+- Incorrect code shows "Nope!" error message with fade-in animation
+- Modal can be dismissed by clicking outside, pressing Escape, or clicking Cancel
+
+**Validation:**
+- **Epic Deletion**: Frontend and backend both validate that epic has no active stories
+- If validation fails, an interactive validation modal appears (not an error message)
+- Validation modal shows:
+  - Clear title: "Cannot Delete Epic"
+  - Warning message in amber/yellow box
+  - "Understood" button to dismiss
+  - Close (X) button in header
+- Stories can be deleted without validation (no dependencies)
+
+**API Endpoints:**
+- `DELETE /api/projects/[projectName]/epics/[epicName]/stories/[storyId]` - Soft deletes a story
+- `DELETE /api/projects/[projectName]/epics/[epicName]` - Hard deletes an epic (with validation)
+
+**Soft Deletion Implementation:**
+- Stories use soft deletion (`deleted: true` flag) to preserve ID sequencing
+- `listActiveStories()` filters out deleted stories
+- `listStories()` returns all stories (including deleted) for ID generation
+- Deleted stories are removed from epic's `storyIds` array
+- Story files/KV entries remain for maintaining sequential IDs
+
+**Hard Deletion Implementation:**
+- Epics are completely removed from storage
+- Backend validates no active stories exist before deletion
+- Epic's `storyIds` array is checked against active stories list
+- Returns 400 error if validation fails with descriptive message
+
+**UI Behavior:**
+- Delete buttons appear at bottom left of detail cards
+- Red styling indicates destructive action
+- Modals are non-blocking (can be dismissed)
+- After successful deletion:
+  - Selection is cleared
+  - Epics list is refreshed
+  - User is returned to project overview
+
 ## Architecture
 
 ### Tech Stack
@@ -294,6 +362,68 @@ In Focus Mode, story creation uses **optimistic updates** for zero-delay user ex
 - When the server responds, the temporary story is replaced with the real one (proper ID, formatted title)
 - If the API call fails, the optimistic story is automatically rolled back and an error is shown
 - This ensures the UI feels instant and responsive, even with network latency
+
+### Delete Operations
+
+**Story Deletion (Soft Delete):**
+- Stories are soft-deleted by setting `deleted: true` flag in the `StorySchema`
+- Deleted stories remain in storage (file system or KV) for ID sequencing
+- `deleteStory()` function:
+  - Sets `deleted: true` on story object
+  - Updates `updatedAt` timestamp
+  - Removes story ID from epic's `storyIds` array
+  - Preserves story file/KV entry
+- `listActiveStories()` filters out deleted stories (used by UI)
+- `listStories()` returns all stories including deleted (used for ID generation)
+- `readStory()` throws error if attempting to read a deleted story
+- Soft deletion ensures story IDs remain sequential even after deletions
+
+**Epic Deletion (Hard Delete):**
+- Epics are hard-deleted (completely removed from storage)
+- `deleteEpic()` function:
+  - Validates no active stories exist (frontend and backend)
+  - Removes epic from project's `epicIds` array
+  - Deletes epic file/KV entry completely
+- Validation occurs at:
+  - **Frontend**: Before showing delete modal (prevents unnecessary API calls)
+  - **Backend**: Before actual deletion (safety check, returns 400 if validation fails)
+- Backend uses `listActiveStories()` to check for active stories
+- Returns descriptive error message if epic contains stories
+
+**Repository Functions:**
+- `pmRepository.deleteStory(projectName, epicName, storyId)` - Soft delete story
+- `pmRepository.deleteEpic(projectName, epicName)` - Hard delete epic
+- `pmRepository.listActiveStories(projectName, epicName)` - Get non-deleted stories
+- `pmRepository.listStories(projectName, epicName)` - Get all stories (including deleted)
+
+**API Endpoints:**
+- `DELETE /api/projects/[projectName]/epics/[epicName]/stories/[storyId]`
+  - Soft deletes a story
+  - Returns 200 on success
+  - Returns 404 if story doesn't exist
+  - Returns 500 on error
+- `DELETE /api/projects/[projectName]/epics/[epicName]`
+  - Hard deletes an epic
+  - Validates no active stories exist (returns 400 if validation fails)
+  - Returns 200 on success
+  - Returns 404 if epic doesn't exist
+  - Returns 500 on error
+
+**UI Implementation:**
+- Delete buttons located at bottom left of detail cards
+- Red styling (`text-red-600`, `border-red-300`) indicates destructive action
+- Two modal types:
+  1. **Validation Modal**: Shows when epic has stories (amber/yellow warning box)
+  2. **Delete Confirmation Modal**: Shows login code input (password field)
+- Login code verification (2341) required for all deletions
+- Error handling:
+  - Incorrect login code: Shows "Nope!" with fade-in animation
+  - Validation failure: Shows interactive validation modal
+  - API errors: Shows error message in delete modal
+- After successful deletion:
+  - Selection is cleared (`clearSelection()`)
+  - Epics list is refreshed (`fetchEpics()`)
+  - User is returned to project overview
 
 ## Development
 
@@ -375,8 +505,11 @@ Currently minimal configuration is needed. Future additions may include:
 - [x] Velocity and burn rate tracking
 - [x] Epic progress visualization
 - [x] Status distribution charts
-- [ ] Rich markdown editor for descriptions
-- [ ] Drag-and-drop story prioritization
+- [x] Rich markdown editor for descriptions
+- [x] Drag-and-drop story prioritization
+- [x] Delete functionality with login code verification
+- [x] Soft deletion for stories (preserves ID sequencing)
+- [x] Validation modals for epic deletion
 - [ ] Epic and story templates
 - [ ] Bulk operations (delete, move, archive)
 
