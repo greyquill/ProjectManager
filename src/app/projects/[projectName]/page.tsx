@@ -8,6 +8,8 @@ import { Card } from '@/components/Card'
 import { Button } from '@/components/Button'
 import { Badge } from '@/components/Badge'
 import { MarkdownEditor } from '@/components/MarkdownEditor'
+import { Select } from '@/components/Select'
+import { DatePicker } from '@/components/DatePicker'
 import {
   ArrowLeft,
   ChevronDown,
@@ -2593,18 +2595,18 @@ export default function ProjectDetailPage() {
                     <label className="block text-xs font-medium text-text-primary mb-1">
                       Manager
                     </label>
-                    <select
+                    <Select
                       value={newEpicManager}
-                      onChange={(e) => setNewEpicManager(e.target.value)}
-                      className="input-field text-sm"
-                    >
-                      <option value="unassigned">Unassigned</option>
-                      {people.map((person) => (
-                        <option key={person.id} value={person.id}>
-                          {person.name} ({person.designation})
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(value) => setNewEpicManager(value)}
+                      options={[
+                        { value: 'unassigned', label: 'Unassigned' },
+                        ...people.map((person) => ({
+                          value: person.id,
+                          label: `${person.name} (${person.designation})`,
+                        })),
+                      ]}
+                      className="text-sm"
+                    />
                   </div>
 
                   <div className="flex items-center gap-2 pt-2">
@@ -2900,18 +2902,18 @@ export default function ProjectDetailPage() {
 
                                 {!isFullscreen && (
                                 <div>
-                                  <select
+                                  <Select
                                     value={newStoryManager}
-                                    onChange={(e) => setNewStoryManager(e.target.value)}
-                                    className="input-field text-sm w-full"
-                                  >
-                                    <option value="unassigned">Unassigned</option>
-                                    {people.map((person) => (
-                                      <option key={person.id} value={person.id}>
-                                        {person.name} ({person.designation})
-                                      </option>
-                                    ))}
-                                  </select>
+                                    onChange={(value) => setNewStoryManager(value)}
+                                    options={[
+                                      { value: 'unassigned', label: 'Unassigned' },
+                                      ...people.map((person) => ({
+                                        value: person.id,
+                                        label: `${person.name} (${person.designation})`,
+                                      })),
+                                    ]}
+                                    className="text-sm w-full"
+                                  />
                                 </div>
                                 )}
 
@@ -3161,21 +3163,21 @@ export default function ProjectDetailPage() {
                       <label className="block text-sm font-medium text-text-primary mb-1">
                         Manager
                       </label>
-                      <select
+                      <Select
                         value={projectManager}
-                        onChange={(e) => {
-                          setProjectManager(e.target.value)
+                        onChange={(value) => {
+                          setProjectManager(value)
                           setHasProjectChanges(true)
                         }}
-                        className="input-field text-sm"
-                      >
-                        <option value="unassigned">Unassigned</option>
-                        {people.map((person) => (
-                          <option key={person.id} value={person.id}>
-                            {person.name} ({person.designation})
-                          </option>
-                        ))}
-                      </select>
+                        options={[
+                          { value: 'unassigned', label: 'Unassigned' },
+                          ...people.map((person) => ({
+                            value: person.id,
+                            label: `${person.name} (${person.designation})`,
+                          })),
+                        ]}
+                        className="text-sm"
+                      />
                     </div>
 
                     <div>
@@ -3383,21 +3385,21 @@ export default function ProjectDetailPage() {
                             Manager
                           </td>
                           <td className="px-4 py-2">
-                            <select
+                            <Select
                               value={epicManager}
-                              onChange={(e) => {
-                                setEpicManager(e.target.value)
+                              onChange={(value) => {
+                                setEpicManager(value)
                                 setHasChanges(true)
                               }}
-                              className="input-field text-sm"
-                            >
-                              <option value="unassigned">Unassigned</option>
-                              {people.map((person) => (
-                                <option key={person.id} value={person.id}>
-                                  {person.name} ({person.designation})
-                                </option>
-                              ))}
-                            </select>
+                              options={[
+                                { value: 'unassigned', label: 'Unassigned' },
+                                ...people.map((person) => ({
+                                  value: person.id,
+                                  label: `${person.name} (${person.designation})`,
+                                })),
+                              ]}
+                              className="text-sm"
+                            />
                           </td>
                         </tr>
                         <tr>
@@ -3405,14 +3407,13 @@ export default function ProjectDetailPage() {
                             Target Release
                           </td>
                           <td className="px-4 py-2">
-                            <input
-                              type="date"
+                            <DatePicker
                               value={epicTargetRelease}
-                              onChange={(e) => {
-                                setEpicTargetRelease(e.target.value)
+                              onChange={(value) => {
+                                setEpicTargetRelease(value)
                                 setHasChanges(true)
                               }}
-                              className="input-field text-sm"
+                              className="text-sm"
                             />
                           </td>
                         </tr>
@@ -3682,21 +3683,21 @@ export default function ProjectDetailPage() {
                             Manager
                           </td>
                           <td className="px-4 py-2">
-                            <select
+                            <Select
                               value={storyManager}
-                              onChange={(e) => {
-                                setStoryManager(e.target.value)
+                              onChange={(value) => {
+                                setStoryManager(value)
                                 setHasChanges(true)
                               }}
-                              className="input-field text-sm"
-                            >
-                              <option value="unassigned">Unassigned</option>
-                              {people.map((person) => (
-                                <option key={person.id} value={person.id}>
-                                  {person.name} ({person.designation})
-                                </option>
-                              ))}
-                            </select>
+                              options={[
+                                { value: 'unassigned', label: 'Unassigned' },
+                                ...people.map((person) => ({
+                                  value: person.id,
+                                  label: `${person.name} (${person.designation})`,
+                                })),
+                              ]}
+                              className="text-sm"
+                            />
                           </td>
                         </tr>
                         <tr className="border-b border-border-light">
@@ -3707,26 +3708,25 @@ export default function ProjectDetailPage() {
                             <div className="flex gap-4 items-center">
                               <div className="flex-1">
                                 <label className="block text-xs text-text-secondary mb-1">Start Date</label>
-                                <input
-                                  type="date"
+                                <DatePicker
                                   value={storyPlannedStartDate}
-                                  onChange={(e) => {
-                                    setStoryPlannedStartDate(e.target.value)
+                                  onChange={(value) => {
+                                    setStoryPlannedStartDate(value)
                                     setHasChanges(true)
                                   }}
-                                  className="input-field text-sm w-full"
+                                  className="text-sm w-full"
                                 />
                               </div>
                               <div className="flex-1">
                                 <label className="block text-xs text-text-secondary mb-1">Due Date</label>
-                                <input
-                                  type="date"
+                                <DatePicker
                                   value={storyPlannedDueDate}
-                                  onChange={(e) => {
-                                    setStoryPlannedDueDate(e.target.value)
+                                  onChange={(value) => {
+                                    setStoryPlannedDueDate(value)
                                     setHasChanges(true)
                                   }}
-                                  className="input-field text-sm w-full"
+                                  min={storyPlannedStartDate || undefined}
+                                  className="text-sm w-full"
                                 />
                               </div>
                             </div>
@@ -3740,26 +3740,25 @@ export default function ProjectDetailPage() {
                             <div className="flex gap-4 items-center">
                               <div className="flex-1">
                                 <label className="block text-xs text-text-secondary mb-1">Start Date</label>
-                                <input
-                                  type="date"
+                                <DatePicker
                                   value={storyActualStartDate}
-                                  onChange={(e) => {
-                                    setStoryActualStartDate(e.target.value)
+                                  onChange={(value) => {
+                                    setStoryActualStartDate(value)
                                     setHasChanges(true)
                                   }}
-                                  className="input-field text-sm w-full"
+                                  className="text-sm w-full"
                                 />
                               </div>
                               <div className="flex-1">
                                 <label className="block text-xs text-text-secondary mb-1">Due Date</label>
-                                <input
-                                  type="date"
+                                <DatePicker
                                   value={storyActualDueDate}
-                                  onChange={(e) => {
-                                    setStoryActualDueDate(e.target.value)
+                                  onChange={(value) => {
+                                    setStoryActualDueDate(value)
                                     setHasChanges(true)
                                   }}
-                                  className="input-field text-sm w-full"
+                                  min={storyActualStartDate || undefined}
+                                  className="text-sm w-full"
                                 />
                               </div>
                             </div>
@@ -3901,15 +3900,16 @@ export default function ProjectDetailPage() {
                             placeholder="File path"
                             className="input-field flex-1 text-sm"
                           />
-                          <select
+                          <Select
                             value={file.role}
-                            onChange={(e) => updateFile(index, 'role', e.target.value)}
-                            className="input-field text-sm w-32"
-                          >
-                            <option value="primary">Primary</option>
-                            <option value="supporting">Supporting</option>
-                            <option value="test">Test</option>
-                          </select>
+                            onChange={(value) => updateFile(index, 'role', value)}
+                            options={[
+                              { value: 'primary', label: 'Primary' },
+                              { value: 'supporting', label: 'Supporting' },
+                              { value: 'test', label: 'Test' },
+                            ]}
+                            className="text-sm w-32"
+                          />
                           <button
                             onClick={() => removeFile(index)}
                             className="text-red-600 hover:text-red-800"
