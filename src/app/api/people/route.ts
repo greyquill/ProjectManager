@@ -8,16 +8,7 @@ import { parsePeople, Person } from '@/lib/types'
  */
 export async function GET() {
   try {
-    console.log('[People API Direct] ===== Starting /api/people request =====')
-    console.log(`[People API Direct] Environment check - VERCEL: ${process.env.VERCEL}, KV_REST_API_URL: ${!!process.env.KV_REST_API_URL}, UPSTASH_REDIS_REST_URL: ${!!process.env.UPSTASH_REDIS_REST_URL}`)
-    console.log('[People API Direct] Calling pmRepository.readGlobalPeople()...')
     const people = await pmRepository.readGlobalPeople()
-    console.log(`[People API Direct] readGlobalPeople returned:`, {
-      length: people.length,
-      isArray: Array.isArray(people),
-      type: typeof people,
-      firstPerson: people[0] || null
-    })
     return NextResponse.json({
       success: true,
       data: people,

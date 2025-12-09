@@ -30,15 +30,12 @@ const USE_KV = process.env.VERCEL === '1' ||
 let kvRepositoryPromise: Promise<typeof import('./pm-repository-kv').pmRepositoryKV | null> | null = null
 
 async function getKVRepository() {
-  console.log(`[Repository] USE_KV: ${USE_KV}, VERCEL: ${process.env.VERCEL}, KV_REST_API_URL: ${!!process.env.KV_REST_API_URL}, UPSTASH_REDIS_REST_URL: ${!!process.env.UPSTASH_REDIS_REST_URL}`)
   if (!USE_KV) {
-    console.log('[Repository] KV not enabled, using file system')
     return null
   }
   if (kvRepositoryPromise === null) {
     kvRepositoryPromise = import('./pm-repository-kv')
       .then(module => {
-        console.log('[Repository] KV repository loaded successfully')
         return module.pmRepositoryKV
       })
       .catch(error => {
@@ -46,9 +43,7 @@ async function getKVRepository() {
         return null
       })
   }
-  const repo = await kvRepositoryPromise
-  console.log(`[Repository] getKVRepository returning: ${repo ? 'KV repository' : 'null (file system)'}`)
-  return repo
+  return await kvRepositoryPromise
 }
 
 // ============================================================================
@@ -329,13 +324,10 @@ export async function getAllPeople(): Promise<Array<{ person: Person; projectNam
  * Read global people list
  */
 export async function readGlobalPeople(): Promise<Person[]> {
-  console.log('[Repository] readGlobalPeople called')
   const kvRepo = await getKVRepository()
   if (kvRepo) {
-    console.log('[Repository] Using KV repository for readGlobalPeople')
     return kvRepo.readGlobalPeople()
   }
-  console.log('[Repository] Using file system for readGlobalPeople')
   const filePath = getGlobalPeopleFilePath()
   try {
     return await readJsonFile(filePath, parsePeople)

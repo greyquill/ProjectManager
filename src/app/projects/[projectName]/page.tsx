@@ -206,14 +206,10 @@ export default function ProjectDetailPage() {
     try {
       // Use the working /api/people endpoint instead of project-specific one
       // Both should return the same data (global people list)
-      console.log(`[Project Page] Fetching people from /api/people`)
       const response = await fetch(`/api/people`)
-      console.log(`[Project Page] Response status: ${response.status}`)
       const result = await response.json()
-      console.log(`[Project Page] API response:`, result)
 
       if (result.success) {
-        console.log(`[Project Page] Loaded ${result.data?.length || 0} people`, result.data)
         setPeople(result.data || [])
       } else {
         console.error('[Project Page] Failed to load people:', result.error)

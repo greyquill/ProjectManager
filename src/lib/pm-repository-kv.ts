@@ -237,16 +237,11 @@ export async function deleteProject(projectName: string): Promise<void> {
 export async function readGlobalPeople(): Promise<Person[]> {
   try {
     const key = getPeopleKey()
-    console.log(`[KV Repository] Reading people from key: ${key}`)
     const data = await kv.get(key)
-    console.log(`[KV Repository] Raw data from Redis:`, data ? 'exists' : 'null/undefined', typeof data)
     if (!data) {
-      console.log(`[KV Repository] No data found for key ${key}, returning empty array`)
       return []
     }
-    const parsed = parsePeople(data)
-    console.log(`[KV Repository] Parsed ${parsed.length} people`)
-    return parsed
+    return parsePeople(data)
   } catch (error) {
     // If database is empty or key doesn't exist, return empty array
     console.error('[KV Repository] Error reading people from Redis:', error)

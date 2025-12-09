@@ -13,14 +13,7 @@ export async function GET(
     const { projectName } = params
 
     // Read global people list - use EXACT same code as /api/people which works
-    console.log(`[People API Project] ===== Starting request for project ${projectName} =====`)
-
-    // Use the exact same pattern as the working /api/people endpoint
     const allPeople = await pmRepository.readGlobalPeople()
-    console.log(`[People API Project] readGlobalPeople returned ${allPeople.length} people`)
-
-    // Log for debugging
-    console.log(`[People API Project] Final result: ${allPeople.length} people for project ${projectName}`)
 
     // Optionally filter by project if query param is set
     const { searchParams } = new URL(request.url)
