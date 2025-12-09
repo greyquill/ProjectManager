@@ -328,6 +328,158 @@ The analytics dashboard provides real-time insights including:
 - **Forms**: React Hook Form + Zod validation
 - **Animations**: Framer Motion
 - **Icons**: Lucide React
+- **Markdown Editor**: @uiw/react-md-editor
+- **Drag and Drop**: @dnd-kit/core, @dnd-kit/sortable
+
+### UI Components
+
+The application includes a set of reusable UI components designed to match Vercel's design system:
+
+#### Select Component (`src/components/Select.tsx`)
+
+A custom dropdown component that replaces native `<select>` elements with a button-based dropdown menu.
+
+**Features:**
+- Button-based interface (not a native select)
+- Dropdown menu with checkmarks for selected items
+- Chevron icon that rotates when open
+- Hover states and focus rings
+- Keyboard accessible
+
+**Usage:**
+```tsx
+import { Select } from '@/components/Select'
+
+<Select
+  value={selectedValue}
+  onChange={(value) => setSelectedValue(value)}
+  options={[
+    { value: 'option1', label: 'Option 1' },
+    { value: 'option2', label: 'Option 2' },
+  ]}
+  placeholder="Select an option..."
+  className="text-sm"
+  disabled={false}
+/>
+```
+
+**Props:**
+- `value: string` - Currently selected value
+- `onChange: (value: string) => void` - Callback when selection changes
+- `options: SelectOption[]` - Array of `{ value: string, label: string }` objects
+- `placeholder?: string` - Placeholder text when no option is selected
+- `className?: string` - Additional CSS classes
+- `disabled?: boolean` - Disable the select
+
+#### DatePicker Component (`src/components/DatePicker.tsx`)
+
+A styled date input with a calendar icon, matching Vercel's design.
+
+**Features:**
+- Calendar icon on the left
+- Light gray border with hover states
+- Focus ring on interaction
+- Min/max date validation support
+
+**Usage:**
+```tsx
+import { DatePicker } from '@/components/DatePicker'
+
+<DatePicker
+  value={dateValue}
+  onChange={(value) => setDateValue(value)}
+  placeholder="Select date"
+  className="text-sm"
+  min="2024-01-01"
+  max="2024-12-31"
+  disabled={false}
+/>
+```
+
+**Props:**
+- `value?: string` - Date value in YYYY-MM-DD format
+- `onChange?: (value: string) => void` - Callback when date changes
+- `placeholder?: string` - Placeholder text
+- `className?: string` - Additional CSS classes
+- `disabled?: boolean` - Disable the date picker
+- `min?: string` - Minimum date (YYYY-MM-DD)
+- `max?: string` - Maximum date (YYYY-MM-DD)
+
+#### DateRangePicker Component (`src/components/DateRangePicker.tsx`)
+
+A date range selector with start and end date inputs.
+
+**Features:**
+- Calendar icon trigger button
+- Dropdown panel with start/end date inputs
+- Clear and Apply buttons
+- Formatted date range display
+
+**Usage:**
+```tsx
+import { DateRangePicker } from '@/components/DateRangePicker'
+
+<DateRangePicker
+  startDate={startDate}
+  endDate={endDate}
+  onChange={(start, end) => {
+    setStartDate(start)
+    setEndDate(end)
+  }}
+  className="text-sm"
+/>
+```
+
+**Props:**
+- `startDate?: string` - Start date in YYYY-MM-DD format
+- `endDate?: string` - End date in YYYY-MM-DD format
+- `onChange?: (startDate: string | undefined, endDate: string | undefined) => void` - Callback when range changes
+- `className?: string` - Additional CSS classes
+
+#### FilterDropdown Component (`src/components/FilterDropdown.tsx`)
+
+A searchable dropdown filter component with search functionality.
+
+**Features:**
+- Search bar at the top for filtering options
+- Checkmarks for selected items
+- Icon support for options
+- Searchable with real-time filtering
+- Vercel-style design
+
+**Usage:**
+```tsx
+import { FilterDropdown } from '@/components/FilterDropdown'
+
+<FilterDropdown
+  placeholder="All Branches..."
+  searchPlaceholder="Search branches..."
+  options={[
+    { value: 'main', label: 'main', icon: <Circle /> },
+    { value: 'develop', label: 'develop' },
+  ]}
+  value={selectedValue}
+  onChange={(value) => setSelectedValue(value)}
+  searchable={true}
+  className="min-w-[140px]"
+/>
+```
+
+**Props:**
+- `placeholder: string` - Placeholder text for the button
+- `options: FilterDropdownOption[]` - Array of options with optional icons
+- `value?: string` - Currently selected value
+- `onChange?: (value: string) => void` - Callback when selection changes
+- `searchable?: boolean` - Enable search functionality (default: true)
+- `className?: string` - Additional CSS classes
+- `searchPlaceholder?: string` - Placeholder for search input
+
+**Where Used:**
+- Manager dropdowns in Epic and Story detail pages
+- Project manager selection
+- File role selection
+- All date inputs throughout the application
+- Filter components (when implemented)
 
 ### File Structure
 ```
@@ -335,6 +487,12 @@ ProjectManager/
 ├── src/
 │   ├── app/                 # Pages and API routes
 │   ├── components/          # Reusable UI components
+│   │   ├── Select.tsx       # Custom dropdown component
+│   │   ├── DatePicker.tsx   # Single date picker
+│   │   ├── DateRangePicker.tsx  # Date range selector
+│   │   ├── FilterDropdown.tsx    # Searchable filter dropdown
+│   │   ├── MarkdownEditor.tsx   # Rich markdown editor
+│   │   └── ...              # Other components
 │   ├── lib/                 # Utilities and data layer
 │   └── theme/               # Design tokens
 ├── scripts/                 # Automation scripts
