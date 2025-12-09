@@ -33,6 +33,12 @@ export function Header() {
                     People
                   </Link>
                   <Link
+                    href="/archived"
+                    className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+                  >
+                    Archived
+                  </Link>
+                  <Link
                     href="/docs"
                     className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
                   >

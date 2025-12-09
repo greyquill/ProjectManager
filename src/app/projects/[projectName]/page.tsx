@@ -30,6 +30,9 @@ import {
   Maximize2,
   Minimize2,
   GripVertical,
+  MoreVertical,
+  Archive,
+  RotateCcw,
 } from 'lucide-react'
 import {
   DndContext,
@@ -108,6 +111,8 @@ interface SortableStoryProps {
   saveStoryTitle: (epicName: string, storyId: string, newTitle: string, currentTitle: string) => void
   selectStory: (epicName: string, story: Story) => void
   getStatusIcon: (status: string) => JSX.Element
+  isStorySelectedFn: (epicName: string, storyId: string) => boolean
+  toggleStorySelection: (epicName: string, storyId: string) => void
 }
 
 function SortableStory({
@@ -128,6 +133,8 @@ function SortableStory({
   saveStoryTitle,
   selectStory,
   getStatusIcon,
+  isStorySelectedFn,
+  toggleStorySelection,
 }: SortableStoryProps) {
   const {
     attributes,
@@ -167,6 +174,16 @@ function SortableStory({
     >
       <div className="flex items-center justify-between">
         <div className={`flex items-center flex-1 min-w-0 ${isFullscreen ? 'gap-1.5' : 'gap-2'}`}>
+          <input
+            type="checkbox"
+            checked={isStorySelectedFn(epicName, story.id)}
+            onChange={(e) => {
+              e.stopPropagation()
+              toggleStorySelection(epicName, story.id)
+            }}
+            onClick={(e) => e.stopPropagation()}
+            className="flex-shrink-0 w-4 h-4 rounded border-border-light cursor-pointer"
+          />
           {/* Drag Handle */}
           <div
             {...attributes}
@@ -360,6 +377,11 @@ export default function ProjectDetailPage() {
   // Keyboard drag-and-drop state
   const [isShiftHeld, setIsShiftHeld] = useState(false)
   const [keyboardDraggingId, setKeyboardDraggingId] = useState<string | null>(null)
+
+  // Multi-select state
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set()) // Format: "epic:epicName" or "story:epicName:storyId"
+  const [archiving, setArchiving] = useState(false)
+  const [showActionsDropdown, setShowActionsDropdown] = useState(false)
 
   // Helper functions for story title formatting
   const extractStoryTitle = useCallback((storyId: string, title: string): string => {
@@ -1709,6 +1731,7 @@ export default function ProjectDetailPage() {
           custom: {},
         },
         deleted: false,
+        archived: false,
       }
 
       // Optimistically add the story to the UI immediately
@@ -2007,6 +2030,136 @@ export default function ProjectDetailPage() {
     setHasProjectChanges(true)
   }
 
+  // Multi-select helper functions
+  const toggleEpicSelection = useCallback((epicName: string) => {
+    setSelectedItems(prev => {
+      const newSet = new Set(prev)
+      const epicKey = `epic:${epicName}`
+      const epic = epics.find(e => e._name === epicName)
+
+      if (newSet.has(epicKey)) {
+        // Deselect epic and all its stories
+        newSet.delete(epicKey)
+        epic?.stories.forEach(story => {
+          newSet.delete(`story:${epicName}:${story.id}`)
+        })
+      } else {
+        // Select epic and all its stories
+        newSet.add(epicKey)
+        epic?.stories.forEach(story => {
+          newSet.add(`story:${epicName}:${story.id}`)
+        })
+      }
+      return newSet
+    })
+  }, [epics])
+
+  const toggleStorySelection = useCallback((epicName: string, storyId: string) => {
+    setSelectedItems(prev => {
+      const newSet = new Set(prev)
+      const storyKey = `story:${epicName}:${storyId}`
+      const epicKey = `epic:${epicName}`
+
+      if (newSet.has(storyKey)) {
+        newSet.delete(storyKey)
+        // If all stories are deselected, deselect epic too
+        const epic = epics.find(e => e._name === epicName)
+        const allStoriesSelected = epic?.stories.every(story =>
+          story.id === storyId || newSet.has(`story:${epicName}:${story.id}`)
+        )
+        if (!allStoriesSelected && newSet.has(epicKey)) {
+          newSet.delete(epicKey)
+        }
+      } else {
+        newSet.add(storyKey)
+        // If all stories are now selected, select epic too
+        const epic = epics.find(e => e._name === epicName)
+        const allStoriesSelected = epic?.stories.every(story =>
+          story.id === storyId || newSet.has(`story:${epicName}:${story.id}`)
+        )
+        if (allStoriesSelected) {
+          newSet.add(epicKey)
+        }
+      }
+      return newSet
+    })
+  }, [epics])
+
+  const isEpicSelected = useCallback((epicName: string) => {
+    return selectedItems.has(`epic:${epicName}`)
+  }, [selectedItems])
+
+  const isStorySelected = useCallback((epicName: string, storyId: string) => {
+    return selectedItems.has(`story:${epicName}:${storyId}`)
+  }, [selectedItems])
+
+  const getSelectedStories = useCallback(() => {
+    const stories: { epicName: string; storyId: string }[] = []
+    selectedItems.forEach(key => {
+      if (key.startsWith('story:')) {
+        const [, epicName, storyId] = key.split(':')
+        stories.push({ epicName, storyId })
+      }
+    })
+    return stories
+  }, [selectedItems])
+
+  const getSelectedEpics = useCallback(() => {
+    const epics: string[] = []
+    selectedItems.forEach(key => {
+      if (key.startsWith('epic:')) {
+        epics.push(key.replace('epic:', ''))
+      }
+    })
+    return epics
+  }, [selectedItems])
+
+  // Archive selected items
+  const handleArchiveSelected = useCallback(async () => {
+    const selectedStories = getSelectedStories()
+    if (selectedStories.length === 0) {
+      setError('No stories selected')
+      return
+    }
+
+    setArchiving(true)
+    setError(null)
+
+    try {
+      const archivePromises = selectedStories.map(({ epicName, storyId }) =>
+        fetch(`/api/projects/${projectName}/epics/${epicName}/stories/${storyId}/archive`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        })
+      )
+
+      const results = await Promise.all(archivePromises)
+      const failed = results.filter(r => !r.ok)
+
+      if (failed.length > 0) {
+        setError(`Failed to archive ${failed.length} story(ies)`)
+      } else {
+        // Check if the currently selected story was archived
+        const currentStoryId = selection.type === 'story' ? selection.storyId : null
+        const wasCurrentStoryArchived = currentStoryId && selectedStories.some(
+          ({ storyId }) => storyId === currentStoryId
+        )
+
+        setSelectedItems(new Set())
+        await fetchEpics()
+
+        // If the currently selected story was archived, clear the selection to show default view
+        if (wasCurrentStoryArchived) {
+          clearSelection()
+        }
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to archive stories')
+    } finally {
+      setArchiving(false)
+    }
+  }, [projectName, getSelectedStories, fetchEpics, selection, clearSelection])
+
   // Simple markdown renderer
   function renderMarkdown(text: string): string {
     if (!text) return ''
@@ -2199,48 +2352,92 @@ export default function ProjectDetailPage() {
       <main className="container py-6">
         {/* Project Header - Compact */}
         <div className="mb-6">
-          <div className="flex items-center gap-3 flex-wrap">
-            <Link
-              href="/analytics"
-              className="h-8 w-8 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 flex items-center justify-center flex-shrink-0 transition-colors"
-              title="View Analytics"
-            >
-              <BarChart3 className="h-4 w-4" />
-            </Link>
-            <h1
-              className="text-lg font-semibold text-text-primary cursor-pointer hover:text-primary transition-colors"
-              onClick={clearSelection}
-              title="Click to view project details"
-            >
-              {displayName}
-            </h1>
-            <span className="text-text-secondary">|</span>
-            <span className="text-sm text-text-secondary">
-              <span className="font-medium text-text-primary">{epics.length}</span> Epics
-            </span>
-            <span className="text-text-secondary">|</span>
-            <span className="text-sm text-text-secondary">
-              <span className="font-medium text-text-primary">{totalStoryPoints}</span> Story Points
-            </span>
-            <span className="text-text-secondary">|</span>
-            <span className="text-sm text-text-secondary">
-              <span className="font-medium text-text-primary">{completionPercentage}%</span> Progress
-            </span>
-            <span className="text-text-secondary">|</span>
-            <span className="text-sm text-text-secondary">
-              Manager: <span className="font-medium text-text-primary">
-                {project.metadata?.manager && project.metadata.manager !== 'unassigned'
-                  ? people.find(p => p.id === project.metadata?.manager)?.name || project.metadata.manager
-                  : 'unassigned'}
+          <div className="flex items-center gap-3 flex-wrap justify-between">
+            <div className="flex items-center gap-3 flex-wrap">
+              <Link
+                href="/analytics"
+                className="h-8 w-8 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 flex items-center justify-center flex-shrink-0 transition-colors"
+                title="View Analytics"
+              >
+                <BarChart3 className="h-4 w-4" />
+              </Link>
+              <h1
+                className="text-lg font-semibold text-text-primary cursor-pointer hover:text-primary transition-colors"
+                onClick={clearSelection}
+                title="Click to view project details"
+              >
+                {displayName}
+              </h1>
+              <span className="text-text-secondary">|</span>
+              <span className="text-sm text-text-secondary">
+                <span className="font-medium text-text-primary">{epics.length}</span> Epics
               </span>
-              {project.metadata?.contributors && project.metadata.contributors.length > 0 && (
-                <> | Contributors: <span className="font-medium text-text-primary">
-                  {project.metadata.contributors
-                    .map(id => people.find(p => p.id === id)?.name || id)
-                    .join(', ')}
-                </span></>
+              <span className="text-text-secondary">|</span>
+              <span className="text-sm text-text-secondary">
+                <span className="font-medium text-text-primary">{totalStoryPoints}</span> Story Points
+              </span>
+              <span className="text-text-secondary">|</span>
+              <span className="text-sm text-text-secondary">
+                <span className="font-medium text-text-primary">{completionPercentage}%</span> Progress
+              </span>
+              <span className="text-text-secondary">|</span>
+              <span className="text-sm text-text-secondary">
+                Manager: <span className="font-medium text-text-primary">
+                  {project.metadata?.manager && project.metadata.manager !== 'unassigned'
+                    ? people.find(p => p.id === project.metadata?.manager)?.name || project.metadata.manager
+                    : 'unassigned'}
+                </span>
+                {project.metadata?.contributors && project.metadata.contributors.length > 0 && (
+                  <> | Contributors: <span className="font-medium text-text-primary">
+                    {project.metadata.contributors
+                      .map(id => people.find(p => p.id === id)?.name || id)
+                      .join(', ')}
+                  </span></>
+                )}
+              </span>
+            </div>
+            {/* Actions Dropdown */}
+            <div className="relative">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowActionsDropdown(!showActionsDropdown)}
+                disabled={getSelectedStories().length === 0 && getSelectedEpics().length === 0}
+              >
+                <MoreVertical className="h-4 w-4 mr-1" />
+                Actions
+              </Button>
+              {showActionsDropdown && (
+                <>
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setShowActionsDropdown(false)}
+                  />
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-border-light z-20">
+                    <div className="py-1">
+                      {getSelectedStories().length > 0 && (
+                        <button
+                          onClick={() => {
+                            handleArchiveSelected()
+                            setShowActionsDropdown(false)
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-surface-muted flex items-center gap-2"
+                          disabled={archiving}
+                        >
+                          <Archive className="h-4 w-4" />
+                          Archive Selected ({getSelectedStories().length})
+                        </button>
+                      )}
+                      {getSelectedStories().length === 0 && getSelectedEpics().length === 0 && (
+                        <div className="px-4 py-2 text-sm text-text-secondary">
+                          No items selected
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </>
               )}
-            </span>
+            </div>
           </div>
         </div>
 
@@ -2441,6 +2638,16 @@ export default function ProjectDetailPage() {
                       >
                         <div className="flex items-center justify-between">
                           <div className={`flex items-center flex-1 min-w-0 ${isFullscreen ? 'gap-2' : 'gap-3'}`}>
+                            <input
+                              type="checkbox"
+                              checked={isEpicSelected(epic._name)}
+                              onChange={(e) => {
+                                e.stopPropagation()
+                                toggleEpicSelection(epic._name)
+                              }}
+                              onClick={(e) => e.stopPropagation()}
+                              className="flex-shrink-0 w-4 h-4 rounded border-border-light cursor-pointer"
+                            />
                             <button
                               onClick={(e) => {
                                 e.stopPropagation()
@@ -2526,7 +2733,7 @@ export default function ProjectDetailPage() {
                                 strategy={verticalListSortingStrategy}
                               >
                                 {epic.stories.map((story) => {
-                                  const isStorySelected =
+                                  const isStorySelectedInUrl =
                                     selection.type === 'story' &&
                                     selection.epicName === epic._name &&
                                     selection.storyId === story.id
@@ -2543,7 +2750,7 @@ export default function ProjectDetailPage() {
                                       key={story.id}
                                       story={story}
                                       epicName={epic._name}
-                                      isSelected={isStorySelected}
+                                      isSelected={isStorySelectedInUrl}
                                       isFocused={isStoryFocused}
                                       isKeyboardDragging={isKeyboardDragging}
                                       storyStatusColor={storyStatusColor}
@@ -2558,6 +2765,8 @@ export default function ProjectDetailPage() {
                                       saveStoryTitle={saveStoryTitle}
                                       selectStory={selectStory}
                                       getStatusIcon={getStatusIcon}
+                                      isStorySelectedFn={isStorySelected}
+                                      toggleStorySelection={toggleStorySelection}
                                     />
                                   )
                                 })}

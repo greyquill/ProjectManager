@@ -38,8 +38,8 @@ export async function GET(
       finalStoryIds.map(async (id) => {
         try {
           const story = await pmRepository.readStory(projectName, epicName, id)
-          // Filter out deleted stories
-          if (story.deleted) {
+          // Filter out deleted and archived stories
+          if (story.deleted || story.archived) {
             return null
           }
           return story

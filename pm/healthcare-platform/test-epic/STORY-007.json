@@ -15,7 +15,7 @@
   "priority": "low",
   "manager": "person-002",
   "createdAt": "2025-01-05T10:00:00Z",
-  "updatedAt": "2025-12-09T07:14:13.895Z",
+  "updatedAt": "2025-12-09T09:18:38.568Z",
   "dueDate": null,
   "tags": [
     "frontend",
@@ -46,5 +46,7 @@
     "createdBy": "unassigned",
     "lastEditedBy": "unassigned",
     "custom": {}
-  }
+  },
+  "deleted": false,
+  "archived": false
 }

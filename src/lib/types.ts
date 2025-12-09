@@ -114,6 +114,7 @@ export const StorySchema = z.object({
   }),
 
   deleted: z.boolean().default(false), // Soft delete flag - when true, story is hidden from UI but preserved for ID sequencing
+  archived: z.boolean().default(false), // Archive flag - when true, story is archived but can be restored
 })
 
 // ============================================================================
@@ -300,6 +301,7 @@ export function createStory(overrides: Partial<Story> = {}): Story {
     priority: 'medium',
     manager: 'unassigned',
     deleted: false,
+    archived: false,
     createdAt: now,
     updatedAt: now,
     tags: [],
