@@ -7,6 +7,7 @@ import { Header } from '@/components/Header'
 import { Card } from '@/components/Card'
 import { Button } from '@/components/Button'
 import { Badge } from '@/components/Badge'
+import { MarkdownEditor } from '@/components/MarkdownEditor'
 import {
   ArrowLeft,
   ChevronDown,
@@ -103,8 +104,6 @@ export default function ProjectDetailPage() {
   const [savingProject, setSavingProject] = useState(false)
 
   // Preview state
-  const [epicDescriptionPreview, setEpicDescriptionPreview] = useState(true)
-  const [storyDescriptionPreview, setStoryDescriptionPreview] = useState(true)
 
   // New epic form state
   const [showNewEpicForm, setShowNewEpicForm] = useState(false)
@@ -2571,48 +2570,20 @@ export default function ProjectDetailPage() {
 
                   {/* Description */}
                   <div className="pt-2">
-                    <div className="flex items-center justify-between mb-3 border-b border-border-light pb-2">
-                      <h3 className="text-base font-semibold text-text-primary">
-                        Description
-                      </h3>
-                      <button
-                        type="button"
-                        onClick={() => setEpicDescriptionPreview(!epicDescriptionPreview)}
-                        className="flex items-center gap-1 text-xs text-text-secondary hover:text-text-primary transition-colors"
-                      >
-                        {epicDescriptionPreview ? (
-                          <>
-                            <Edit className="h-3 w-3" />
-                            Edit
-                          </>
-                        ) : (
-                          <>
-                            <Eye className="h-3 w-3" />
-                            Preview
-                          </>
-                        )}
-                      </button>
-                    </div>
-                    {epicDescriptionPreview ? (
-                      <div
-                        className="input-field min-h-[32rem] overflow-y-auto"
-                        style={{
-                          padding: '0.75rem',
-                          lineHeight: '1.6',
-                        }}
-                        dangerouslySetInnerHTML={{ __html: renderMarkdown(epicDescription) }}
-                      />
-                    ) : (
-                      <textarea
+                    <h3 className="text-base font-semibold text-text-primary mb-3 border-b border-border-light pb-2">
+                      Description
+                    </h3>
+                    <div className="border border-border-light rounded-lg overflow-hidden">
+                      <MarkdownEditor
                         value={epicDescription}
-                        onChange={(e) => {
-                          setEpicDescription(e.target.value)
+                        onChange={(value) => {
+                          setEpicDescription(value)
                           setHasChanges(true)
                         }}
-                        rows={16}
-                        className="input-field font-mono text-sm"
+                        placeholder="Enter epic description using markdown..."
+                        minHeight={500}
                       />
-                    )}
+                    </div>
                   </div>
 
                   {/* Metrics (Read-only) */}
@@ -2975,56 +2946,20 @@ export default function ProjectDetailPage() {
 
                   {/* Description */}
                   <div className="pt-2">
-                    <div className="flex items-center justify-between mb-3 border-b border-border-light pb-2">
-                      <h3 className="text-base font-semibold text-text-primary">
-                        Description
-                      </h3>
-                      <button
-                        type="button"
-                        onClick={() => setStoryDescriptionPreview(!storyDescriptionPreview)}
-                        className="flex items-center gap-1 text-xs text-text-secondary hover:text-text-primary transition-colors"
-                      >
-                        {storyDescriptionPreview ? (
-                          <>
-                            <Edit className="h-3 w-3" />
-                            Edit
-                          </>
-                        ) : (
-                          <>
-                            <Eye className="h-3 w-3" />
-                            Preview
-                          </>
-                        )}
-                      </button>
-                    </div>
-                    {storyDescriptionPreview ? (
-                      <div
-                        className="input-field overflow-y-auto"
-                        style={{
-                          padding: '0.75rem',
-                          lineHeight: '1.6',
-                        }}
-                      >
-                        {storyDescription.trim() ? (
-                          <div dangerouslySetInnerHTML={{ __html: renderMarkdown(storyDescription) }} />
-                        ) : (
-                          <div className="text-text-secondary italic">
-                            {storyTitle ? `Please describe your story "${storyTitle}" here. Click on "Edit" to add a description.` : 'Please describe your story here. Click on "Edit" to add a description.'}
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <textarea
+                    <h3 className="text-base font-semibold text-text-primary mb-3 border-b border-border-light pb-2">
+                      Description
+                    </h3>
+                    <div className="border border-border-light rounded-lg overflow-hidden">
+                      <MarkdownEditor
                         value={storyDescription}
-                        onChange={(e) => {
-                          setStoryDescription(e.target.value)
+                        onChange={(value) => {
+                          setStoryDescription(value)
                           setHasChanges(true)
                         }}
-                        rows={16}
-                        className="input-field font-mono text-sm"
-                        placeholder={storyTitle ? `Please describe your story "${storyTitle}" here` : 'Please describe your story here'}
+                        placeholder={storyTitle ? `Please describe your story "${storyTitle}" here using markdown...` : 'Please describe your story here using markdown...'}
+                        minHeight={500}
                       />
-                    )}
+                    </div>
                   </div>
 
                   {/* Acceptance Criteria */}
