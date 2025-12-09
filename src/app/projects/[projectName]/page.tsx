@@ -293,6 +293,7 @@ export default function ProjectDetailPage() {
   const [shouldMaintainEpicFocus, setShouldMaintainEpicFocus] = useState(false)
   const previousSelectionRef = useRef<string | null>(null)
   const detailPanelRef = useRef<HTMLDivElement | null>(null)
+  const manualToggleInProgressRef = useRef<string | null>(null) // Track epic being manually toggled
 
   // Epic edit state
   const [epicTitle, setEpicTitle] = useState('')
@@ -424,8 +425,10 @@ export default function ProjectDetailPage() {
     if (selection.type === 'epic' && selection.epicName && epics.length > 0) {
       const epic = epics.find((e) => e._name === selection.epicName)
       if (epic) {
-        // Only auto-expand the epic if the selection actually changed (not just a re-render)
-        if (selectionChanged) {
+        // Only auto-expand the epic if:
+        // 1. The selection actually changed (not just a re-render)
+        // 2. AND we're not in the middle of manually toggling this epic
+        if (selectionChanged && manualToggleInProgressRef.current !== selection.epicName) {
           setExpandedEpics((prev) => new Set([...prev, selection.epicName!]))
         }
 
@@ -442,8 +445,8 @@ export default function ProjectDetailPage() {
       const epic = epics.find((e) => e._name === selection.epicName)
       const story = epic?.stories.find((s) => s.id === selection.storyId)
       if (story) {
-        // Always expand the parent epic for story selection (only if selection changed)
-        if (selectionChanged) {
+        // Always expand the parent epic for story selection (only if selection changed and not manually toggling)
+        if (selectionChanged && manualToggleInProgressRef.current !== selection.epicName) {
           setExpandedEpics((prev) => new Set([...prev, selection.epicName!]))
         }
 
@@ -567,6 +570,9 @@ export default function ProjectDetailPage() {
   }, [router, projectName])
 
   function toggleEpic(epicName: string) {
+    // Mark that we're manually toggling this epic
+    manualToggleInProgressRef.current = epicName
+
     setExpandedEpics((prev) => {
       const newExpanded = new Set(prev)
       if (newExpanded.has(epicName)) {
@@ -576,6 +582,13 @@ export default function ProjectDetailPage() {
       }
       return newExpanded
     })
+
+    // Clear the flag after a short delay to allow state to settle
+    setTimeout(() => {
+      if (manualToggleInProgressRef.current === epicName) {
+        manualToggleInProgressRef.current = null
+      }
+    }, 100)
   }
 
   function selectEpic(epic: Epic & { _name: string; stories: Story[] }) {
