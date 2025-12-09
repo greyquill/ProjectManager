@@ -510,8 +510,8 @@ Currently minimal configuration is needed. Future additions may include:
 - [x] Delete functionality with login code verification
 - [x] Soft deletion for stories (preserves ID sequencing)
 - [x] Validation modals for epic deletion
-- [ ] Epic and story templates
-- [ ] Bulk operations (delete, move, archive)
+- [x] Epic and story templates
+- [x] Bulk operations (delete, move, archive)
 
 ### Phase 3: AI Integration
 - [ ] AI-powered story generation from epic

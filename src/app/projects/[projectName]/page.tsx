@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Header } from '@/components/Header'
@@ -291,7 +291,7 @@ export default function ProjectDetailPage() {
   const [tempStoryTitle, setTempStoryTitle] = useState('')
   const [lastFocusedEpicName, setLastFocusedEpicName] = useState<string | null>(null)
   const [shouldMaintainEpicFocus, setShouldMaintainEpicFocus] = useState(false)
-  const [previousSelection, setPreviousSelection] = useState<string | null>(null)
+  const previousSelectionRef = useRef<string | null>(null)
 
   // Epic edit state
   const [epicTitle, setEpicTitle] = useState('')
@@ -411,11 +411,22 @@ export default function ProjectDetailPage() {
 
   // Update form state when URL params change
   useEffect(() => {
+    const currentSelectionKey = selection.type === 'epic'
+      ? `epic:${selection.epicName}`
+      : selection.type === 'story'
+      ? `story:${selection.epicName}:${selection.storyId}`
+      : null
+
+    // Only auto-expand if the selection actually changed (not just a re-render)
+    const selectionChanged = previousSelectionRef.current !== currentSelectionKey
+
     if (selection.type === 'epic' && selection.epicName && epics.length > 0) {
       const epic = epics.find((e) => e._name === selection.epicName)
       if (epic) {
-        // Expand the epic
-        setExpandedEpics((prev) => new Set([...prev, selection.epicName!]))
+        // Only auto-expand the epic if the selection actually changed (not just a re-render)
+        if (selectionChanged) {
+          setExpandedEpics((prev) => new Set([...prev, selection.epicName!]))
+        }
 
         setEpicTitle(epic.title)
         setEpicSummary(epic.summary)
@@ -430,8 +441,10 @@ export default function ProjectDetailPage() {
       const epic = epics.find((e) => e._name === selection.epicName)
       const story = epic?.stories.find((s) => s.id === selection.storyId)
       if (story) {
-        // Expand the parent epic so the story is visible in the accordion
-        setExpandedEpics((prev) => new Set([...prev, selection.epicName!]))
+        // Always expand the parent epic for story selection (only if selection changed)
+        if (selectionChanged) {
+          setExpandedEpics((prev) => new Set([...prev, selection.epicName!]))
+        }
 
         // Extract title without prefix for editing in the detail panel
         setStoryTitle(extractStoryTitle(story.id, story.title))
@@ -456,6 +469,9 @@ export default function ProjectDetailPage() {
         setHasChanges(false)
       }
     }
+
+    // Update previous selection for next render
+    previousSelectionRef.current = currentSelectionKey
   }, [epicNameFromUrl, storyIdFromUrl, epics, selection.type, selection.epicName, selection.storyId, extractStoryTitle])
 
   const fetchPeople = useCallback(async () => {
@@ -545,13 +561,15 @@ export default function ProjectDetailPage() {
   }, [router, projectName])
 
   function toggleEpic(epicName: string) {
-    const newExpanded = new Set(expandedEpics)
-    if (newExpanded.has(epicName)) {
-      newExpanded.delete(epicName)
-    } else {
-      newExpanded.add(epicName)
-    }
-    setExpandedEpics(newExpanded)
+    setExpandedEpics((prev) => {
+      const newExpanded = new Set(prev)
+      if (newExpanded.has(epicName)) {
+        newExpanded.delete(epicName)
+      } else {
+        newExpanded.add(epicName)
+      }
+      return newExpanded
+    })
   }
 
   function selectEpic(epic: Epic & { _name: string; stories: Story[] }) {
@@ -2645,8 +2663,14 @@ export default function ProjectDetailPage() {
                       <div
                         className={`cursor-pointer hover:bg-surface-muted transition-all ${isFullscreen ? 'p-1.5' : 'p-2'} ${isFocused ? 'bg-blue-50' : ''} ${isShiftHeld && keyboardDraggingId === epic._name ? 'animate-lift-up cursor-grab' : ''}`}
                         onClick={() => {
-                          toggleEpic(epic._name)
-                          selectEpic(epic)
+                          // If epic is already selected, only toggle expansion
+                          if (isSelected) {
+                            toggleEpic(epic._name)
+                          } else {
+                            // If not selected, toggle expansion and select
+                            toggleEpic(epic._name)
+                            selectEpic(epic)
+                          }
                         }}
                         ref={(el) => {
                           if (isFocused && el) {
@@ -2666,20 +2690,13 @@ export default function ProjectDetailPage() {
                               onClick={(e) => e.stopPropagation()}
                               className="flex-shrink-0 w-4 h-4 rounded border-border-light cursor-pointer"
                             />
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                toggleEpic(epic._name)
-                              }}
-                              className="flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded"
-                              tabIndex={isFullscreen ? 0 : -1}
-                            >
+                            <div className="flex-shrink-0">
                               {isExpanded ? (
                                 <ChevronDown className={`text-text-secondary ${isFullscreen ? 'h-3 w-3' : 'h-4 w-4'}`} />
                               ) : (
                                 <ChevronRight className={`text-text-secondary ${isFullscreen ? 'h-3 w-3' : 'h-4 w-4'}`} />
                               )}
-                            </button>
+                            </div>
                             <Target className={`text-primary flex-shrink-0 ${isFullscreen ? 'h-3 w-3' : 'h-4 w-4'}`} />
                             <div className="flex-1 min-w-0">
                               {isFullscreen && editingEpicTitle === epic._name ? (
