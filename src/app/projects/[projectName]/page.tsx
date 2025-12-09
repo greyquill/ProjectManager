@@ -1708,6 +1708,7 @@ export default function ProjectDetailPage() {
           lastEditedBy: 'user',
           custom: {},
         },
+        deleted: false,
       }
 
       // Optimistically add the story to the UI immediately
