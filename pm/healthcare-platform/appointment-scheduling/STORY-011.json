@@ -1,14 +1,14 @@
 {
-  "id": "STORY-001",
-  "title": "sadasd",
-  "summary": "sdf",
+  "id": "STORY-011",
+  "title": "[STORY-011] New story to test the id. This should have11",
+  "summary": "some somm",
   "description": "",
   "acceptanceCriteria": [],
   "status": "todo",
   "priority": "medium",
   "manager": "person-001",
-  "createdAt": "2025-12-08T13:54:19.428Z",
-  "updatedAt": "2025-12-09T07:42:51.915Z",
+  "createdAt": "2025-12-09T07:44:11.178Z",
+  "updatedAt": "2025-12-09T07:44:11.376Z",
   "dueDate": null,
   "tags": [],
   "estimate": {
@@ -22,5 +22,5 @@
     "lastEditedBy": "user",
     "custom": {}
   },
-  "deleted": true
+  "deleted": false
 }

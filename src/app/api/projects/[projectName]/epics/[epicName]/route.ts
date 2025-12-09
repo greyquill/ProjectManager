@@ -103,6 +103,19 @@ export async function DELETE(
       )
     }
 
+    // Check if epic has active stories - must be empty or all stories moved/deleted before deletion
+    const activeStories = await pmRepository.listActiveStories(projectName, epicName)
+
+    if (activeStories.length > 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Cannot delete epic "${epicName}". It contains ${activeStories.length} active story(ies). Please remove or move all stories before deleting the epic.`,
+        },
+        { status: 400 }
+      )
+    }
+
     await pmRepository.deleteEpic(projectName, epicName)
 
     return NextResponse.json({

@@ -346,6 +346,15 @@ export default function ProjectDetailPage() {
   // Quick epic creation in focus mode
   const [quickEpicTitle, setQuickEpicTitle] = useState('')
 
+  // Delete confirmation state
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deleteType, setDeleteType] = useState<'story' | 'epic' | null>(null)
+  const [deleteLoginCode, setDeleteLoginCode] = useState('')
+  const [deleteError, setDeleteError] = useState<string | null>(null)
+  const [deleting, setDeleting] = useState(false)
+  const [showValidationModal, setShowValidationModal] = useState(false)
+  const [validationMessage, setValidationMessage] = useState<string>('')
+
   // Helper functions for story title formatting
   const extractStoryTitle = useCallback((storyId: string, title: string): string => {
     // Remove the prefix if it exists for editing
@@ -1746,6 +1755,97 @@ export default function ProjectDetailPage() {
     setError(null)
   }
 
+  // Delete functions
+  const handleDeleteStory = () => {
+    if (selection.type === 'story' && selection.epicName && selection.storyId) {
+      // Check if story can be deleted (no validation needed for stories currently)
+      setDeleteType('story')
+      setShowDeleteModal(true)
+      setDeleteLoginCode('')
+      setDeleteError(null)
+    }
+  }
+
+  const handleDeleteEpic = () => {
+    if (selection.type === 'epic' && selection.epicName) {
+      const epic = epics.find(e => e._name === selection.epicName)
+      if (epic && epic.stories.length > 0) {
+        // Show validation modal instead of error
+        setValidationMessage(`This epic contains ${epic.stories.length} active story(ies). Please remove or move all stories before deleting the epic.`)
+        setShowValidationModal(true)
+        return
+      }
+      setDeleteType('epic')
+      setShowDeleteModal(true)
+      setDeleteLoginCode('')
+      setDeleteError(null)
+    }
+  }
+
+  const confirmDelete = async () => {
+    if (deleteLoginCode !== '2341') {
+      setDeleteError('Nope!')
+      setTimeout(() => setDeleteError(null), 2000)
+      return
+    }
+
+    setDeleting(true)
+    setDeleteError(null)
+
+    try {
+      if (deleteType === 'story' && selection.type === 'story' && selection.epicName && selection.storyId) {
+        const response = await fetch(
+          `/api/projects/${projectName}/epics/${selection.epicName}/stories/${selection.storyId}`,
+          { method: 'DELETE' }
+        )
+
+        if (response.ok) {
+          await fetchEpics()
+          clearSelection()
+          setShowDeleteModal(false)
+          setDeleteLoginCode('')
+        } else {
+          const result = await response.json()
+          setDeleteError(result.error || 'Failed to delete story')
+        }
+      } else if (deleteType === 'epic' && selection.type === 'epic' && selection.epicName) {
+        // Double-check on backend (should already be validated, but safety check)
+        const response = await fetch(
+          `/api/projects/${projectName}/epics/${selection.epicName}`,
+          { method: 'DELETE' }
+        )
+
+        if (response.ok) {
+          await fetchEpics()
+          clearSelection()
+          setShowDeleteModal(false)
+          setDeleteLoginCode('')
+        } else {
+          const result = await response.json()
+          // If backend returns validation error, show it in validation modal
+          if (result.error && result.error.includes('contains') && result.error.includes('story')) {
+            setShowDeleteModal(false)
+            setValidationMessage(result.error)
+            setShowValidationModal(true)
+          } else {
+            setDeleteError(result.error || 'Failed to delete epic')
+          }
+        }
+      }
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : 'Failed to delete')
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false)
+    setDeleteLoginCode('')
+    setDeleteError(null)
+    setDeleteType(null)
+  }
+
   function toggleContributor(personId: string) {
     const updated = projectContributors.includes(personId)
       ? projectContributors.filter((id) => id !== personId)
@@ -2954,6 +3054,19 @@ export default function ProjectDetailPage() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Delete Button - Bottom Left */}
+                  <div className="mt-6 pt-6 border-t border-border-light">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleDeleteEpic}
+                      className="text-red-600 border-red-300 hover:bg-red-50 hover:border-red-400"
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete Epic
+                    </Button>
+                  </div>
                 </div>
               </Card>
             ) : selection.type === 'story' && selectedStory ? (
@@ -3375,6 +3488,19 @@ export default function ProjectDetailPage() {
                       ))}
                     </div>
                   </div>
+
+                  {/* Delete Button - Bottom Left */}
+                  <div className="mt-6 pt-6 border-t border-border-light">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleDeleteStory}
+                      className="text-red-600 border-red-300 hover:bg-red-50 hover:border-red-400"
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete Story
+                    </Button>
+                  </div>
                 </div>
               </Card>
             ) : null}
@@ -3382,6 +3508,96 @@ export default function ProjectDetailPage() {
           )}
         </div>
       </main>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={cancelDelete}>
+          <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-lg font-semibold text-text-primary mb-4">
+              Delete {deleteType === 'story' ? 'Story' : 'Epic'}
+            </h3>
+            <p className="text-sm text-text-secondary mb-4">
+              This action cannot be undone. Enter your login code to confirm deletion.
+            </p>
+            <div className="space-y-4">
+              <div>
+                <input
+                  type="password"
+                  value={deleteLoginCode}
+                  onChange={(e) => setDeleteLoginCode(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      confirmDelete()
+                    } else if (e.key === 'Escape') {
+                      cancelDelete()
+                    }
+                  }}
+                  placeholder="Enter login code"
+                  className="input-field w-full"
+                  autoFocus
+                />
+                {deleteError && (
+                  <p className={`mt-2 text-sm ${deleteError === 'Nope!' ? 'text-red-600 animate-fade-in' : 'text-red-600'}`}>
+                    {deleteError}
+                  </p>
+                )}
+              </div>
+              <div className="flex gap-2 justify-end">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={cancelDelete}
+                  disabled={deleting}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={confirmDelete}
+                  isLoading={deleting}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Validation Modal */}
+      {showValidationModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowValidationModal(false)}>
+          <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-text-primary">
+                Cannot Delete {deleteType === 'story' ? 'Story' : 'Epic'}
+              </h3>
+              <button
+                onClick={() => setShowValidationModal(false)}
+                className="text-text-secondary hover:text-text-primary transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+              <p className="text-sm text-amber-800">
+                {validationMessage}
+              </p>
+            </div>
+            <div className="flex justify-end">
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => setShowValidationModal(false)}
+              >
+                Understood
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
