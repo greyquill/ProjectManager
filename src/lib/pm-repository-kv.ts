@@ -529,10 +529,20 @@ export async function generateNextEpicId(projectName: string): Promise<string> {
 
 export async function generateNextStoryId(
   projectName: string,
-  epicName: string
+  epicName: string // Kept for API compatibility but not used for ID generation
 ): Promise<string> {
-  const stories = await listStories(projectName, epicName)
-  const existingNumbers = stories
+  // Get all epics in the project
+  const epics = await listEpics(projectName)
+
+  // Collect all story IDs from all epics in the project
+  const allStoryIds: string[] = []
+  for (const epic of epics) {
+    const storyIds = await listStories(projectName, epic)
+    allStoryIds.push(...storyIds)
+  }
+
+  // Extract all story numbers across the entire project
+  const existingNumbers = allStoryIds
     .map((id: string) => {
       const match = id.match(/^STORY-(\d{3})$/)
       return match ? parseInt(match[1], 10) : null
@@ -546,7 +556,7 @@ export async function generateNextStoryId(
   }
 
   if (nextNumber > 999) {
-    throw new Error('Maximum number of stories (999) reached')
+    throw new Error('Maximum number of stories (999) reached for this project')
   }
 
   return `STORY-${nextNumber.toString().padStart(3, '0')}`
