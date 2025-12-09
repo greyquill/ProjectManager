@@ -1005,6 +1005,10 @@ export default function DocsPage() {
                         <td className="py-2 px-3">Toggle expand/collapse for the focused epic - only works when focused on an epic</td>
                       </tr>
                       <tr className="border-b border-border-light">
+                        <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">Shift</kbd> + <kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">↑</kbd>/<kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">↓</kbd></td>
+                        <td className="py-2 px-3">Move the focused story or epic up (↑) or down (↓) in order. Hold Shift to activate drag mode - the item will lift up with a shadow effect and cursor changes to grab. Release Shift to complete the move.</td>
+                      </tr>
+                      <tr className="border-b border-border-light">
                         <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">Enter</kbd></td>
                         <td className="py-2 px-3">
                           <ul className="list-disc list-inside ml-4 mt-1">
@@ -1070,6 +1074,42 @@ export default function DocsPage() {
                 </ul>
 
                 <h4 className="text-xl font-semibold text-text-primary mb-3 mt-6">
+                  Keyboard Drag-and-Drop (Shift + Arrow Keys)
+                </h4>
+                <p className="text-text-secondary mb-4">
+                  In Focus Mode, you can reorder stories and epics using keyboard shortcuts without using the mouse:
+                </p>
+                <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4 ml-4">
+                  <li>Navigate to the story or epic you want to move using arrow keys</li>
+                  <li>Hold down <kbd className="bg-surface-muted px-2 py-1 rounded border border-border-light font-mono text-sm">Shift</kbd></li>
+                  <li>While holding Shift, press <kbd className="bg-surface-muted px-2 py-1 rounded border border-border-light font-mono text-sm">↑</kbd> Arrow Up to move the item up, or <kbd className="bg-surface-muted px-2 py-1 rounded border border-border-light font-mono text-sm">↓</kbd> Arrow Down to move it down</li>
+                  <li>Release Shift when done</li>
+                </ol>
+                <p className="text-text-secondary mb-4">
+                  <strong>Visual Feedback:</strong> When you hold Shift, the focused item will:
+                </p>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
+                  <li>Animate upward with a subtle lift effect (shadow and slight elevation)</li>
+                  <li>Change the cursor to a grab icon (hand with open palm) indicating it&apos;s ready to be moved</li>
+                  <li>Maintain focus on the item as it moves to its new position</li>
+                </ul>
+                <p className="text-text-secondary mb-4">
+                  <strong>How It Works:</strong>
+                </p>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
+                  <li><strong>Stories:</strong> Can be reordered within their epic or moved between epics (if the target epic is expanded)</li>
+                  <li><strong>Epics:</strong> Can be reordered within the project list</li>
+                  <li>Changes are saved automatically to the backend</li>
+                  <li>The UI updates optimistically for instant feedback</li>
+                  <li>If a move fails, the UI reverts to the previous order</li>
+                </ul>
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mb-4">
+                  <p className="text-sm text-text-secondary">
+                    <strong className="text-text-primary">Tip:</strong> This keyboard-based drag-and-drop is perfect for quickly prioritizing work. Hold Shift and use arrow keys to move items up or down in priority - much faster than using the mouse!
+                  </p>
+                </div>
+
+                <h4 className="text-xl font-semibold text-text-primary mb-3 mt-6">
                   Visual Feedback
                 </h4>
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
@@ -1079,6 +1119,7 @@ export default function DocsPage() {
                   <li>Edit mode shows an input field with a blue underline border</li>
                   <li>The chevron button (for expanding/collapsing) has a focus ring when focused</li>
                   <li>A &quot;Focus Mode&quot; indicator appears centered between the heading and &quot;+ Epic&quot; button</li>
+                  <li>When holding Shift for drag-and-drop, items lift up with a shadow effect and the cursor changes to grab</li>
                 </ul>
 
                 <h3 className="text-2xl font-semibold text-text-primary mb-3 mt-8">
