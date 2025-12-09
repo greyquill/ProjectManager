@@ -416,12 +416,32 @@ export async function writeStory(
 
   // Update stories list
   const storiesList = await kv.get(getStoriesListKey(projectName, epicName)) || []
-  if (!storiesList.includes(storyId)) {
+  const isNewStory = !storiesList.includes(storyId)
+  if (isNewStory) {
     storiesList.push(storyId)
     await kv.set(getStoriesListKey(projectName, epicName), storiesList)
   }
 
   await kv.set(key, story)
+
+  // If this is a new story, update the epic's storyIds array
+  if (isNewStory) {
+    try {
+      const epic = await readEpic(projectName, epicName)
+      const epicStoryIds = epic.storyIds || []
+      if (!epicStoryIds.includes(storyId)) {
+        const updatedEpic = {
+          ...epic,
+          storyIds: [...epicStoryIds, storyId],
+          updatedAt: generateTimestamp(),
+        }
+        await writeEpic(projectName, epicName, updatedEpic)
+      }
+    } catch (error) {
+      // If epic doesn't exist or can't be read, log warning but don't fail
+      console.warn(`Could not update epic's storyIds for new story ${storyId}:`, error)
+    }
+  }
 }
 
 export async function listStories(
@@ -460,6 +480,24 @@ export async function deleteStory(
   const storiesList = await kv.get(getStoriesListKey(projectName, epicName)) || []
   const updatedList = storiesList.filter((s: string) => s !== storyId)
   await kv.set(getStoriesListKey(projectName, epicName), updatedList)
+
+  // Update the epic's storyIds array
+  try {
+    const epic = await readEpic(projectName, epicName)
+    const epicStoryIds = epic.storyIds || []
+    const updatedEpicStoryIds = epicStoryIds.filter((id: string) => id !== storyId)
+    if (updatedEpicStoryIds.length !== epicStoryIds.length) {
+      const updatedEpic = {
+        ...epic,
+        storyIds: updatedEpicStoryIds,
+        updatedAt: generateTimestamp(),
+      }
+      await writeEpic(projectName, epicName, updatedEpic)
+    }
+  } catch (error) {
+    // If epic doesn't exist or can't be read, log warning but don't fail
+    console.warn(`Could not update epic's storyIds when deleting story ${storyId}:`, error)
+  }
 }
 
 // ============================================================================

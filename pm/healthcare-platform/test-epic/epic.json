@@ -6,9 +6,12 @@
   "priority": "medium",
   "manager": "person-001",
   "createdAt": "2025-12-08T11:07:53.710Z",
-  "updatedAt": "2025-12-08T11:23:41.249Z",
+  "updatedAt": "2025-12-09T07:14:13.895Z",
   "targetRelease": null,
-  "storyIds": [],
+  "storyIds": [
+    "STORY-125",
+    "STORY-123"
+  ],
   "metrics": {
     "totalStoryPoints": 0,
     "completedStoryPoints": 0

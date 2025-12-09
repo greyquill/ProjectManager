@@ -1,0 +1,52 @@
+{
+  "id": "STORY-125",
+  "title": "Design appointment booking UI",
+  "summary": "As a patient, I can view available appointment slots and book an appointment through a user-friendly interface.",
+  "description": "Create an intuitive appointment booking interface that displays available time slots in a calendar view. The UI should show provider availability, allow selection of appointment type, and guide users through the booking process.\n\n## Technical Details\n- Calendar component with date/time selection\n- Real-time availability checking\n- Multi-step booking wizard\n- Confirmation screen with appointment details\n\n## UI Requirements\n- Clean, modern calendar interface\n- Clear indication of available vs. unavailable slots\n- Appointment type selector\n- Patient information form (if not logged in)\n- Confirmation page with booking summary",
+  "acceptanceCriteria": [
+    "User can view calendar with available time slots",
+    "User can select a date and time",
+    "User can choose appointment type",
+    "User can enter patient information",
+    "User receives confirmation after booking",
+    "Booking appears in patient's appointment history"
+  ],
+  "status": "todo",
+  "priority": "high",
+  "manager": "person-001",
+  "createdAt": "2025-01-05T11:00:00Z",
+  "updatedAt": "2025-12-09T07:14:05.542Z",
+  "dueDate": "2026-02-20",
+  "tags": [
+    "frontend",
+    "appointments",
+    "calendar",
+    "booking"
+  ],
+  "estimate": {
+    "storyPoints": 5,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [
+    {
+      "path": "src/app/appointments/book/page.tsx",
+      "role": "primary"
+    },
+    {
+      "path": "src/components/appointments/CalendarView.tsx",
+      "role": "supporting"
+    },
+    {
+      "path": "src/components/appointments/BookingWizard.tsx",
+      "role": "supporting"
+    }
+  ],
+  "metadata": {
+    "createdBy": "unassigned",
+    "lastEditedBy": "user",
+    "custom": {}
+  },
+  "epicId": "test-epic"
+}

@@ -22,9 +22,20 @@ export async function GET(
       )
     }
 
-    const storyIds = await pmRepository.listStories(projectName, epicName)
+    // Get the epic to access its storyIds array (source of truth for order)
+    const epic = await pmRepository.readEpic(projectName, epicName)
+    const orderedStoryIds = epic.storyIds || []
+
+    // Get all stories (may include stories not yet in epic.storyIds)
+    const allStoryIds = await pmRepository.listStories(projectName, epicName)
+
+    // Merge: use epic.storyIds order, then append any stories not in the array
+    const storyIdsSet = new Set(orderedStoryIds)
+    const missingStoryIds = allStoryIds.filter((id: string) => !storyIdsSet.has(id))
+    const finalStoryIds = [...orderedStoryIds, ...missingStoryIds]
+
     const stories = await Promise.all(
-      storyIds.map(async (id) => {
+      finalStoryIds.map(async (id) => {
         try {
           return await pmRepository.readStory(projectName, epicName, id)
         } catch {
@@ -93,4 +104,5 @@ export async function POST(
     )
   }
 }
+
 

@@ -29,7 +29,29 @@ import {
   BarChart3,
   Maximize2,
   Minimize2,
+  GripVertical,
 } from 'lucide-react'
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragOverlay,
+  DragStartEvent,
+  DragEndEvent,
+  DragOverEvent,
+  useDroppable,
+} from '@dnd-kit/core'
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import type { Project, Epic, Story, StoryFile, Person } from '@/lib/types'
 
 // Force dynamic rendering
@@ -39,6 +61,189 @@ type Selection = {
   type: 'epic' | 'story' | null
   epicName?: string
   storyId?: string
+}
+
+// Droppable Epic Component
+interface DroppableEpicProps {
+  epicName: string
+  children: React.ReactNode
+  isExpanded: boolean
+}
+
+function DroppableEpic({ epicName, children, isExpanded }: DroppableEpicProps) {
+  const { setNodeRef, isOver } = useDroppable({
+    id: epicName,
+    data: {
+      type: 'epic',
+      epicName,
+    },
+  })
+
+  return (
+    <div
+      ref={setNodeRef}
+      className={isOver ? 'ring-2 ring-blue-500 ring-offset-2 bg-blue-50' : ''}
+    >
+      {children}
+    </div>
+  )
+}
+
+// Sortable Story Component
+interface SortableStoryProps {
+  story: Story
+  epicName: string
+  isSelected: boolean
+  isFocused: boolean
+  storyStatusColor: string
+  isFullscreen: boolean
+  people: Person[]
+  editingStoryTitle: { epicName: string; storyId: string } | null
+  tempStoryTitle: string
+  setTempStoryTitle: (title: string) => void
+  setEditingStoryTitle: (value: { epicName: string; storyId: string } | null) => void
+  formatStoryTitle: (storyId: string, title: string) => string
+  extractStoryTitle: (storyId: string, title: string) => string
+  saveStoryTitle: (epicName: string, storyId: string, newTitle: string, currentTitle: string) => void
+  selectStory: (epicName: string, story: Story) => void
+  getStatusIcon: (status: string) => JSX.Element
+}
+
+function SortableStory({
+  story,
+  epicName,
+  isSelected,
+  isFocused,
+  storyStatusColor,
+  isFullscreen,
+  people,
+  editingStoryTitle,
+  tempStoryTitle,
+  setTempStoryTitle,
+  setEditingStoryTitle,
+  formatStoryTitle,
+  extractStoryTitle,
+  saveStoryTitle,
+  selectStory,
+  getStatusIcon,
+}: SortableStoryProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: story.id,
+    data: {
+      type: 'story',
+      epicName,
+      story,
+    },
+  })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  }
+
+  const isEditing = editingStoryTitle?.epicName === epicName && editingStoryTitle?.storyId === story.id
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`cursor-pointer hover:bg-surface-muted transition-colors border-l-4 border-b border-border-light last:border-b-0 ${
+        isSelected ? 'bg-primary/5' : ''
+      } ${storyStatusColor} ${isFullscreen ? 'p-1.5 pl-6' : 'p-2 pl-8'} ${isFocused ? 'ring-2 ring-blue-500 ring-offset-2 bg-blue-50' : ''} ${isDragging ? 'ring-2 ring-blue-500' : ''}`}
+      onClick={(e) => {
+        e.stopPropagation()
+        selectStory(epicName, story)
+      }}
+    >
+      <div className="flex items-center justify-between">
+        <div className={`flex items-center flex-1 min-w-0 ${isFullscreen ? 'gap-1.5' : 'gap-2'}`}>
+          {/* Drag Handle */}
+          <div
+            {...attributes}
+            {...listeners}
+            className="flex-shrink-0 cursor-grab active:cursor-grabbing text-text-secondary hover:text-text-primary transition-colors"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <GripVertical className={`${isFullscreen ? 'h-3 w-3' : 'h-4 w-4'}`} />
+          </div>
+          {getStatusIcon(story.status)}
+          <FileText className={`text-text-secondary flex-shrink-0 ${isFullscreen ? 'h-2.5 w-2.5' : 'h-3 w-3'}`} />
+          <div className="flex-1 min-w-0">
+            {isFullscreen && isEditing ? (
+              <input
+                type="text"
+                value={tempStoryTitle}
+                onChange={(e) => setTempStoryTitle(e.target.value)}
+                onBlur={() => {
+                  saveStoryTitle(epicName, story.id, tempStoryTitle, formatStoryTitle(story.id, story.title))
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    saveStoryTitle(epicName, story.id, tempStoryTitle, formatStoryTitle(story.id, story.title))
+                  } else if (e.key === 'Escape') {
+                    e.preventDefault()
+                    setEditingStoryTitle(null)
+                    setTempStoryTitle('')
+                  }
+                }}
+                className="w-full font-medium text-text-primary text-[11px] bg-transparent border-b-2 border-blue-500 focus:outline-none px-1"
+                autoFocus
+              />
+            ) : (
+              <div
+                className={`font-medium text-text-primary truncate text-xs ${isSelected ? 'underline' : ''} ${isFullscreen ? 'cursor-text hover:bg-blue-50 px-1 rounded' : ''}`}
+                onClick={(e) => {
+                  if (isFullscreen) {
+                    e.stopPropagation()
+                    setEditingStoryTitle({ epicName, storyId: story.id })
+                    setTempStoryTitle(extractStoryTitle(story.id, story.title))
+                  }
+                }}
+              >
+                {formatStoryTitle(story.id, story.title)}
+              </div>
+            )}
+            {!isFullscreen && story.manager && story.manager !== 'unassigned' && (
+              <div className="flex items-center gap-1 mt-1">
+                <User className="h-3 w-3 text-text-secondary" />
+                <span className="text-xs text-text-secondary">
+                  {people.find(p => p.id === story.manager)?.name || story.manager}
+                </span>
+              </div>
+            )}
+          </div>
+          {isFullscreen && (
+            <div className="flex items-center gap-2 text-xs text-text-secondary">
+              {story.manager && story.manager !== 'unassigned' && (
+                <span>{people.find(p => p.id === story.manager)?.name || story.manager}</span>
+              )}
+              {story.estimate?.storyPoints > 0 && (
+                <span>{story.estimate.storyPoints} pts</span>
+              )}
+            </div>
+          )}
+        </div>
+        {!isFullscreen && (
+          <div className="flex-shrink-0 ml-2">
+            {story.estimate?.storyPoints > 0 && (
+              <span className="text-xs text-text-secondary">
+                {story.estimate.storyPoints} pts
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  )
 }
 
 export default function ProjectDetailPage() {
@@ -123,6 +328,20 @@ export default function ProjectDetailPage() {
   const [newStoryPriority, setNewStoryPriority] = useState<'low' | 'medium' | 'high' | 'critical'>('medium')
   const [newStoryManager, setNewStoryManager] = useState('unassigned')
   const [creatingStory, setCreatingStory] = useState(false)
+
+  // Drag and drop state
+  const [activeId, setActiveId] = useState<string | null>(null)
+  const [draggedStory, setDraggedStory] = useState<{ story: Story; epicName: string } | null>(null)
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Require 8px of movement before drag starts
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
 
   // Quick epic creation in focus mode
   const [quickEpicTitle, setQuickEpicTitle] = useState('')
@@ -304,6 +523,164 @@ export default function ProjectDetailPage() {
 
   function selectStory(epicName: string, story: Story) {
     navigateToStory(epicName, story.id)
+  }
+
+  // Drag and drop handlers
+  const handleDragStart = (event: DragStartEvent) => {
+    const { active } = event
+    setActiveId(active.id as string)
+
+    // Find the story being dragged
+    const storyId = active.id as string
+    for (const epic of epics) {
+      const story = epic.stories.find(s => s.id === storyId)
+      if (story) {
+        setDraggedStory({ story, epicName: epic._name })
+        break
+      }
+    }
+  }
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event
+    setActiveId(null)
+    setDraggedStory(null)
+
+    if (!over || !draggedStory) return
+
+    const storyId = active.id as string
+    const sourceEpicName = draggedStory.epicName
+
+    // Find which epic the drop target belongs to
+    let targetEpicName: string | null = null
+    let targetPosition: number = 0
+
+    // Check if dropped on a story (over.id is a story ID)
+    const targetStory = epics
+      .flatMap(e => e.stories.map(s => ({ story: s, epicName: e._name })))
+      .find(item => item.story.id === over.id)
+
+    if (targetStory) {
+      // Dropped on a story - find its epic and position
+      targetEpicName = targetStory.epicName
+      const targetEpic = epics.find(e => e._name === targetEpicName)
+      if (targetEpic) {
+        targetPosition = targetEpic.stories.findIndex(s => s.id === over.id)
+      }
+    } else {
+      // Dropped on an epic (epic name as ID) - add to end
+      targetEpicName = over.id as string
+      const targetEpic = epics.find(e => e._name === targetEpicName)
+      if (targetEpic) {
+        targetPosition = targetEpic.stories.length
+      }
+    }
+
+    if (!targetEpicName) return
+
+    // Check if moving within same epic or to different epic
+    if (targetEpicName === sourceEpicName) {
+      // Reordering within same epic
+      const epic = epics.find(e => e._name === sourceEpicName)
+      if (!epic) return
+
+      const oldIndex = epic.stories.findIndex(s => s.id === storyId)
+      if (oldIndex === targetPosition) return // No change
+
+      // Optimistically update UI
+      const newStories = arrayMove(epic.stories, oldIndex, targetPosition)
+      const newStoryIds = newStories.map(s => s.id)
+
+      setEpics(prev => prev.map(e =>
+        e._name === sourceEpicName
+          ? { ...e, stories: newStories }
+          : e
+      ))
+
+      // Save to backend
+      try {
+        const response = await fetch(
+          `/api/projects/${projectName}/epics/${sourceEpicName}/reorder-stories`,
+          {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ storyIds: newStoryIds }),
+          }
+        )
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+          console.error('Reorder stories error:', errorData)
+          // Revert on error
+          await fetchEpics()
+          setError(errorData.error || 'Failed to reorder stories')
+        } else {
+          await fetchEpics()
+        }
+      } catch (err) {
+        console.error('Reorder stories exception:', err)
+        await fetchEpics()
+        setError(err instanceof Error ? err.message : 'Failed to reorder stories')
+      }
+    } else {
+      // Moving between epics
+      const sourceEpic = epics.find(e => e._name === sourceEpicName)
+      const targetEpic = epics.find(e => e._name === targetEpicName)
+
+      if (!sourceEpic || !targetEpic) return
+
+      const story = sourceEpic.stories.find(s => s.id === storyId)
+      if (!story) return
+
+      // Optimistically update UI
+      const newSourceStories = sourceEpic.stories.filter(s => s.id !== storyId)
+      const newTargetStories = [...targetEpic.stories]
+      newTargetStories.splice(targetPosition, 0, story)
+
+      setEpics(prev => prev.map(e => {
+        if (e._name === sourceEpicName) {
+          return { ...e, stories: newSourceStories }
+        } else if (e._name === targetEpicName) {
+          return { ...e, stories: newTargetStories }
+        }
+        return e
+      }))
+
+      // Save to backend
+      try {
+        const response = await fetch(
+          `/api/projects/${projectName}/epics/${sourceEpicName}/move-story`,
+          {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              storyId,
+              targetEpicName,
+              targetPosition,
+            }),
+          }
+        )
+
+        if (!response.ok) {
+          // Revert on error
+          await fetchEpics()
+          setError('Failed to move story')
+        } else {
+          await fetchEpics()
+          // Update selection if story was selected
+          if (selection.type === 'story' && selection.storyId === storyId) {
+            navigateToStory(targetEpicName, storyId)
+          }
+        }
+      } catch (err) {
+        await fetchEpics()
+        setError('Failed to move story')
+      }
+    }
+  }
+
+  const handleDragOver = (event: DragOverEvent) => {
+    // Visual feedback handled by CSS
   }
 
   // Build flat list of focusable items (epics, stories, and new story buttons) for keyboard navigation
@@ -1762,8 +2139,15 @@ export default function ProjectDetailPage() {
                 <p className="text-sm text-text-secondary">No epics yet</p>
               </Card>
             ) : (
-              <div className="space-y-0.5">
-                {epics.map((epic) => {
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+                onDragOver={handleDragOver}
+              >
+                <div className="space-y-0.5">
+                  {epics.map((epic) => {
                   const isExpanded = expandedEpics.has(epic._name)
                   const isSelected = selection.type === 'epic' && selection.epicName === epic._name
                   const epicProgress =
@@ -1783,12 +2167,12 @@ export default function ProjectDetailPage() {
                   const isFocused = isFullscreen && focusedItemIndex === epicFocusIndex
 
                   return (
-                    <Card
-                      key={epic._name}
-                      className={`overflow-hidden border-l-4 ${
-                        isSelected ? 'ring-2 ring-primary' : ''
-                      } ${statusColor} ${isFocused ? 'ring-2 ring-blue-500 ring-offset-2' : ''}`}
-                    >
+                    <DroppableEpic key={epic._name} epicName={epic._name} isExpanded={isExpanded}>
+                      <Card
+                        className={`overflow-hidden border-l-4 ${
+                          isSelected ? 'ring-2 ring-primary' : ''
+                        } ${statusColor} ${isFocused ? 'ring-2 ring-blue-500 ring-offset-2' : ''}`}
+                      >
                       {/* Epic Row */}
                       <div
                         className={`cursor-pointer hover:bg-surface-muted transition-colors ${isFullscreen ? 'p-1.5' : 'p-2'} ${isFocused ? 'bg-blue-50' : ''}`}
@@ -1884,107 +2268,45 @@ export default function ProjectDetailPage() {
                         <>
                           {epic.stories.length > 0 && (
                             <div className="border-t border-border-light">
-                              {epic.stories.map((story) => {
-                                const isStorySelected =
-                                  selection.type === 'story' &&
-                                  selection.epicName === epic._name &&
-                                  selection.storyId === story.id
-                                const storyStatusColor = getStatusColor(story.status as 'todo' | 'in_progress' | 'blocked' | 'done')
+                              <SortableContext
+                                items={epic.stories.map(s => s.id)}
+                                strategy={verticalListSortingStrategy}
+                              >
+                                {epic.stories.map((story) => {
+                                  const isStorySelected =
+                                    selection.type === 'story' &&
+                                    selection.epicName === epic._name &&
+                                    selection.storyId === story.id
+                                  const storyStatusColor = getStatusColor(story.status as 'todo' | 'in_progress' | 'blocked' | 'done')
 
-                                const storyFocusIndex = buildFocusableItems.findIndex(
-                                  (item) => item.type === 'story' && item.epicName === epic._name && item.storyId === story.id
-                                )
-                                const isStoryFocused = isFullscreen && focusedItemIndex === storyFocusIndex
+                                  const storyFocusIndex = buildFocusableItems.findIndex(
+                                    (item) => item.type === 'story' && item.epicName === epic._name && item.storyId === story.id
+                                  )
+                                  const isStoryFocused = isFullscreen && focusedItemIndex === storyFocusIndex
 
-                                return (
-                                  <div
-                                    key={story.id}
-                                    className={`cursor-pointer hover:bg-surface-muted transition-colors border-l-4 border-b border-border-light last:border-b-0 ${
-                                      isStorySelected ? 'bg-primary/5' : ''
-                                    } ${storyStatusColor} ${isFullscreen ? 'p-1.5 pl-6' : 'p-2 pl-8'} ${isStoryFocused ? 'ring-2 ring-blue-500 ring-offset-2 bg-blue-50' : ''}`}
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      selectStory(epic._name, story)
-                                    }}
-                                    ref={(el) => {
-                                      if (isStoryFocused && el) {
-                                        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-                                      }
-                                    }}
-                                  >
-                                    <div className="flex items-center justify-between">
-                                      <div className={`flex items-center flex-1 min-w-0 ${isFullscreen ? 'gap-1.5' : 'gap-2'}`}>
-                                        {getStatusIcon(story.status)}
-                                        <FileText className={`text-text-secondary flex-shrink-0 ${isFullscreen ? 'h-2.5 w-2.5' : 'h-3 w-3'}`} />
-                                        <div className="flex-1 min-w-0">
-                                          {isFullscreen && editingStoryTitle?.epicName === epic._name && editingStoryTitle?.storyId === story.id ? (
-                                            <input
-                                              type="text"
-                                              value={tempStoryTitle}
-                                              onChange={(e) => setTempStoryTitle(e.target.value)}
-                                              onBlur={() => {
-                                                saveStoryTitle(epic._name, story.id, tempStoryTitle, formatStoryTitle(story.id, story.title))
-                                              }}
-                                              onKeyDown={(e) => {
-                                                if (e.key === 'Enter') {
-                                                  e.preventDefault()
-                                                  saveStoryTitle(epic._name, story.id, tempStoryTitle, formatStoryTitle(story.id, story.title))
-                                                } else if (e.key === 'Escape') {
-                                                  e.preventDefault()
-                                                  setEditingStoryTitle(null)
-                                                  setTempStoryTitle('')
-                                                }
-                                              }}
-                                              className="w-full font-medium text-text-primary text-[11px] bg-transparent border-b-2 border-blue-500 focus:outline-none px-1"
-                                              autoFocus
-                                            />
-                                          ) : (
-                                            <div
-                                              className={`font-medium text-text-primary truncate text-xs ${isStorySelected ? 'underline' : ''} ${isFullscreen ? 'cursor-text hover:bg-blue-50 px-1 rounded' : ''}`}
-                                              onClick={(e) => {
-                                                if (isFullscreen) {
-                                                  e.stopPropagation()
-                                                  setEditingStoryTitle({ epicName: epic._name, storyId: story.id })
-                                                  setTempStoryTitle(extractStoryTitle(story.id, story.title))
-                                                }
-                                              }}
-                                            >
-                                              {formatStoryTitle(story.id, story.title)}
-                                            </div>
-                                          )}
-                                          {!isFullscreen && story.manager && story.manager !== 'unassigned' && (
-                                            <div className="flex items-center gap-1 mt-1">
-                                              <User className="h-3 w-3 text-text-secondary" />
-                                              <span className="text-xs text-text-secondary">
-                                                {people.find(p => p.id === story.manager)?.name || story.manager}
-                                              </span>
-                                            </div>
-                                          )}
-                                        </div>
-                                        {isFullscreen && (
-                                          <div className="flex items-center gap-2 text-xs text-text-secondary">
-                                            {story.manager && story.manager !== 'unassigned' && (
-                                              <span>{people.find(p => p.id === story.manager)?.name || story.manager}</span>
-                                            )}
-                                            {story.estimate?.storyPoints > 0 && (
-                                              <span>{story.estimate.storyPoints} pts</span>
-                                            )}
-                                          </div>
-                                        )}
-                                      </div>
-                                      {!isFullscreen && (
-                                      <div className="flex-shrink-0 ml-2">
-                                        {story.estimate?.storyPoints > 0 && (
-                                          <span className="text-xs text-text-secondary">
-                                            {story.estimate.storyPoints} pts
-                                          </span>
-                                        )}
-                                      </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                )
-                              })}
+                                  return (
+                                    <SortableStory
+                                      key={story.id}
+                                      story={story}
+                                      epicName={epic._name}
+                                      isSelected={isStorySelected}
+                                      isFocused={isStoryFocused}
+                                      storyStatusColor={storyStatusColor}
+                                      isFullscreen={isFullscreen}
+                                      people={people}
+                                      editingStoryTitle={editingStoryTitle}
+                                      tempStoryTitle={tempStoryTitle}
+                                      setTempStoryTitle={setTempStoryTitle}
+                                      setEditingStoryTitle={setEditingStoryTitle}
+                                      formatStoryTitle={formatStoryTitle}
+                                      extractStoryTitle={extractStoryTitle}
+                                      saveStoryTitle={saveStoryTitle}
+                                      selectStory={selectStory}
+                                      getStatusIcon={getStatusIcon}
+                                    />
+                                  )
+                                })}
+                              </SortableContext>
                             </div>
                           )}
 
@@ -2149,10 +2471,26 @@ export default function ProjectDetailPage() {
                           )}
                         </>
                       )}
-                    </Card>
+                      </Card>
+                    </DroppableEpic>
                   )
                 })}
-              </div>
+                </div>
+                <DragOverlay>
+                  {activeId && draggedStory ? (
+                    <div className="bg-white border-2 border-blue-500 rounded shadow-lg p-2 opacity-90">
+                      <div className="flex items-center gap-2">
+                        <GripVertical className="h-4 w-4 text-text-secondary" />
+                        {getStatusIcon(draggedStory.story.status)}
+                        <FileText className="h-3 w-3 text-text-secondary" />
+                        <span className="text-xs font-medium text-text-primary">
+                          {formatStoryTitle(draggedStory.story.id, draggedStory.story.title)}
+                        </span>
+                      </div>
+                    </div>
+                  ) : null}
+                </DragOverlay>
+              </DndContext>
             )}
 
             {/* Quick Add Epic Bar in Focus Mode */}

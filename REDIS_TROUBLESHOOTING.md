@@ -163,3 +163,4 @@ If after following all steps, the health check still shows no variables:
 - [ ] Health check (`/api/health`) shows variables are available
 - [ ] Can create projects without errors
 
+
