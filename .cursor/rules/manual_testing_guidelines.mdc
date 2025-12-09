@@ -1,0 +1,825 @@
+---
+description: Apply when the user is asking to create or log a manual testing for a feature or bug
+alwaysApply: false
+---
+
+# =====================================================================
+# MANUAL TESTING DOCUMENTATION GUIDELINES FOR CURSOR
+# Version: 1.0
+# Last Updated: December 2024
+# Applies when creating or updating manual test cases.
+# This rule set supersedes any conflicting testing documentation instructions.
+# =====================================================================
+
+# -------------------------
+# OVERVIEW
+# -------------------------
+
+PURPOSE:
+This guideline ensures consistent, comprehensive manual testing documentation that enables QA teams, developers, and stakeholders to execute and track manual tests effectively.
+
+WHEN TO USE:
+- When implementing new features that require manual testing
+- When updating existing features that affect user workflows
+- When creating regression test suites
+- When documenting exploratory testing scenarios
+- When creating smoke test or sanity test documentation
+
+TARGET AUDIENCE:
+- QA Engineers
+- Manual Testers
+- Developers (for feature validation)
+- Product Owners (for acceptance testing)
+- Support Teams (for issue reproduction)
+
+
+# -------------------------
+# MANUAL TEST CASE STRUCTURE
+# -------------------------
+
+Every Manual Test Case MUST include the following sections in this exact order:
+
+1. TEST CASE ID
+   - Format: TC-[EPIC_ID]-[FEATURE]-[NUMBER]
+   - Example: TC-AUTH-LOGIN-001
+   - Must be unique across the entire test suite
+   - Use uppercase letters and hyphens
+   - Sequential numbering within feature area
+
+2. TEST CASE TITLE
+   - Clear, concise description of what is being tested
+   - Format: "Verify [action/behavior] [context]"
+   - Must be action-oriented and specific
+   - Include key entities or workflows
+   - Examples:
+     * "Verify user can login with valid credentials"
+     * "Verify appointment booking confirmation email is sent"
+     * "Verify error message displays for invalid date format"
+
+3. EPIC / FEATURE REFERENCE
+   - Link to the Epic or User Story this test validates
+   - Format: Epic: [Epic Name/ID]
+   - Can reference multiple Epics if test covers integration
+   - Example: "Epic: Patient Appointment Scheduling (EPIC-001)"
+   - If no Epic, reference Feature or Module name
+
+4. TEST TYPE / CATEGORY
+   - Specify the type of testing
+   - Options:
+     * Functional Testing
+     * Integration Testing
+     * UI/UX Testing
+     * Regression Testing
+     * Smoke Testing
+     * Sanity Testing
+     * Acceptance Testing
+     * Exploratory Testing
+     * Security Testing
+     * Performance Testing (manual observation)
+   - Can have multiple tags: "Functional, Regression"
+
+5. TEST PRIORITY
+   - Critical (P0): Blocks release, core functionality
+   - High (P1): Important user workflows, frequent usage
+   - Medium (P2): Standard features, less critical paths
+   - Low (P3): Edge cases, rarely used features
+   - Include brief justification if not obvious
+
+6. TEST ENVIRONMENT
+   - Specify where test should be executed
+   - Options: Development, Staging, UAT, Production (for smoke tests)
+   - Include browser/device requirements if specific
+   - Example: "Staging - Chrome browser, Desktop"
+   - Example: "UAT - iOS Safari, iPhone 12 or later"
+
+7. URL / ENTRY POINT
+   - Direct URL to start the test (if applicable)
+   - Format: Full URL or relative path from base URL
+   - Example: "https://staging.hospital.com/appointments/schedule"
+   - Example: "/dashboard" (relative to base URL)
+   - If mobile app: Specify screen name
+   - Example: "Mobile App > Appointments > Schedule New"
+
+8. PREREQUISITES / PRECONDITIONS
+   - Everything that must be true BEFORE test execution begins
+   - Be explicit and detailed
+   - Include:
+     * User account requirements (role, permissions, status)
+     * Test data requirements (specific records, states)
+     * System state requirements
+     * Configuration requirements
+     * Dependencies on other tests or setups
+
+   Format as checklist:
+   ```
+   Prerequisites:
+   - [ ] Valid patient account exists (username: test.patient@example.com)
+   - [ ] Patient has active insurance record in system
+   - [ ] At least one provider has available appointment slots
+   - [ ] User is logged out before starting test
+   - [ ] Browser cache cleared
+   - [ ] Test database is in baseline state
+   ```
+
+9. TEST DATA
+   - Specific data values to use during test execution
+   - Include:
+     * Input values (valid and invalid)
+     * Expected data formats
+     * Test account credentials (if not sensitive)
+     * Sample files or attachments
+   - Format as table when multiple data sets:
+
+   | Field Name | Test Value | Notes |
+   |------------|------------|-------|
+   | Username   | test.patient@example.com | Active account |
+   | Password   | Test@1234 | Valid password |
+   | Date       | 12/15/2024 | Future date with availability |
+
+10. TEST STEPS
+    - Sequential, numbered steps to execute the test
+    - Each step must be clear and unambiguous
+    - Include BOTH action AND expected result for each step
+    - Format:
+
+    ```
+    Step [Number]: [Action]
+    Expected Result: [What should happen]
+
+    Step 1: Navigate to login page at /login
+    Expected Result: Login page loads with username and password fields visible
+
+    Step 2: Enter username "test.patient@example.com" in username field
+    Expected Result: Username is entered and visible in the field
+
+    Step 3: Enter password "Test@1234" in password field
+    Expected Result: Password is masked with dots/asterisks
+
+    Step 4: Click "Login" button
+    Expected Result: User is redirected to dashboard, welcome message displays with user's first name
+    ```
+
+    Guidelines for test steps:
+    - Use active voice ("Click", "Enter", "Select", not "The user clicks")
+    - Be specific with element identifiers (button text, field labels)
+    - Include wait times if needed ("Wait 5 seconds for page load")
+    - Note any validations that should appear inline
+    - If step has multiple expected outcomes, list them all
+    - Include screenshot references if helpful: "[See Screenshot: login-success.png]"
+
+11. EXPECTED RESULTS / ACCEPTANCE CRITERIA
+    - Overall expected outcome after all steps completed
+    - Must be objectively verifiable (pass/fail decision is clear)
+    - Include:
+      * Final system state
+      * UI elements that should be present
+      * Data persistence verification
+      * Notifications or messages
+      * Redirects or navigation
+    - Use bullet points for multiple criteria:
+
+    ```
+    Expected Results:
+    - User is successfully logged in and sees dashboard
+    - Welcome message displays: "Welcome, [First Name]!"
+    - User profile icon appears in top-right corner
+    - Session cookie is set (verify in browser DevTools)
+    - Login event is logged in audit table with timestamp
+    - "Last Login" timestamp updates in user profile
+    ```
+
+12. NEGATIVE TEST CASES / ERROR SCENARIOS
+    - Alternative flows and error conditions to test
+    - What should happen when things go wrong
+    - Format as separate numbered scenarios:
+
+    ```
+    Negative Scenario 1: Invalid username
+    - Enter invalid username, valid password
+    - Expected: Error message "Invalid username or password" displays
+    - Expected: User remains on login page
+    - Expected: Login attempt is logged with "Failed" status
+
+    Negative Scenario 2: Invalid password
+    - Enter valid username, invalid password
+    - Expected: Error message "Invalid username or password" displays
+    - Expected: Password field is cleared
+    - Expected: Account is NOT locked (unless 5+ attempts)
+
+    Negative Scenario 3: Empty fields
+    - Click Login without entering credentials
+    - Expected: Inline validation errors appear
+    - Expected: "Username is required" and "Password is required" messages display
+    ```
+
+13. ASSUMPTIONS & DEPENDENCIES
+    - Assumptions made for this test
+    - Dependencies on other systems or services
+    - Known limitations or constraints
+    - Example:
+
+    ```
+    Assumptions:
+    - Email service is operational (for verification emails)
+    - Test data has not been modified since last refresh
+    - Network latency is normal (<200ms)
+
+    Dependencies:
+    - Authentication service must be running
+    - Database must be accessible
+    - Email service must be configured for test environment
+    ```
+
+14. TEST EXECUTION HISTORY
+    - Track of when test was last executed and result
+    - Format as table:
+
+    | Date Executed | Executed By | Environment | Result | Notes |
+    |---------------|-------------|-------------|--------|-------|
+    | 2024-12-09 | Jane Doe | Staging | PASS | All steps verified |
+    | 2024-12-05 | John Smith | UAT | FAIL | Step 4 - Error message incorrect |
+    | 2024-12-01 | Jane Doe | Staging | PASS | Initial test |
+
+15. LAST UPDATED
+    - Date when test case was last modified
+    - Who made the modification
+    - What was changed
+    - Format:
+
+    ```
+    Last Updated: December 9, 2024
+    Updated By: Jane Doe, QA Engineer
+    Changes: Added negative scenario 3 for empty fields validation
+    ```
+
+16. LAST TEST RESULT
+    - Most recent test execution outcome
+    - Format:
+
+    ```
+    Status: PASS / FAIL / BLOCKED / SKIPPED / NOT RUN
+    Date: December 9, 2024
+    Tested By: Jane Doe
+    Environment: Staging
+    Browser/Device: Chrome 120, Windows 11
+
+    Result Details:
+    - All steps executed successfully
+    - No defects found
+    - Performance was acceptable (<2 second page load)
+
+    [If FAIL, include:]
+    Defects Found:
+    - BUG-1234: Error message text incorrect
+    - BUG-1235: Password field not clearing on failed attempt
+    ```
+
+17. ATTACHMENTS / REFERENCES
+    - Screenshots (especially for failed tests)
+    - Screen recordings or GIFs
+    - Log files
+    - Related bug tickets
+    - API documentation references
+    - Design mockups
+    - Format:
+
+    ```
+    Attachments:
+    - Screenshot: login-page-initial.png
+    - Screenshot: login-success-dashboard.png
+    - Video: login-flow-demo.mp4
+    - Bug Report: BUG-1234 (Jira link)
+    - Design Reference: Figma link to login screen
+    ```
+
+18. NOTES / ADDITIONAL COMMENTS
+    - Any additional context or observations
+    - Known issues or workarounds
+    - Tips for test execution
+    - Areas for improvement
+    - Optional section (include only if needed)
+
+
+# -------------------------
+# SPECIAL TEST CASE TYPES
+# -------------------------
+
+## EXPLORATORY TESTING SESSION
+When documenting exploratory testing, use this adapted format:
+
+1. Session Charter: [What are you exploring and why]
+2. Time Box: [Duration of session]
+3. Test Area: [Feature/module being explored]
+4. Testing Approach: [Strategy used]
+5. Findings: [Bugs, observations, questions raised]
+6. Coverage: [What was tested, what was not]
+7. Session Notes: [Raw notes during exploration]
+
+## INTEGRATION TEST CASE
+For tests spanning multiple systems:
+
+- Include all system endpoints in Prerequisites
+- Document data flow between systems
+- Note expected latency/timing
+- Include rollback procedures if test creates data
+
+## SECURITY TEST CASE
+For security-focused tests:
+
+- Mark as "CONFIDENTIAL - SECURITY TEST"
+- Document attack vectors being tested
+- Include expected security responses
+- Note any security exceptions required
+- Document evidence collection for audit
+
+
+# -------------------------
+# TEST CASE QUALITY STANDARDS
+# -------------------------
+
+EVERY TEST CASE MUST:
+- Be executable by someone unfamiliar with the feature
+- Have unambiguous pass/fail criteria
+- Be maintainable (easy to update when feature changes)
+- Be atomic (test one logical flow, not multiple unrelated features)
+- Be repeatable (same results each execution)
+- Be independent (not rely on execution order unless explicitly stated)
+
+AVOID:
+- Vague steps: "Test the login" → Specify exactly what to test
+- Missing expected results: Every step needs expected outcome
+- Assumptions without documentation: Make prerequisites explicit
+- Overly complex test cases: Break into multiple tests if >15 steps
+- Outdated information: Keep test cases current with feature changes
+
+
+# -------------------------
+# TEST DOCUMENTATION STRUCTURE
+# -------------------------
+
+When adding test cases to manual_testing_doc.md, follow this structure:
+
+```markdown
+# MANUAL TESTING DOCUMENTATION
+
+## Document Information
+- **Project:** [Project Name]
+- **Last Updated:** [Date]
+- **Maintained By:** [Team/Person]
+- **Document Version:** [Version number]
+
+## Test Suite Overview
+[Brief description of what this test suite covers]
+
+### Test Coverage Summary
+- Total Test Cases: [Number]
+- Critical (P0): [Number]
+- High (P1): [Number]
+- Medium (P2): [Number]
+- Low (P3): [Number]
+
+---
+
+## Table of Contents
+1. [Feature Area 1](#feature-area-1)
+2. [Feature Area 2](#feature-area-2)
+...
+
+---
+
+## [FEATURE AREA NAME]
+
+### Feature Description
+[Brief description of the feature being tested]
+
+---
+
+### TC-[ID]: [Test Case Title]
+
+**Epic / Feature:** [Epic Name/ID]
+
+**Test Type:** [Functional, Regression, etc.]
+
+**Priority:** [P0/P1/P2/P3] - [Justification]
+
+**Environment:** [Where to test]
+
+**URL / Entry Point:** [Direct link or path]
+
+#### Prerequisites
+- [ ] [Prerequisite 1]
+- [ ] [Prerequisite 2]
+- [ ] [Prerequisite 3]
+
+#### Test Data
+[Table or list of test data]
+
+#### Test Steps
+
+**Step 1:** [Action]
+**Expected Result:** [What should happen]
+
+**Step 2:** [Action]
+**Expected Result:** [What should happen]
+
+[Continue for all steps...]
+
+#### Expected Results
+- [Final outcome 1]
+- [Final outcome 2]
+- [Final outcome 3]
+
+#### Negative Test Cases
+**Negative Scenario 1:** [Description]
+- [Steps and expected error handling]
+
+#### Assumptions & Dependencies
+- [Assumption 1]
+- [Dependency 1]
+
+#### Test Execution History
+| Date | Executed By | Environment | Result | Notes |
+|------|-------------|-------------|--------|-------|
+| [Date] | [Name] | [Env] | [Pass/Fail] | [Notes] |
+
+#### Last Updated
+- **Date:** [Date]
+- **Updated By:** [Name]
+- **Changes:** [What changed]
+
+#### Last Test Result
+- **Status:** PASS/FAIL/BLOCKED/SKIPPED
+- **Date:** [Date]
+- **Tested By:** [Name]
+- **Environment:** [Env]
+- **Browser/Device:** [Details]
+
+**Result Details:**
+[Description of outcome]
+
+**Defects Found:** (if applicable)
+- BUG-[ID]: [Description]
+
+#### Attachments
+- [Screenshot/Video/Document links]
+
+#### Notes
+[Any additional comments]
+
+---
+
+[Repeat structure for each test case]
+```
+
+
+# -------------------------
+# MAINTENANCE GUIDELINES
+# -------------------------
+
+## When to Update Test Cases
+
+UPDATE IMMEDIATELY when:
+- Feature functionality changes
+- UI elements change (button labels, field names, etc.)
+- Workflows are modified
+- New edge cases are discovered
+- Defects are found and fixed (add regression test)
+- Prerequisites change
+- Test data requirements change
+
+## Version Control
+- Keep test documentation in version control (Git)
+- Document changes in commit messages
+- Review test case updates during code review
+- Maintain change log for major test suite updates
+
+## Test Case Retirement
+Mark test cases as DEPRECATED when:
+- Feature is removed
+- Test is replaced by automation
+- Business requirements change making test obsolete
+
+Format:
+```
+**STATUS: DEPRECATED**
+**Deprecated Date:** [Date]
+**Reason:** [Why no longer needed]
+**Replacement:** [New test ID if applicable]
+```
+
+
+# -------------------------
+# FORMATTING STANDARDS
+# -------------------------
+
+## Markdown Formatting
+- Use ## for feature sections
+- Use ### for individual test cases
+- Use **bold** for field labels
+- Use - [ ] for prerequisite checklists
+- Use | tables | for test data and execution history
+- Use ```code blocks``` for complex data or SQL queries
+- Use > blockquotes for important warnings or notes
+
+## Naming Conventions
+- Test Case IDs: UPPERCASE with hyphens (TC-AUTH-LOGIN-001)
+- File names: lowercase with underscores (manual_testing_doc.md)
+- Screenshot names: descriptive with step number (tc001-step4-dashboard.png)
+
+## Language Style
+- Use present tense ("User clicks", not "User clicked")
+- Use active voice ("Click the button", not "The button is clicked")
+- Be specific with numbers ("Wait 5 seconds", not "Wait a few seconds")
+- Avoid jargon unless defined in glossary
+- Use consistent terminology (decide on "log in" vs "login" and stick with it)
+
+
+# -------------------------
+# AI INSTRUCTIONS FOR TEST GENERATION
+# -------------------------
+
+When AI is asked to "add tests" or "create test cases", it MUST:
+
+1. Analyze the feature/user story being implemented
+2. Identify all user workflows and interactions
+3. Generate test cases following the complete structure above
+4. Include positive (happy path) and negative (error) scenarios
+5. Consider edge cases and boundary conditions
+6. Link test cases to Epic/Story IDs
+7. Assign appropriate priority based on feature criticality
+8. Provide realistic test data
+9. Number steps sequentially with expected results
+10. Leave execution history blank for new tests (to be filled during testing)
+11. Set Last Updated to current date
+12. Set Last Test Result to "NOT RUN"
+13. Format output as proper Markdown for direct insertion into manual_testing_doc.md
+
+## Test Coverage Requirements
+When generating tests, ensure coverage of:
+- All acceptance criteria from user story
+- All UI elements and interactions
+- All validation rules
+- All error messages
+- All navigation flows
+- All data persistence scenarios
+- All integration points
+- All user roles/permissions (if applicable)
+
+## Output Format
+AI should output test cases ready to copy-paste into manual_testing_doc.md:
+- Include all 18 required sections
+- Use proper Markdown formatting
+- Include placeholder sections (like execution history tables)
+- Add TODO comments for items requiring manual input (like screenshots)
+
+
+# -------------------------
+# VALIDATION CHECKLIST
+# -------------------------
+
+Before adding a test case to manual_testing_doc.md, verify:
+
+□ Test Case ID is unique and follows naming convention
+□ Title clearly describes what is being tested
+□ Epic/Feature reference is included
+□ Test type and priority are specified
+□ Prerequisites are complete and specific
+□ Test data is provided with actual values
+□ All test steps have expected results
+□ At least 2 negative scenarios are included
+□ Expected results are objectively verifiable
+□ Test execution history table is present (even if empty)
+□ Last Updated section is filled with current date
+□ Formatting follows Markdown standards
+□ No ambiguous language ("properly", "correctly" without definition)
+□ Test is independent and can run standalone
+□ Test is maintainable and easy to update
+
+
+# =====================================================================
+# EXAMPLE COMPLETE TEST CASE
+# =====================================================================
+
+## Authentication
+
+### Feature Description
+User authentication system allowing patients and providers to securely access the healthcare portal with role-based access control.
+
+---
+
+### TC-AUTH-LOGIN-001: Verify successful login with valid patient credentials
+
+**Epic / Feature:** Epic: User Authentication & Authorization (EPIC-AUTH-001)
+
+**Test Type:** Functional, Smoke, Regression
+
+**Priority:** P0 (Critical) - Core functionality required for all portal access
+
+**Environment:** Staging
+
+**URL / Entry Point:** https://staging.hospital.com/login
+
+#### Prerequisites
+- [ ] Patient test account exists in database (email: test.patient@example.com)
+- [ ] Account status is "Active" (not locked, suspended, or pending)
+- [ ] User is logged out (clear browser cookies/cache before test)
+- [ ] Database is in baseline state (no pending migrations)
+- [ ] Authentication service is running and healthy
+- [ ] Browser: Chrome 120+ or Firefox 115+ on desktop
+
+#### Test Data
+| Field | Value | Notes |
+|-------|-------|-------|
+| Email | test.patient@example.com | Active patient account |
+| Password | SecurePass123! | Meets complexity requirements |
+| Expected User ID | USER-12345 | For verification in logs |
+| Expected Role | Patient | For role-based access validation |
+
+#### Test Steps
+
+**Step 1:** Open browser and navigate to https://staging.hospital.com/login
+**Expected Result:**
+- Login page loads within 2 seconds
+- Page title is "Login - Blackbeak Hospital Portal"
+- Email and password input fields are visible
+- "Login" button is visible and enabled
+- "Forgot Password?" link is present
+- "Create Account" link is present
+
+**Step 2:** Enter "test.patient@example.com" in the email field
+**Expected Result:**
+- Email is displayed in the field as typed
+- No validation error appears (valid format)
+- Field border remains default color (not red)
+
+**Step 3:** Click outside the email field (trigger blur validation)
+**Expected Result:**
+- Email format validation passes
+- No error message displays
+- Field maintains valid state
+
+**Step 4:** Enter "SecurePass123!" in the password field
+**Expected Result:**
+- Password is masked with dots/asterisks
+- Characters are not visible as typed
+- Password field shows filled state
+
+**Step 5:** Click "Login" button
+**Expected Result:**
+- Button shows loading state (spinner or "Logging in..." text)
+- Button is disabled during authentication
+- No JavaScript errors in browser console
+
+**Step 6:** Wait for authentication to complete (max 3 seconds)
+**Expected Result:**
+- User is redirected to /dashboard
+- Page loads within 2 seconds
+- URL is now https://staging.hospital.com/dashboard
+
+**Step 7:** Verify dashboard page elements
+**Expected Result:**
+- Welcome message displays: "Welcome back, [First Name]!" (e.g., "Welcome back, John!")
+- User profile avatar/icon appears in top-right corner
+- Patient-specific navigation menu is visible (My Appointments, Medical Records, Messages)
+- No error messages or warnings displayed
+
+**Step 8:** Open browser DevTools and check cookies
+**Expected Result:**
+- Session cookie "sessionId" is set
+- Cookie is marked as Secure and HttpOnly
+- Cookie expiration is set to 30 minutes from login time
+
+**Step 9:** Check database audit log (optional - requires DB access)
+**Expected Result:**
+- Login event recorded in audit_logs table
+- Entry includes: user_id (USER-12345), timestamp, IP address, status (SUCCESS)
+- User's "last_login" timestamp is updated in users table
+
+#### Expected Results (Overall)
+- User successfully authenticates and accesses dashboard
+- Session is established with secure cookie
+- Welcome message personalizes with user's first name
+- Navigation menu reflects patient role (not provider/admin options)
+- Login event is audited in system logs
+- No security warnings or errors appear
+- Page performance meets <2 second load time requirement
+
+#### Negative Test Cases
+
+**Negative Scenario 1: Invalid email format**
+- Enter "notanemail" in email field, valid password
+- Click Login
+- **Expected:**
+  - Inline error: "Please enter a valid email address"
+  - Login button remains enabled
+  - No API call is made
+  - User remains on login page
+
+**Negative Scenario 2: Invalid password**
+- Enter valid email "test.patient@example.com", invalid password "WrongPass"
+- Click Login
+- **Expected:**
+  - Error message: "Invalid email or password" (generic message, don't reveal which is wrong)
+  - Password field is cleared
+  - Email field retains the entered email
+  - Login attempt logged with status "FAILED"
+  - Account is NOT locked (unless this is 5th consecutive failed attempt)
+  - User remains on login page
+
+**Negative Scenario 3: Empty fields**
+- Click Login without entering any credentials
+- **Expected:**
+  - Inline validation errors appear immediately
+  - Email field shows: "Email is required"
+  - Password field shows: "Password is required"
+  - Login button is disabled or click has no effect
+  - No API call is made
+
+**Negative Scenario 4: Locked account**
+- Use credentials for locked test account (email: locked.patient@example.com)
+- Click Login
+- **Expected:**
+  - Error message: "Your account has been locked. Please contact support or reset your password."
+  - Link to "Contact Support" is provided
+  - Login is prevented
+  - Login attempt logged with status "BLOCKED_LOCKED_ACCOUNT"
+
+**Negative Scenario 5: SQL injection attempt**
+- Enter "admin@example.com' OR '1'='1" in email field
+- Enter any password
+- Click Login
+- **Expected:**
+  - Input is sanitized, no SQL injection occurs
+  - Login fails with "Invalid email or password"
+  - No unauthorized access granted
+  - Security event logged for review
+
+**Negative Scenario 6: Session timeout**
+- Login successfully
+- Wait 31 minutes (session timeout is 30 minutes)
+- Try to navigate to a protected page
+- **Expected:**
+  - User is redirected to login page
+  - Message displays: "Your session has expired. Please log in again."
+  - User must re-authenticate
+
+#### Assumptions & Dependencies
+**Assumptions:**
+- User has a stable internet connection
+- Browser JavaScript is enabled
+- Browser cookies are enabled
+- Test data has not been modified or deleted
+- Email service is operational (for password reset tests)
+
+**Dependencies:**
+- Authentication API service must be running and healthy
+- Database must be accessible and contain test user record
+- Redis/session store must be operational for session management
+- Email service must be configured (for related password reset flows)
+
+#### Test Execution History
+| Date | Executed By | Environment | Result | Notes |
+|------|-------------|-------------|--------|-------|
+| 2024-12-09 | Jane Doe | Staging | PASS | All scenarios verified, performance good |
+| 2024-12-06 | John Smith | UAT | PASS | Initial UAT validation successful |
+| 2024-12-03 | Jane Doe | Staging | FAIL | Negative Scenario 3 - validation errors not showing |
+| 2024-12-01 | Jane Doe | Development | PASS | Initial test after feature completion |
+
+#### Last Updated
+- **Date:** December 9, 2024
+- **Updated By:** Jane Doe, Senior QA Engineer
+- **Changes:** Added Negative Scenario 6 (session timeout) and SQL injection test
+
+#### Last Test Result
+- **Status:** PASS ✅
+- **Date:** December 9, 2024
+- **Tested By:** Jane Doe
+- **Environment:** Staging
+- **Browser/Device:** Chrome 120.0.6099.130, Windows 11
+
+**Result Details:**
+All test steps executed successfully without defects. Login completed in 1.8 seconds, well within the 2-second performance requirement. All negative scenarios behaved as expected with appropriate error messages. Session cookie verification confirmed secure configuration. Database audit log verified successful login event recording.
+
+**Performance Notes:**
+- Page load: 1.2 seconds
+- Authentication API response: 0.6 seconds
+- Dashboard render: 1.8 seconds total
+
+**Defects Found:** None
+
+#### Attachments
+- Screenshot: tc-auth-login-001-step1-login-page.png
+- Screenshot: tc-auth-login-001-step7-dashboard.png
+- Video: tc-auth-login-001-full-flow.mp4
+- Log Export: auth-service-logs-2024-12-09.txt
+
+#### Notes
+- Test was also validated on Firefox 115 and Safari 17 with identical results
+- Consider adding biometric authentication test cases in future iteration
+- Password complexity requirements documented in separate test case TC-AUTH-PWD-001
+- Two-factor authentication flows documented in test suite TC-AUTH-2FA-xxx
+
+
+# =====================================================================
+# END OF GUIDELINES
+# =====================================================================
