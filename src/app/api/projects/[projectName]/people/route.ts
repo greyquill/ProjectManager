@@ -15,7 +15,7 @@ export async function GET(
     // Read global people list
     console.log(`[People API] Attempting to read people for project ${projectName}`)
     const allPeople = await pmRepository.readGlobalPeople()
-    
+
     // Log for debugging
     console.log(`[People API] Read ${allPeople.length} people for project ${projectName}`, {
       peopleIds: allPeople.map(p => p.id),

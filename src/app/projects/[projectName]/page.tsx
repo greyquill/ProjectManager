@@ -205,11 +205,14 @@ export default function ProjectDetailPage() {
 
   const fetchPeople = useCallback(async () => {
     try {
+      console.log(`[Project Page] Fetching people from /api/projects/${projectName}/people`)
       const response = await fetch(`/api/projects/${projectName}/people`)
+      console.log(`[Project Page] Response status: ${response.status}`)
       const result = await response.json()
+      console.log(`[Project Page] API response:`, result)
 
       if (result.success) {
-        console.log(`[Project Page] Loaded ${result.data?.length || 0} people`)
+        console.log(`[Project Page] Loaded ${result.data?.length || 0} people`, result.data)
         setPeople(result.data || [])
       } else {
         console.error('[Project Page] Failed to load people:', result.error)
