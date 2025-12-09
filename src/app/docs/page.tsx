@@ -55,6 +55,7 @@ const docStructure: DocSection[] = [
       { id: 'story-fields', title: 'Story Fields' },
       { id: 'acceptance-criteria', title: 'Acceptance Criteria' },
       { id: 'story-files', title: 'Linking Code Files' },
+      { id: 'story-prioritization', title: 'Story Prioritization & Reordering' },
     ],
   },
   {
@@ -647,6 +648,89 @@ export default function DocsPage() {
                   <li><strong>Supporting</strong> - Related files that may need changes</li>
                   <li><strong>Test</strong> - Test files for the story</li>
                 </ul>
+              </section>
+
+              <section id="story-prioritization">
+                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                  Story Prioritization & Reordering
+                </h2>
+                <p className="text-text-secondary mb-4">
+                  Stories can be reordered within an epic or moved between epics using drag-and-drop. This allows you to
+                  prioritize work based on business needs, dependencies, or sprint planning, independent of when stories
+                  were created or their IDs.
+                </p>
+
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Reordering Stories Within an Epic</h3>
+                <p className="text-text-secondary mb-4">
+                  To change the order of stories within the same epic:
+                </p>
+                <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
+                  <li>Expand the epic to see its stories</li>
+                  <li>Click and hold the grip icon (<code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">⋮⋮</code>) on the left side of a story row</li>
+                  <li>Drag the story up or down to the desired position</li>
+                  <li>Release to drop the story in its new position</li>
+                  <li>The order is automatically saved</li>
+                </ol>
+                <p className="text-text-secondary mb-4">
+                  <strong>Note:</strong> Story order is independent of story IDs. A story created early (e.g., STORY-001)
+                  can be placed at the bottom of the list if it&apos;s lower priority than newer stories.
+                </p>
+
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Moving Stories Between Epics</h3>
+                <p className="text-text-secondary mb-4">
+                  To move a story from one epic to another:
+                </p>
+                <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
+                  <li>Expand both the source epic (containing the story) and the target epic</li>
+                  <li>Click and hold the grip icon on the story you want to move</li>
+                  <li>Drag the story over to the target epic</li>
+                  <li>Drop it in the desired position within the target epic</li>
+                  <li>The story is automatically moved and the order is saved</li>
+                </ol>
+                <p className="text-text-secondary mb-4">
+                  You can also drop a story on a collapsed epic - it will be added to the end of that epic&apos;s story list.
+                </p>
+
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Visual Feedback</h3>
+                <p className="text-text-secondary mb-4">
+                  While dragging, you&apos;ll see:
+                </p>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li>The dragged story becomes semi-transparent (50% opacity)</li>
+                  <li>A preview of the story being dragged appears as an overlay</li>
+                  <li>The target epic highlights with a blue ring when you hover over it</li>
+                  <li>Stories automatically shift to make room for the dropped story</li>
+                </ul>
+
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">How Ordering Works</h3>
+                <p className="text-text-secondary mb-4">
+                  Story order is maintained independently of story IDs:
+                </p>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li><strong>Order is stored separately:</strong> Each epic maintains a <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">storyIds</code> array that defines the display order</li>
+                  <li><strong>ID independence:</strong> Story IDs (STORY-001, STORY-002, etc.) remain unchanged when reordering</li>
+                  <li><strong>Project-wide IDs:</strong> Story IDs are unique across the entire project, not just within an epic</li>
+                  <li><strong>Persistent order:</strong> The order you set is saved and persists across page refreshes</li>
+                  <li><strong>Future-ready:</strong> This ordering system supports future containers like Sprints, which will use the same mechanism</li>
+                </ul>
+
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Best Practices</h3>
+                <p className="text-text-secondary mb-4">
+                  Use drag-and-drop prioritization to:
+                </p>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li><strong>Prioritize by business value</strong> - Place high-value stories at the top</li>
+                  <li><strong>Group related work</strong> - Keep stories that depend on each other together</li>
+                  <li><strong>Plan sprints</strong> - Organize stories for upcoming sprint planning</li>
+                  <li><strong>Manage dependencies</strong> - Ensure prerequisite stories come before dependent ones</li>
+                  <li><strong>Backlog management</strong> - Keep important backlog items visible at the top</li>
+                </ul>
+
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mb-4 mt-6">
+                  <p className="text-sm text-text-secondary">
+                    <strong className="text-text-primary">Tip:</strong> Story order is completely independent of when stories were created. A story created months ago (STORY-001) can be at the bottom of the list if it&apos;s lower priority, while a newly created story (STORY-050) can be at the top if it&apos;s critical.
+                  </p>
+                </div>
               </section>
 
               {/* User Interface */}

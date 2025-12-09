@@ -95,6 +95,7 @@ interface SortableStoryProps {
   epicName: string
   isSelected: boolean
   isFocused: boolean
+  isKeyboardDragging?: boolean
   storyStatusColor: string
   isFullscreen: boolean
   people: Person[]
@@ -114,6 +115,7 @@ function SortableStory({
   epicName,
   isSelected,
   isFocused,
+  isKeyboardDragging = false,
   storyStatusColor,
   isFullscreen,
   people,
@@ -155,9 +157,9 @@ function SortableStory({
     <div
       ref={setNodeRef}
       style={style}
-      className={`cursor-pointer hover:bg-surface-muted transition-colors border-l-4 border-b border-border-light last:border-b-0 ${
+      className={`cursor-pointer hover:bg-surface-muted transition-all border-l-4 border-b border-border-light last:border-b-0 ${
         isSelected ? 'bg-primary/5' : ''
-      } ${storyStatusColor} ${isFullscreen ? 'p-1.5 pl-6' : 'p-2 pl-8'} ${isFocused ? 'ring-2 ring-blue-500 ring-offset-2 bg-blue-50' : ''} ${isDragging ? 'ring-2 ring-blue-500' : ''}`}
+      } ${storyStatusColor} ${isFullscreen ? 'p-1.5 pl-6' : 'p-2 pl-8'} ${isFocused ? 'ring-2 ring-blue-500 ring-offset-2 bg-blue-50' : ''} ${isDragging ? 'ring-2 ring-blue-500' : ''} ${isKeyboardDragging ? 'animate-lift-up cursor-grab' : ''}`}
       onClick={(e) => {
         e.stopPropagation()
         selectStory(epicName, story)
@@ -354,6 +356,10 @@ export default function ProjectDetailPage() {
   const [deleting, setDeleting] = useState(false)
   const [showValidationModal, setShowValidationModal] = useState(false)
   const [validationMessage, setValidationMessage] = useState<string>('')
+
+  // Keyboard drag-and-drop state
+  const [isShiftHeld, setIsShiftHeld] = useState(false)
+  const [keyboardDraggingId, setKeyboardDraggingId] = useState<string | null>(null)
 
   // Helper functions for story title formatting
   const extractStoryTitle = useCallback((storyId: string, title: string): string => {
@@ -1015,11 +1021,114 @@ export default function ProjectDetailPage() {
         }
       }
 
+      // Handle Shift + Arrow keys for keyboard drag-and-drop in focus mode
+      if (isFullscreen && isShiftHeld && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+        if (focusedItemIndex !== null && buildFocusableItems.length > 0) {
+          const focusedItem = buildFocusableItems[focusedItemIndex]
+
+          // Only allow moving stories and epics
+          if (focusedItem.type === 'story') {
+            e.preventDefault()
+
+            // Move story up or down
+            const epic = epics.find(e => e._name === focusedItem.epicName)
+            if (!epic) return
+
+            const currentIndex = epic.stories.findIndex(s => s.id === focusedItem.storyId)
+            if (currentIndex === -1) return
+
+            const targetIndex = e.key === 'ArrowDown' ? currentIndex + 1 : currentIndex - 1
+
+            // Check bounds
+            if (targetIndex < 0 || targetIndex >= epic.stories.length) return
+
+            // Optimistically update UI
+            const newStories = [...epic.stories]
+            const [movedStory] = newStories.splice(currentIndex, 1)
+            newStories.splice(targetIndex, 0, movedStory)
+            const newStoryIds = newStories.map(s => s.id)
+
+            setEpics(prev => prev.map(e =>
+              e._name === focusedItem.epicName
+                ? { ...e, stories: newStories }
+                : e
+            ))
+
+            // Recalculate focus index after reorder
+            const epicIndex = epics.findIndex(e => e._name === focusedItem.epicName)
+            let newIndex = 0
+            for (let i = 0; i < epicIndex; i++) {
+              const e = epics[i]
+              newIndex++ // Epic itself
+              if (expandedEpics.has(e._name)) {
+                newIndex += e.stories.length + 1 // Stories + newStory button
+              }
+            }
+            newIndex++ // Current epic
+            if (expandedEpics.has(focusedItem.epicName)) {
+              newIndex += targetIndex + 1 // Stories before the moved one (targetIndex + 1 because we're counting from 0)
+            }
+            setFocusedItemIndex(newIndex)
+
+            // Save to backend
+            fetch(`/api/projects/${projectName}/epics/${focusedItem.epicName}/reorder-stories`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ storyIds: newStoryIds }),
+            }).catch(err => {
+              console.error('Failed to reorder stories:', err)
+              // Revert on error
+              fetchEpics()
+            })
+
+            return
+          } else if (focusedItem.type === 'epic') {
+            e.preventDefault()
+
+            // Move epic up or down
+            const currentIndex = epics.findIndex(e => e._name === focusedItem.epicName)
+            if (currentIndex === -1) return
+
+            const targetIndex = e.key === 'ArrowDown' ? currentIndex + 1 : currentIndex - 1
+
+            // Check bounds
+            if (targetIndex < 0 || targetIndex >= epics.length) return
+
+            // Optimistically update UI
+            const newEpics = [...epics]
+            const [movedEpic] = newEpics.splice(currentIndex, 1)
+            newEpics.splice(targetIndex, 0, movedEpic)
+
+            setEpics(newEpics)
+
+            // Recalculate focus index based on new epic order
+            let newIndex = 0
+            for (let i = 0; i < targetIndex; i++) {
+              const e = newEpics[i]
+              newIndex++ // Epic itself
+              if (expandedEpics.has(e._name)) {
+                newIndex += e.stories.length + 1 // Stories + newStory button
+              }
+            }
+            setFocusedItemIndex(newIndex)
+
+            // Note: Epic reordering would need a project-level API endpoint
+            // For now, we'll just update the UI
+            console.warn('Epic reordering via keyboard is not yet fully implemented - UI only')
+
+            return
+          }
+        }
+      }
+
       // Handle arrow keys for navigation (Up/Down only)
       if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
 
       // Don't navigate if we're in edit mode or if a form is open
       if (editingEpicTitle || editingStoryTitle || showNewStoryForm || showNewEpicForm) return
+
+      // Don't navigate if Shift is held (we're in drag mode)
+      if (isShiftHeld) return
 
       e.preventDefault()
       if (buildFocusableItems.length === 0) return
@@ -1091,7 +1200,50 @@ export default function ProjectDetailPage() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isFullscreen, focusedItemIndex, buildFocusableItems, epics, expandedEpics, selectEpicCallback, selectStoryCallback, editingEpicTitle, editingStoryTitle, tempEpicTitle, tempStoryTitle, saveEpicTitle, saveStoryTitle, showNewStoryForm, showNewEpicForm, lastFocusedEpicName, extractStoryTitle, formatStoryTitle, project?.metadata?.manager, selection.epicName, selection.storyId, selection.type])
+  }, [isFullscreen, focusedItemIndex, buildFocusableItems, epics, expandedEpics, selectEpicCallback, selectStoryCallback, editingEpicTitle, editingStoryTitle, tempEpicTitle, tempStoryTitle, saveEpicTitle, saveStoryTitle, showNewStoryForm, showNewEpicForm, lastFocusedEpicName, extractStoryTitle, formatStoryTitle, project?.metadata?.manager, selection.epicName, selection.storyId, selection.type, isShiftHeld, projectName, fetchEpics])
+
+  // Track Shift key state for keyboard drag-and-drop
+  useEffect(() => {
+    if (!isFullscreen) {
+      setIsShiftHeld(false)
+      setKeyboardDraggingId(null)
+      return
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Shift' && !e.repeat) {
+        setIsShiftHeld(true)
+        // Set dragging ID if we have a focused item
+        if (focusedItemIndex !== null && buildFocusableItems.length > 0) {
+          const focusedItem = buildFocusableItems[focusedItemIndex]
+          if (focusedItem.type === 'story') {
+            setKeyboardDraggingId(focusedItem.storyId)
+          } else if (focusedItem.type === 'epic') {
+            setKeyboardDraggingId(focusedItem.epicName)
+          }
+        }
+        // Change cursor to grab
+        document.body.style.cursor = 'grab'
+      }
+    }
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') {
+        setIsShiftHeld(false)
+        setKeyboardDraggingId(null)
+        // Reset cursor
+        document.body.style.cursor = ''
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('keyup', handleKeyUp)
+      document.body.style.cursor = ''
+    }
+  }, [isFullscreen, focusedItemIndex, buildFocusableItems])
 
   // Separate ESC handler that works in both fullscreen and normal mode
   useEffect(() => {
@@ -2275,7 +2427,7 @@ export default function ProjectDetailPage() {
                       >
                       {/* Epic Row */}
                       <div
-                        className={`cursor-pointer hover:bg-surface-muted transition-colors ${isFullscreen ? 'p-1.5' : 'p-2'} ${isFocused ? 'bg-blue-50' : ''}`}
+                        className={`cursor-pointer hover:bg-surface-muted transition-all ${isFullscreen ? 'p-1.5' : 'p-2'} ${isFocused ? 'bg-blue-50' : ''} ${isShiftHeld && keyboardDraggingId === epic._name ? 'animate-lift-up cursor-grab' : ''}`}
                         onClick={() => {
                           toggleEpic(epic._name)
                           selectEpic(epic)
@@ -2383,6 +2535,7 @@ export default function ProjectDetailPage() {
                                     (item) => item.type === 'story' && item.epicName === epic._name && item.storyId === story.id
                                   )
                                   const isStoryFocused = isFullscreen && focusedItemIndex === storyFocusIndex
+                                  const isKeyboardDragging = isFullscreen && isShiftHeld && keyboardDraggingId === story.id
 
                                   return (
                                     <SortableStory
@@ -2391,6 +2544,7 @@ export default function ProjectDetailPage() {
                                       epicName={epic._name}
                                       isSelected={isStorySelected}
                                       isFocused={isStoryFocused}
+                                      isKeyboardDragging={isKeyboardDragging}
                                       storyStatusColor={storyStatusColor}
                                       isFullscreen={isFullscreen}
                                       people={people}
