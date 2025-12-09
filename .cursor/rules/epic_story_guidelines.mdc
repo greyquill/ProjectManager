@@ -1,0 +1,722 @@
+---
+description: Always use the following format when creating an Epic or a Story in the /pm folder
+alwaysApply: false
+---
+# =====================================================================
+# EPIC & USER STORY CREATION RULE SET FOR CURSOR
+# Version: 2.0
+# Last Updated: December 2024
+# Applies globally whenever the user asks for an Epic, Feature, or Story.
+# Works for general software development; healthcare rules optional.
+# This rule set supersedes any conflicting instructions.
+# =====================================================================
+
+# -------------------------
+# EPIC CREATION GUIDELINES
+# -------------------------
+
+EPIC REQUIREMENTS:
+
+Every Epic MUST include the following sections exactly:
+
+1. Epic Title
+   - Must be outcome-oriented, not feature-oriented
+   - Format: "Epic: [Outcome] for [User Group] in [System]"
+   - Example: "Epic: Streamlined Appointment Scheduling for Patients in Healthcare Portal"
+
+2. Epic Summary (2–3 sentences)
+   - Explain the purpose, value, and business impact
+   - No technical details
+   - Focus on business outcomes and user benefits
+
+3. Business Context / Problem Statement
+   - Describe the current workflow or system behavior
+   - Pain points, inefficiencies, risks
+   - If healthcare or regulated domain → mention compliance/safety factors
+   - Include market context or competitive landscape if relevant
+
+4. Epic Objectives (3–5 clear goals)
+   - Must express business value, not tasks
+   - Should be specific and measurable
+   - Example: "Reduce appointment booking time from 10 minutes to 3 minutes"
+
+5. Success Metrics
+   - Must be measurable (quantitative or qualitative targets)
+   - Include baseline and target values
+   - Examples:
+     * "Reduce processing time by 20%"
+     * "Increase user satisfaction score from 3.2 to 4.5"
+     * "Achieve 95% system uptime"
+
+6. Assumptions & Constraints
+   - Dependencies, integrations, policy limits, team bandwidth
+   - Technology constraints (existing systems, platforms)
+   - Resource limitations (budget, timeline, people)
+   - If healthcare: include clinical, safety, legal constraints (optional)
+
+7. Risks
+   - Technical, operational, workflow, or adoption risks
+   - Include likelihood (High/Medium/Low) and impact assessment
+   - Mitigation strategies for high-priority risks
+   - Example: "Risk: Integration with legacy EMR (High likelihood, High impact) - Mitigation: Early technical spike"
+
+8. High-Level Scope
+   - Define what IS included (in-scope)
+   - Define what IS NOT included (out-of-scope)
+   - Be explicit about boundaries
+   - Example: "In-scope: Web and mobile booking. Out-of-scope: Phone booking system"
+
+9. Epic-Level Acceptance Criteria
+   - Must establish conditions necessary for Epic closure
+   - Should NOT be task-based
+   - Focus on business outcomes and user capabilities
+   - 3-6 high-level criteria
+
+10. Dependencies
+   - Upstream: What must be completed before this Epic can start?
+   - Downstream: What Epics/projects are blocked by this?
+   - External: Third-party integrations, vendor dependencies, legal approvals
+   - Cross-team dependencies
+
+11. Stakeholders
+   - Primary: Decision makers and approvers
+   - Secondary: Consultative stakeholders (provide input)
+   - Informed: Those who need updates but don't drive decisions
+   - Include names/roles when known
+
+12. Timeline & Milestones
+   - Target Start: [Date/Quarter/Sprint]
+   - Expected Duration: [Weeks/Months/Sprints]
+   - Key Milestones:
+     * Milestone 1: [Date] - [Deliverable]
+     * Milestone 2: [Date] - [Deliverable]
+   - Release target (if applicable)
+
+13. Epic Definition of Done (DoD)
+   - All user stories completed and accepted
+   - Integration testing passed
+   - Performance testing completed (if applicable)
+   - Security review completed (if required)
+   - Documentation updated (user guides, API docs, etc.)
+   - Stakeholder demo/approval obtained
+   - Production deployment successful (if applicable)
+   - Post-launch metrics tracking enabled
+
+Do NOT include in Epic:
+- Individual developer tasks
+- Detailed UX mockups
+- Code-level technical implementation details unless explicitly requested
+- Detailed test cases (these belong in stories)
+
+
+# -----------------------------
+# USER STORY CREATION GUIDELINES
+# -----------------------------
+
+STORY REQUIREMENTS:
+
+Every User Story MUST follow this structure exactly:
+
+1. User Story Statement
+   FORMAT:
+   "As a [specific user role], I want to [capability], so that [clear value/outcome]."
+
+   Guidelines:
+   - Be specific about the user role (avoid generic "user")
+   - Reference personas when available: "As Dr. Sarah (Cardiologist)..."
+   - Add context if helpful: "...working in a high-volume clinic..."
+   - The "so that" clause must express clear business/user value
+   - Avoid technical jargon in the story statement
+
+2. Detailed Description
+   - 1–3 paragraphs offering workflow clarity
+   - Explain how this story fits into the larger system/Epic
+   - Describe the current state vs. desired state
+   - Include relevant context (user environment, typical scenarios)
+   - Reference related stories if applicable
+
+3. Preconditions
+   - Required system state before story execution
+   - Required user permissions or authentication
+   - Required data or configuration
+   - Example: "User must be logged in with 'Doctor' role"
+
+4. Postconditions
+   - What becomes true after successful completion
+   - System state changes
+   - Data persistence expectations
+   - Audit log entries (if applicable)
+   - Example: "Appointment record is saved in database with status 'Confirmed'"
+
+5. Acceptance Criteria (MANDATORY GHERKIN FORMAT)
+   Must include 3–8 testable conditions using:
+   Given / When / Then / And / But
+
+   Format:
+   ```gherkin
+   Scenario: [Descriptive scenario name]
+     Given [initial context/state]
+     And [additional context if needed]
+     When [action/event occurs]
+     Then [expected outcome]
+     And [additional expected outcome]
+   ```
+
+   Requirements:
+   - Each scenario must be independently testable
+   - Cover the happy path first
+   - Be specific with values and states
+   - Avoid ambiguous terms
+
+6. Negative / Edge Cases
+   Must include at least 2–4 scenarios covering:
+   - Error handling (invalid input, system errors)
+   - Permission/authorization issues
+   - Validation scenarios (field validation, business rule violations)
+   - System resilience cases (timeout, network failure)
+   - Boundary conditions (empty lists, maximum limits)
+   - Race conditions or concurrency issues (if applicable)
+
+   Format using Gherkin:
+   ```gherkin
+   Scenario: [Negative case description]
+     Given [context]
+     When [error condition occurs]
+     Then [error is handled gracefully]
+     And [user receives clear feedback]
+   ```
+
+7. Non-Functional Requirements (NFRs)
+   Include when relevant (specify "None" if truly not applicable):
+
+   - **Performance**: Response times, throughput, load capacity
+     * Example: "Page must load within 2 seconds under normal load"
+
+   - **Security**: Authentication, authorization, data encryption, audit trails
+     * Example: "All PHI must be encrypted at rest and in transit"
+
+   - **Reliability**: Uptime expectations, error rates, failover
+     * Example: "99.9% uptime during business hours"
+
+   - **Scalability**: Concurrent users, data volume growth
+     * Example: "Support 1000 concurrent users"
+
+   - **Usability**: Accessibility (WCAG), mobile responsiveness, browser support
+     * Example: "Must be WCAG 2.1 AA compliant"
+
+   - **Auditability**: Logging, tracking, compliance reporting
+     * Example: "All data changes must be logged with user ID and timestamp"
+
+   - **Compliance**: Regulatory requirements (only if healthcare/regulatory domain)
+     * Example: "Must comply with HIPAA privacy rules"
+
+8. Business or Domain Rules
+   - Mandatory if story touches workflows, finance, healthcare, compliance, etc.
+   - State rules explicitly (don't assume they're obvious)
+   - Include calculations, validations, constraints
+   - Reference regulatory or policy requirements
+   - Example: "Appointments can only be scheduled during clinic hours (8 AM - 6 PM)"
+   - Example: "Patient age must be calculated from DOB, not entered manually"
+
+9. Priority
+   Use one of these frameworks:
+
+   **MoSCoW Method:**
+   - Must Have: Critical for release, non-negotiable
+   - Should Have: Important but not critical
+   - Could Have: Nice to have if time permits
+   - Won't Have: Out of scope for this release
+
+   **OR Priority Levels:**
+   - P0 (Critical): Blocks release, security/data loss risk
+   - P1 (High): Important for user experience or business value
+   - P2 (Medium): Valuable but can wait for next release
+   - P3 (Low): Nice to have, minimal impact if delayed
+
+   Include brief justification for the priority level
+
+10. Story Points / Effort Estimate
+    Choose one estimation method:
+
+    **Fibonacci Scale:** 1, 2, 3, 5, 8, 13, 21
+    - 1-2: Simple, clear requirements, minimal risk
+    - 3-5: Moderate complexity, some unknowns
+    - 8-13: Complex, multiple components, higher risk
+    - 21+: Epic-sized, needs to be broken down
+
+    **OR T-Shirt Sizes:** XS, S, M, L, XL
+
+    **OR** explicitly state: "Not estimated yet - requires technical spike"
+
+    Include estimation assumptions if helpful
+
+11. Dependencies
+    - **Upstream**: What must be completed before this story can start?
+      * Other stories, technical infrastructure, design work
+
+    - **Downstream**: What stories are blocked by this?
+      * Stories that build on this functionality
+
+    - **External**: Third-party dependencies
+      * API availability, vendor deliverables, legal approvals
+
+    - **Technical**: Infrastructure or platform requirements
+      * Database schema, authentication service, CI/CD pipeline
+
+    State "None" if no dependencies exist
+
+12. Definition of Done
+    Customize based on team standards, but typically include:
+    - [ ] Code complete and peer-reviewed (1+ approvals)
+    - [ ] Unit tests written and passing (>80% coverage target)
+    - [ ] Integration tests passing
+    - [ ] All acceptance criteria validated and signed off
+    - [ ] No critical or high-priority bugs remaining
+    - [ ] Code meets coding standards and best practices
+    - [ ] Documentation updated (inline comments, README, API docs)
+    - [ ] Accessibility requirements met (if applicable)
+    - [ ] Security review completed (if required)
+    - [ ] Performance benchmarks met (if specified in NFRs)
+    - [ ] Deployed to [staging/production] environment
+    - [ ] Product Owner acceptance obtained
+
+
+# ------------------------------------
+# SPECIAL STORY TYPES
+# ------------------------------------
+
+TECHNICAL DEBT STORY:
+Format: "As a [developer/team], I need to [refactor/improve], so that [technical benefit]."
+
+Must include:
+- Current technical state and why it's problematic
+- Proposed solution approach
+- Benefits (performance, maintainability, scalability)
+- Risk of NOT addressing the debt
+- Estimated effort to fix
+
+Example:
+"As a development team, I need to refactor the authentication module, so that we can reduce security vulnerabilities and improve code maintainability."
+
+
+RESEARCH/SPIKE STORY:
+Format: "As a [role], I need to investigate [topic], so that [we can make informed decision]."
+
+Must include:
+- **Time box**: Maximum time to spend (e.g., "2 days", "1 sprint")
+- **Research questions**: 3-5 specific questions to answer
+- **Expected deliverables**: Report, POC, recommendation document
+- **Success criteria**: What does "done" look like for research?
+
+Example:
+"As a tech lead, I need to investigate GraphQL vs REST API performance, so that we can choose the optimal architecture for our microservices."
+
+
+BUG FIX STORY:
+Format: "As a [affected user], I need [issue fixed], so that [normal operation restored]."
+
+Must include:
+- Bug severity: Critical, High, Medium, Low
+- Steps to reproduce
+- Expected vs. actual behavior
+- Impact assessment (how many users affected)
+- Root cause (if known)
+- Acceptance criteria for the fix
+
+
+# ------------------------------------
+# STORY & EPIC QUALITY ENFORCEMENT RULES
+# ------------------------------------
+
+Cursor MUST ensure:
+- No missing sections (all required sections present)
+- No vague acceptance criteria (must be testable and specific)
+- No unstated assumptions (write them explicitly)
+- Stories align with Epic objectives (verify linkage)
+- All content is crisp, structured, and readable
+- Healthcare-specific rules only applied if context demands it
+- Story is independently deliverable (not dependent on other stories for basic value)
+- Story can be completed within 1-2 sprints (if larger, flag for breakdown)
+
+If the user asks for "Epic + Stories", output Epic first, then Stories.
+If the user provides unclear requirements, politely infer but always state assumptions clearly.
+
+
+# -------------------------
+# PRE-OUTPUT VALIDATION CHECKLIST
+# -------------------------
+
+BEFORE OUTPUTTING EPIC, VERIFY:
+□ Title is outcome-oriented (not "Build X" but "Enable Y")
+□ All 13 required sections present
+□ Success metrics are measurable with baseline and target
+□ Scope boundaries are clear (in-scope and out-of-scope defined)
+□ At least 3 risks identified with mitigation strategies
+□ Stakeholders identified with roles
+□ Dependencies mapped (upstream, downstream, external)
+□ Timeline includes milestones
+□ Definition of Done is comprehensive
+
+BEFORE OUTPUTTING STORY, VERIFY:
+□ Follows "As a... I want... so that..." format correctly
+□ 3-8 Gherkin acceptance criteria present (happy path covered)
+□ At least 2 negative/edge cases included
+□ NFRs specified (even if stating "None - not applicable")
+□ Story is independently testable
+□ Story size is reasonable (1-2 sprints or flagged for breakdown)
+□ Priority is assigned with justification
+□ Dependencies are identified (or marked "None")
+□ Definition of Done checklist is included
+□ Business/domain rules are explicit (if applicable)
+
+
+# -------------------------
+# TECHNICAL DETAILS POLICY
+# -------------------------
+
+EPIC LEVEL:
+- High-level architecture decisions only
+- Technology stack choices (with rationale)
+- Integration approach (APIs, messaging, etc.)
+- NO code-level implementation details
+
+STORY LEVEL:
+- Include technical constraints in NFRs section
+- Specify APIs, data models, or algorithms if they impact acceptance criteria
+- Include integration points and technical dependencies
+- NO pseudo-code or detailed implementation unless user explicitly requests
+
+FULL IMPLEMENTATION DETAILS:
+- Only when user explicitly requests "with technical approach"
+- Include architecture diagrams, API contracts, data schemas
+- Provide implementation guidance for developers
+
+
+# -------------------------
+# OUTPUT STYLE RULES
+# -------------------------
+
+Formatting MUST include:
+- Clear section headers (use ## for main sections)
+- Clean spacing between sections
+- Bullet lists where appropriate (use - or *)
+- Numbered lists for sequential items
+- Gherkin blocks in code formatting (```gherkin)
+- Tables for comparison data (if helpful)
+- No markdown tables for story/epic structure (use sections instead)
+- No emojis in final stories/epics (keep professional tone)
+- Use **bold** for emphasis on key terms
+- Use `code formatting` for technical terms, field names, system names
+
+Tone:
+- Professional and clear
+- Avoid ambiguous language
+- Be specific and concrete
+- Use active voice
+- Avoid jargon unless domain-appropriate
+
+
+# -------------------------
+# EXAMPLE TEMPLATES
+# -------------------------
+
+## EPIC EXAMPLE (Healthcare Domain):
+
+**Epic Title:** Epic: Streamlined Appointment Scheduling for Patients in Healthcare Portal
+
+**Epic Summary:**
+Enable patients to book, reschedule, and cancel appointments through a self-service portal, reducing administrative burden on staff and improving patient satisfaction. This Epic will deliver a fully integrated scheduling system that connects with existing EMR and calendar systems.
+
+**Business Context:**
+Currently, patients must call the clinic during business hours to schedule appointments, resulting in long wait times, missed calls, and scheduling errors. The clinic receives 200+ scheduling calls daily, consuming 15% of front desk staff time. Patient satisfaction scores for appointment scheduling are 3.2/5.
+
+**Epic Objectives:**
+- Reduce scheduling call volume by 60%
+- Improve appointment booking time from 10 minutes to under 3 minutes
+- Increase patient satisfaction scores from 3.2 to 4.5
+- Decrease no-show rates by 25% through automated reminders
+- Enable 24/7 appointment scheduling access
+
+**Success Metrics:**
+- Baseline: 200 scheduling calls/day | Target: 80 calls/day
+- Baseline: 10-minute average booking time | Target: 3 minutes
+- Baseline: 3.2/5 satisfaction | Target: 4.5/5
+- Baseline: 15% no-show rate | Target: 11.25% or lower
+- System availability: 99.5% uptime
+
+**Assumptions & Constraints:**
+- EMR API is available and documented
+- Patients have email addresses on file for notifications
+- Clinic hours remain consistent (no complex scheduling rules)
+- 6-month timeline with 2 developers and 1 designer
+- Must work on mobile and desktop browsers
+- HIPAA compliance required
+
+**Risks:**
+- **High likelihood, High impact**: EMR integration complexity may cause delays
+  * Mitigation: Conduct technical spike in Sprint 1
+- **Medium likelihood, High impact**: Low patient adoption due to technology barriers
+  * Mitigation: Conduct usability testing with diverse age groups
+- **Low likelihood, High impact**: Security vulnerabilities in authentication
+  * Mitigation: Security review in design phase
+
+**High-Level Scope:**
+
+*In Scope:*
+- Web and mobile browser appointment booking
+- View available time slots by provider and specialty
+- Reschedule and cancel existing appointments
+- Automated email/SMS reminders
+- Integration with EMR for provider schedules
+- Patient authentication via existing portal login
+
+*Out of Scope:*
+- Phone-based scheduling automation
+- Video visit scheduling (future epic)
+- Provider-side schedule management (separate epic)
+- Insurance verification during booking
+
+**Epic-Level Acceptance Criteria:**
+- Patients can successfully book appointments for any available provider slot
+- Appointments booked through portal sync with EMR within 30 seconds
+- Patients receive confirmation emails within 1 minute of booking
+- System handles 100 concurrent users without performance degradation
+- All HIPAA security requirements met and documented
+- 90% of users complete booking without assistance
+
+**Dependencies:**
+
+*Upstream:*
+- EMR API access granted by vendor (ETA: Sprint 1)
+- Portal authentication system upgraded (In Progress - Team B)
+
+*Downstream:*
+- Automated reminders Epic (planned Q2)
+- Provider mobile app notifications (planned Q3)
+
+*External:*
+- Twilio SMS service contract
+- EMR vendor API support agreement
+
+**Stakeholders:**
+
+*Primary:*
+- Dr. Lisa Chen, Chief Medical Officer (Approver)
+- Sarah Johnson, Patient Experience Director (Primary stakeholder)
+
+*Secondary:*
+- Front desk staff (End users)
+- IT Security team (Compliance review)
+
+*Informed:*
+- Executive team
+- Clinic managers
+
+**Timeline & Milestones:**
+- Target Start: January 2025
+- Expected Duration: 6 months (3 releases)
+- Milestones:
+  * March 2025: MVP launch (view and book appointments)
+  * April 2025: Reschedule/cancel functionality
+  * June 2025: Automated reminders and full production release
+
+**Epic Definition of Done:**
+- [ ] All user stories completed and accepted
+- [ ] Integration testing with EMR passed
+- [ ] Load testing completed (100 concurrent users)
+- [ ] Security audit passed
+- [ ] HIPAA compliance documentation completed
+- [ ] User documentation and help videos published
+- [ ] Staff training completed
+- [ ] Stakeholder demo approved
+- [ ] Production deployment successful
+- [ ] Analytics dashboard configured
+- [ ] 2 weeks post-launch monitoring completed
+
+---
+
+## STORY EXAMPLE (Healthcare Domain):
+
+**User Story Statement:**
+As a patient, I want to view available appointment slots filtered by provider and date, so that I can choose a convenient time that fits my schedule.
+
+**Detailed Description:**
+Patients often have preferences for specific providers and need to book appointments around work schedules. The current phone-based system requires back-and-forth communication to find mutually available times. This story enables patients to self-serve by viewing a calendar of available slots, filtered by their chosen provider and preferred date range. The system will integrate with the EMR to display real-time availability, preventing double-booking and ensuring accurate scheduling. This story is the foundation for the booking flow and must be completed before patients can actually book appointments.
+
+**Preconditions:**
+- Patient is logged into the healthcare portal with valid credentials
+- Patient has "Active" status in the system
+- At least one provider has available appointment slots in their schedule
+- EMR integration is operational and returning schedule data
+
+**Postconditions:**
+- Patient has viewed available appointment slots
+- No changes are made to provider schedules (read-only operation)
+- User activity is logged for analytics (anonymized)
+- Session timeout is reset (user remains active)
+
+**Acceptance Criteria:**
+
+```gherkin
+Scenario: View available slots for a specific provider
+  Given I am logged in as a patient
+  And Dr. Smith has available slots on December 15, 2024
+  When I select "Dr. Smith" from the provider dropdown
+  And I select December 15, 2024 as the date
+  Then I see a list of available time slots for Dr. Smith on that date
+  And each slot shows the time (e.g., "10:00 AM - 10:30 AM")
+  And each slot shows the appointment type (e.g., "Follow-up Visit")
+  And slots are sorted chronologically
+
+Scenario: Filter slots by specialty
+  Given I am logged in as a patient
+  When I select "Cardiology" from the specialty dropdown
+  And I select "Next 7 days" as the date range
+  Then I see all available slots for cardiologists in the next 7 days
+  And results show provider name for each slot
+  And results are grouped by date
+
+Scenario: View slots with no provider preference
+  Given I am logged in as a patient
+  When I select "Any Provider" from the provider dropdown
+  And I select December 15, 2024 as the date
+  Then I see all available slots across all providers for that date
+  And each slot clearly indicates which provider it belongs to
+
+Scenario: Real-time availability updates
+  Given I am viewing available slots for Dr. Smith on December 15
+  When another patient books a slot at 2:00 PM
+  And I refresh the view within 30 seconds
+  Then the 2:00 PM slot is no longer displayed
+  And the remaining slots are still shown accurately
+```
+
+**Negative / Edge Cases:**
+
+```gherkin
+Scenario: No available slots for selected criteria
+  Given I am logged in as a patient
+  When I select "Dr. Smith" from the provider dropdown
+  And I select December 25, 2024 (a holiday)
+  Then I see a message "No available slots found for the selected date"
+  And I see a suggestion to "Try another date or provider"
+  And the calendar highlights dates with availability
+
+Scenario: EMR integration failure
+  Given I am logged in as a patient
+  When I attempt to view available slots
+  And the EMR system is unavailable
+  Then I see a message "Unable to load appointment availability. Please try again later."
+  And I see a phone number to call for assistance
+  And the error is logged for IT support
+
+Scenario: Session timeout during viewing
+  Given I am viewing available appointment slots
+  When my session expires after 30 minutes of inactivity
+  And I attempt to interact with the calendar
+  Then I am redirected to the login page
+  And I see a message "Your session has expired. Please log in again."
+  And my previous selections are preserved after re-login
+
+Scenario: Invalid date selection
+  Given I am logged in as a patient
+  When I attempt to select a date in the past
+  Then the date picker prevents selection of past dates
+  And only current and future dates are selectable
+```
+
+**Non-Functional Requirements:**
+
+**Performance:**
+- Page must load within 2 seconds under normal load (50 concurrent users)
+- Appointment slot data must refresh within 1 second when filters change
+- System must support 100 concurrent users viewing slots without degradation
+
+**Security:**
+- Only authenticated patients can view appointment slots
+- Patients can only view slots for providers in their assigned clinic
+- All API calls must use HTTPS encryption
+- Session tokens must expire after 30 minutes of inactivity
+- No PHI (Protected Health Information) logged in client-side browser console
+
+**Usability:**
+- Interface must be WCAG 2.1 AA compliant
+- Calendar must be fully navigable via keyboard
+- Date picker must support screen readers
+- Must work on mobile devices (iOS Safari, Android Chrome)
+- Must work on desktop browsers (Chrome, Firefox, Safari, Edge - latest 2 versions)
+
+**Reliability:**
+- System must gracefully handle EMR API timeouts (>5 seconds)
+- If EMR is unavailable, display cached availability data (up to 5 minutes old) with warning message
+- Implement retry logic for failed API calls (3 attempts with exponential backoff)
+
+**Auditability:**
+- Log all slot view requests with patient ID, timestamp, and selected filters
+- Logs must not contain PHI in plain text
+- Retain logs for 30 days for analytics and troubleshooting
+
+**Business or Domain Rules:**
+- Appointment slots are 30-minute increments by default
+- Specialty-specific slots may have custom durations (e.g., 60 minutes for initial consults)
+- Providers can block slots for administrative time (not visible to patients)
+- Only slots at least 2 hours in the future are bookable (same-day restriction)
+- Clinic hours are Monday-Friday 8:00 AM - 6:00 PM, Saturday 9:00 AM - 1:00 PM
+- No appointments on Sundays or recognized holidays
+- Patients cannot view slots for providers outside their assigned clinic location
+
+**Priority:**
+**Must Have (MoSCoW)** / **P0 (Critical)**
+
+Justification: This is the foundational capability for the entire appointment booking Epic. Without the ability to view available slots, patients cannot proceed to book appointments. This story blocks all downstream booking, rescheduling, and cancellation stories.
+
+**Story Points / Effort Estimate:**
+**8 Story Points (Fibonacci)**
+
+Estimation assumptions:
+- EMR API integration adds complexity (3 points)
+- Multiple filter combinations require extensive testing (2 points)
+- Real-time availability refresh requires WebSocket or polling logic (2 points)
+- Responsive design for mobile and desktop (1 point)
+- Moderate risk due to EMR dependency
+
+**Dependencies:**
+
+**Upstream:**
+- EMR API access granted and documented (BLOCKED - waiting on vendor)
+- Portal authentication system must support role-based access (COMPLETE)
+- Date picker UI component must be accessible (IN PROGRESS - Design Team)
+
+**Downstream:**
+- "Book Appointment" story (cannot proceed without this)
+- "Reschedule Appointment" story (depends on slot availability logic)
+
+**External:**
+- EMR system uptime must be >99% (vendor SLA)
+- EMR API rate limits: 1000 requests/minute (confirmed with vendor)
+
+**Technical:**
+- PostgreSQL database for caching appointment availability
+- Redis for session management
+- React frontend with date-fns library for date handling
+
+**Definition of Done:**
+- [x] Code complete and peer-reviewed (2+ approvals)
+- [x] Unit tests written and passing (target: 85% coverage, actual: 87%)
+- [x] Integration tests with EMR mock API passing
+- [x] All 7 acceptance criteria scenarios validated
+- [x] All 4 negative/edge case scenarios validated
+- [x] No critical or high-priority bugs remaining (3 low-priority bugs deferred)
+- [x] Code meets team coding standards (ESLint passing)
+- [x] API documentation updated (Swagger/OpenAPI)
+- [x] Accessibility testing completed (WCAG 2.1 AA compliant)
+- [x] Performance testing completed (2-second load time confirmed)
+- [x] Security review completed (no vulnerabilities found)
+- [x] Deployed to staging environment
+- [x] Product Owner acceptance obtained (signed off 12/5/2024)
+- [x] Ready for production deployment
+
+
+# =====================================================================
+# END OF GUIDELINES
+# =====================================================================
