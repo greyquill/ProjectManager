@@ -457,6 +457,36 @@ export async function listStories(
   }
 }
 
+/**
+ * List only active (non-deleted) stories for an epic
+ */
+export async function listActiveStories(
+  projectName: string,
+  epicName: string
+): Promise<string[]> {
+  try {
+    const allStoryIds = await listStories(projectName, epicName)
+    const activeStoryIds: string[] = []
+
+    for (const storyId of allStoryIds) {
+      try {
+        const story = await readStory(projectName, epicName, storyId)
+        if (!story.deleted) {
+          activeStoryIds.push(storyId)
+        }
+      } catch (error) {
+        // If story doesn't exist or can't be read, skip it
+        console.warn(`Could not read story ${storyId} to check deleted status:`, error)
+      }
+    }
+
+    return activeStoryIds
+  } catch (error) {
+    console.warn('Error listing active stories, returning empty array:', error)
+    return []
+  }
+}
+
 export async function storyExists(
   projectName: string,
   epicName: string,
@@ -473,15 +503,22 @@ export async function deleteStory(
   epicName: string,
   storyId: string
 ): Promise<void> {
-  const key = getStoryKey(projectName, epicName, storyId)
-  await kv.del(key)
+  // Soft delete: mark story as deleted instead of actually deleting it
+  // This preserves the story for ID sequencing purposes
+  try {
+    const story = await readStory(projectName, epicName, storyId)
+    const updatedStory = {
+      ...story,
+      deleted: true,
+      updatedAt: generateTimestamp(),
+    }
+    await writeStory(projectName, epicName, storyId, updatedStory)
+  } catch (error) {
+    // If story doesn't exist, that's fine - it's already "deleted"
+    console.warn(`Could not mark story ${storyId} as deleted:`, error)
+  }
 
-  // Remove from stories list
-  const storiesList = await kv.get(getStoriesListKey(projectName, epicName)) || []
-  const updatedList = storiesList.filter((s: string) => s !== storyId)
-  await kv.set(getStoriesListKey(projectName, epicName), updatedList)
-
-  // Update the epic's storyIds array
+  // Remove from epic's storyIds array (so it doesn't show in UI)
   try {
     const epic = await readEpic(projectName, epicName)
     const epicStoryIds = epic.storyIds || []
@@ -498,6 +535,9 @@ export async function deleteStory(
     // If epic doesn't exist or can't be read, log warning but don't fail
     console.warn(`Could not update epic's storyIds when deleting story ${storyId}:`, error)
   }
+
+  // Note: We do NOT remove from stories list or delete the file/KV entry
+  // This preserves the story ID for sequencing purposes
 }
 
 // ============================================================================
@@ -595,6 +635,7 @@ export async function createStory(
       lastEditedBy: 'unassigned',
       custom: {},
     },
+    deleted: false, // New stories are always active
     ...storyData,
   }
 
@@ -640,6 +681,7 @@ export const pmRepositoryKV = {
   readStory,
   writeStory,
   listStories,
+  listActiveStories,
   storyExists,
   deleteStory,
   createStory,

@@ -662,7 +662,42 @@ export async function storyExists(
 }
 
 /**
- * Delete a story
+ * List only active (non-deleted) stories for an epic
+ */
+export async function listActiveStories(
+  projectName: string,
+  epicName: string
+): Promise<string[]> {
+  const kvRepo = await getKVRepository()
+  if (kvRepo) {
+    return kvRepo.listActiveStories(projectName, epicName)
+  }
+
+  try {
+    const allStoryIds = await listStories(projectName, epicName)
+    const activeStoryIds: string[] = []
+
+    for (const storyId of allStoryIds) {
+      try {
+        const story = await readStory(projectName, epicName, storyId)
+        if (!story.deleted) {
+          activeStoryIds.push(storyId)
+        }
+      } catch (error) {
+        // If story doesn't exist or can't be read, skip it
+        console.warn(`Could not read story ${storyId} to check deleted status:`, error)
+      }
+    }
+
+    return activeStoryIds
+  } catch (error) {
+    console.warn('Error listing active stories, returning empty array:', error)
+    return []
+  }
+}
+
+/**
+ * Delete a story (soft delete - marks as deleted but preserves file for ID sequencing)
  */
 export async function deleteStory(
   projectName: string,
@@ -673,14 +708,39 @@ export async function deleteStory(
   if (kvRepo) {
     return kvRepo.deleteStory(projectName, epicName, storyId)
   }
-  const filePath = getStoryFilePath(projectName, epicName, storyId)
+
+  // Soft delete: mark story as deleted instead of actually deleting it
   try {
-    await fs.unlink(filePath)
+    const story = await readStory(projectName, epicName, storyId)
+    const updatedStory = {
+      ...story,
+      deleted: true,
+      updatedAt: generateTimestamp(),
+    }
+    await writeStory(projectName, epicName, storyId, updatedStory)
+
+    // Remove from epic's storyIds array (so it doesn't show in UI)
+    try {
+      const epic = await readEpic(projectName, epicName)
+      const epicStoryIds = epic.storyIds || []
+      const updatedEpicStoryIds = epicStoryIds.filter((id: string) => id !== storyId)
+      if (updatedEpicStoryIds.length !== epicStoryIds.length) {
+        const updatedEpic = {
+          ...epic,
+          storyIds: updatedEpicStoryIds,
+          updatedAt: generateTimestamp(),
+        }
+        await writeEpic(projectName, epicName, updatedEpic)
+      }
+    } catch (error) {
+      console.warn(`Could not update epic's storyIds when deleting story ${storyId}:`, error)
+    }
   } catch (error) {
-    throw new Error(
-      `Failed to delete story ${storyId} in epic ${epicName}, project ${projectName}: ${error}`
-    )
+    // If story doesn't exist, that's fine - it's already "deleted"
+    console.warn(`Could not mark story ${storyId} as deleted:`, error)
   }
+
+  // Note: We do NOT delete the file - this preserves the story ID for sequencing purposes
 }
 
 /**
@@ -783,6 +843,7 @@ export async function createStory(
       lastEditedBy: 'unassigned',
       custom: {},
     },
+    deleted: false, // New stories are always active
     ...storyData,
   }
 
@@ -828,6 +889,7 @@ export const pmRepository = {
   readStory,
   writeStory,
   listStories,
+  listActiveStories,
   storyExists,
   deleteStory,
   createStory,

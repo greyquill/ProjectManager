@@ -37,7 +37,12 @@ export async function GET(
     const stories = await Promise.all(
       finalStoryIds.map(async (id) => {
         try {
-          return await pmRepository.readStory(projectName, epicName, id)
+          const story = await pmRepository.readStory(projectName, epicName, id)
+          // Filter out deleted stories
+          if (story.deleted) {
+            return null
+          }
+          return story
         } catch {
           return null
         }

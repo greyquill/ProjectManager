@@ -112,6 +112,8 @@ export const StorySchema = z.object({
     lastEditedBy: 'unassigned',
     custom: {},
   }),
+
+  deleted: z.boolean().default(false), // Soft delete flag - when true, story is hidden from UI but preserved for ID sequencing
 })
 
 // ============================================================================
@@ -297,6 +299,7 @@ export function createStory(overrides: Partial<Story> = {}): Story {
     status: 'todo',
     priority: 'medium',
     manager: 'unassigned',
+    deleted: false,
     createdAt: now,
     updatedAt: now,
     tags: [],
