@@ -205,8 +205,10 @@ export default function ProjectDetailPage() {
 
   const fetchPeople = useCallback(async () => {
     try {
-      console.log(`[Project Page] Fetching people from /api/projects/${projectName}/people`)
-      const response = await fetch(`/api/projects/${projectName}/people`)
+      // Use the working /api/people endpoint instead of project-specific one
+      // Both should return the same data (global people list)
+      console.log(`[Project Page] Fetching people from /api/people`)
+      const response = await fetch(`/api/people`)
       console.log(`[Project Page] Response status: ${response.status}`)
       const result = await response.json()
       console.log(`[Project Page] API response:`, result)
@@ -222,7 +224,7 @@ export default function ProjectDetailPage() {
       console.error('[Project Page] Failed to load people:', err)
       setPeople([])
     }
-  }, [projectName])
+  }, []) // Remove projectName dependency since we're using global endpoint
 
   const fetchProject = useCallback(async () => {
     try {

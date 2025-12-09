@@ -10,7 +10,7 @@ export async function GET() {
     console.log('[Debug] Starting people read test')
     const people = await pmRepository.readGlobalPeople()
     console.log(`[Debug] Read ${people.length} people`)
-    
+
     return NextResponse.json({
       success: true,
       count: people.length,
