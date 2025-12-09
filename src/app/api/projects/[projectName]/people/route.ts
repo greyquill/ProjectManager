@@ -15,23 +15,35 @@ export async function GET(
     // Read global people list
     const allPeople = await pmRepository.readGlobalPeople()
 
+    // Log for debugging
+    console.log(`[People API] Read ${allPeople.length} people for project ${projectName}`)
+
     // Optionally filter by project if query param is set
     const { searchParams } = new URL(request.url)
     const filterByProject = searchParams.get('filterByProject') === 'true'
 
     if (filterByProject) {
-      // Get project to see who is assigned
-      const project = await pmRepository.readProject(projectName)
-      const projectPeopleIds = new Set([
-        project.metadata?.manager,
-        ...(project.metadata?.contributors || []),
-      ].filter(id => id && id !== 'unassigned'))
+      try {
+        // Get project to see who is assigned
+        const project = await pmRepository.readProject(projectName)
+        const projectPeopleIds = new Set([
+          project.metadata?.manager,
+          ...(project.metadata?.contributors || []),
+        ].filter(id => id && id !== 'unassigned'))
 
-      const filteredPeople = allPeople.filter(person => projectPeopleIds.has(person.id))
-      return NextResponse.json({
-        success: true,
-        data: filteredPeople,
-      })
+        const filteredPeople = allPeople.filter(person => projectPeopleIds.has(person.id))
+        return NextResponse.json({
+          success: true,
+          data: filteredPeople,
+        })
+      } catch (projectError) {
+        // If project doesn't exist, still return all people
+        console.warn(`[People API] Could not read project ${projectName}, returning all people:`, projectError)
+        return NextResponse.json({
+          success: true,
+          data: allPeople,
+        })
+      }
     }
 
     // Return all people
@@ -40,6 +52,7 @@ export async function GET(
       data: allPeople,
     })
   } catch (error) {
+    console.error('[People API] Error reading people:', error)
     return NextResponse.json(
       {
         success: false,

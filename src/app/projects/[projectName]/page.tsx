@@ -209,10 +209,15 @@ export default function ProjectDetailPage() {
       const result = await response.json()
 
       if (result.success) {
+        console.log(`[Project Page] Loaded ${result.data?.length || 0} people`)
         setPeople(result.data || [])
+      } else {
+        console.error('[Project Page] Failed to load people:', result.error)
+        setPeople([])
       }
     } catch (err) {
-      console.error('Failed to load people:', err)
+      console.error('[Project Page] Failed to load people:', err)
+      setPeople([])
     }
   }, [projectName])
 
