@@ -1,5 +1,6 @@
 {
-  "id": "STORY-123",
+  "id": "STORY-007",
+  "epicId": "test-epic",
   "title": "Implement patient creation formasdsadas",
   "summary": "As a user, I can create a new patient profile with basic demographics.",
   "description": "Create a comprehensive patient registration form that captures essential demographic information. The form should be user-friendly, validate input data, and integrate with the patient database.\n\n## Technical Details\n- Form should use React Hook Form for state management\n- Validation using Zod schemas\n- Success notification on submission\n- Redirect to patient list after successful creation\n\n## UI Requirements\n- Clean, accessible form design\n- Clear field labels and placeholders\n- Inline validation feedback\n- Loading states during submission",
@@ -14,7 +15,7 @@
   "priority": "low",
   "manager": "person-002",
   "createdAt": "2025-01-05T10:00:00Z",
-  "updatedAt": "2025-12-09T07:14:00.623Z",
+  "updatedAt": "2025-12-09T07:14:13.895Z",
   "dueDate": null,
   "tags": [
     "frontend",
@@ -45,6 +46,5 @@
     "createdBy": "unassigned",
     "lastEditedBy": "unassigned",
     "custom": {}
-  },
-  "epicId": "appointment-scheduling"
+  }
 }

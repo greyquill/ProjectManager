@@ -1,5 +1,5 @@
 {
-  "id": "STORY-125",
+  "id": "STORY-008",
   "title": "Design appointment booking UI",
   "summary": "As a patient, I can view available appointment slots and book an appointment through a user-friendly interface.",
   "description": "Create an intuitive appointment booking interface that displays available time slots in a calendar view. The UI should show provider availability, allow selection of appointment type, and guide users through the booking process.\n\n## Technical Details\n- Calendar component with date/time selection\n- Real-time availability checking\n- Multi-step booking wizard\n- Confirmation screen with appointment details\n\n## UI Requirements\n- Clean, modern calendar interface\n- Clear indication of available vs. unavailable slots\n- Appointment type selector\n- Patient information form (if not logged in)\n- Confirmation page with booking summary",
@@ -15,7 +15,7 @@
   "priority": "high",
   "manager": "person-001",
   "createdAt": "2025-01-05T11:00:00Z",
-  "updatedAt": "2025-12-08T13:42:06.683Z",
+  "updatedAt": "2025-12-09T07:14:05.542Z",
   "dueDate": "2026-02-20",
   "tags": [
     "frontend",
@@ -47,5 +47,6 @@
     "createdBy": "unassigned",
     "lastEditedBy": "user",
     "custom": {}
-  }
+  },
+  "epicId": "test-epic"
 }

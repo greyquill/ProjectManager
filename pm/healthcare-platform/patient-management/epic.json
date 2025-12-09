@@ -9,9 +9,8 @@
   "updatedAt": "2025-12-09T07:15:08.338Z",
   "targetRelease": "2025-02-15",
   "storyIds": [
-    "STORY-125",
-    "STORY-123",
-    "STORY-124"
+    "STORY-004",
+    "STORY-006"
   ],
   "metrics": {
     "totalStoryPoints": 8,
