@@ -556,10 +556,10 @@ export default function ProjectDetailPage() {
     }
   }, [projectName, fetchProject, fetchEpics, fetchPeople])
 
-  function clearSelection() {
+  const clearSelection = useCallback(() => {
     router.push(`/projects/${projectName}`)
     setHasChanges(false)
-  }
+  }, [router, projectName])
 
   const navigateToEpic = useCallback((epicName: string) => {
     router.push(`/projects/${projectName}?epic=${encodeURIComponent(epicName)}`)

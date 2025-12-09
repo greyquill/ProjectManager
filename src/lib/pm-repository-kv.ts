@@ -637,6 +637,8 @@ export async function createStory(
     },
     deleted: false, // New stories are always active
     ...storyData,
+    // Ensure archived is always a boolean (not undefined)
+    archived: storyData.archived ?? false,
   }
 
   await writeStory(projectName, epicName, storyId, story)
