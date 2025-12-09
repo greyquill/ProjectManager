@@ -292,6 +292,7 @@ export default function ProjectDetailPage() {
   const [lastFocusedEpicName, setLastFocusedEpicName] = useState<string | null>(null)
   const [shouldMaintainEpicFocus, setShouldMaintainEpicFocus] = useState(false)
   const previousSelectionRef = useRef<string | null>(null)
+  const detailPanelRef = useRef<HTMLDivElement | null>(null)
 
   // Epic edit state
   const [epicTitle, setEpicTitle] = useState('')
@@ -472,6 +473,11 @@ export default function ProjectDetailPage() {
 
     // Update previous selection for next render
     previousSelectionRef.current = currentSelectionKey
+
+    // Scroll detail panel to top when selection changes (but not sidebar)
+    if (selectionChanged && (selection.type === 'epic' || selection.type === 'story') && detailPanelRef.current) {
+      detailPanelRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+    }
   }, [epicNameFromUrl, storyIdFromUrl, epics, selection.type, selection.epicName, selection.storyId, extractStoryTitle])
 
   const fetchPeople = useCallback(async () => {
@@ -2470,9 +2476,9 @@ export default function ProjectDetailPage() {
         </div>
 
         {/* Main Content: Accordion + Detail Panel */}
-        <div className={`grid gap-6 ${isFullscreen ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-3'}`}>
+        <div className={`grid gap-6 ${isFullscreen ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-3'} h-[calc(100vh-200px)]`}>
           {/* Left: Epic/Story Accordion */}
-          <div className={`space-y-2 ${isFullscreen ? 'col-span-1' : 'lg:col-span-1'}`}>
+          <div className={`space-y-2 ${isFullscreen ? 'col-span-1' : 'lg:col-span-1'} overflow-y-auto pr-2`}>
             <div className="flex items-center justify-between mb-4 relative">
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-semibold text-text-primary">Epics & Stories</h2>
@@ -3099,7 +3105,7 @@ export default function ProjectDetailPage() {
 
           {/* Right: Editable Detail Panel */}
           {!isFullscreen && (
-          <div className="lg:col-span-2">
+          <div ref={detailPanelRef} className="lg:col-span-2 overflow-y-auto">
             {selection.type === null ? (
               <Card className="p-6">
                 <div className="text-center mb-6">
