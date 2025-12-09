@@ -2322,12 +2322,22 @@ export default function ProjectDetailPage() {
   }
 
   const displayName = project.name || projectName
+
+  // Calculate metrics dynamically from actual stories (not from stored epic.metrics)
   const totalStoryPoints = epics.reduce(
-    (sum, epic) => sum + (epic.metrics?.totalStoryPoints || 0),
+    (sum, epic) => sum + epic.stories.reduce(
+      (epicSum, story) => epicSum + (story.estimate?.storyPoints || 0),
+      0
+    ),
     0
   )
   const completedStoryPoints = epics.reduce(
-    (sum, epic) => sum + (epic.metrics?.completedStoryPoints || 0),
+    (sum, epic) => sum + epic.stories
+      .filter(story => story.status === 'done')
+      .reduce(
+        (epicSum, story) => epicSum + (story.estimate?.storyPoints || 0),
+        0
+      ),
     0
   )
   const completionPercentage =
@@ -2600,13 +2610,21 @@ export default function ProjectDetailPage() {
                   {epics.map((epic) => {
                   const isExpanded = expandedEpics.has(epic._name)
                   const isSelected = selection.type === 'epic' && selection.epicName === epic._name
+
+                  // Calculate metrics dynamically from actual stories
+                  const epicTotalPoints = epic.stories.reduce(
+                    (sum, story) => sum + (story.estimate?.storyPoints || 0),
+                    0
+                  )
+                  const epicCompletedPoints = epic.stories
+                    .filter(story => story.status === 'done')
+                    .reduce(
+                      (sum, story) => sum + (story.estimate?.storyPoints || 0),
+                      0
+                    )
                   const epicProgress =
-                    epic.metrics?.totalStoryPoints > 0
-                      ? Math.round(
-                          (epic.metrics.completedStoryPoints /
-                            epic.metrics.totalStoryPoints) *
-                            100
-                        )
+                    epicTotalPoints > 0
+                      ? Math.round((epicCompletedPoints / epicTotalPoints) * 100)
                       : 0
 
                   const statusColor = getStatusColor(epic.status as 'todo' | 'in_progress' | 'blocked' | 'done')
@@ -2714,10 +2732,10 @@ export default function ProjectDetailPage() {
                           </div>
                           <div className="flex-shrink-0 ml-2 text-right">
                             <div className="text-xs font-medium text-text-primary">
-                              {epic.metrics?.totalStoryPoints || 0} pts
+                              {epicTotalPoints} pts
                             </div>
                             <div className="text-xs text-text-secondary">
-                              {epic.metrics?.completedStoryPoints || 0} done
+                              {epicCompletedPoints} done
                             </div>
                           </div>
                         </div>
@@ -3395,25 +3413,39 @@ export default function ProjectDetailPage() {
                     <div>
                       <div className="text-xs text-text-secondary mb-1">Story Points</div>
                       <div className="text-lg font-bold text-text-primary">
-                        {selectedEpic.metrics?.totalStoryPoints || 0}
+                        {selectedEpic.stories.reduce(
+                          (sum, story) => sum + (story.estimate?.storyPoints || 0),
+                          0
+                        )}
                       </div>
                     </div>
                     <div>
                       <div className="text-xs text-text-secondary mb-1">Completed</div>
                       <div className="text-lg font-bold text-text-primary">
-                        {selectedEpic.metrics?.completedStoryPoints || 0}
+                        {selectedEpic.stories
+                          .filter(story => story.status === 'done')
+                          .reduce(
+                            (sum, story) => sum + (story.estimate?.storyPoints || 0),
+                            0
+                          )}
                       </div>
                     </div>
                     <div>
                       <div className="text-xs text-text-secondary mb-1">Progress</div>
                       <div className="text-lg font-bold text-text-primary">
-                        {selectedEpic.metrics?.totalStoryPoints > 0
-                          ? Math.round(
-                              (selectedEpic.metrics.completedStoryPoints /
-                                selectedEpic.metrics.totalStoryPoints) *
-                                100
+                        {(() => {
+                          const total = selectedEpic.stories.reduce(
+                            (sum, story) => sum + (story.estimate?.storyPoints || 0),
+                            0
+                          )
+                          const completed = selectedEpic.stories
+                            .filter(story => story.status === 'done')
+                            .reduce(
+                              (sum, story) => sum + (story.estimate?.storyPoints || 0),
+                              0
                             )
-                          : 0}
+                          return total > 0 ? Math.round((completed / total) * 100) : 0
+                        })()}
                         %
                       </div>
                     </div>
