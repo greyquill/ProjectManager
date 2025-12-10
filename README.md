@@ -233,8 +233,12 @@ The analytics dashboard provides real-time insights including:
 5. Click "Create Story"
 
 **Story ID Format:**
-- Stories are assigned sequential IDs: STORY-001, STORY-002, etc.
-- Story titles always display with ID prefix: `[STORY-XXX] Story Title`
+- Stories use the format: `F-XXX-###` for functional requirements or `NFR-XXX-###` for non-functional requirements
+- **Prefix**: `F-` for functional, `NFR-` for non-functional
+- **Epic Acronym**: 2-6 uppercase characters derived from the epic title (e.g., "Revenue Cycle Management" → "RCM", "Scheduling" → "SCHED")
+- **Number**: 3-digit sequential number (001, 002, 003, etc.) that is unique across the entire project
+- Examples: `F-RCM-001`, `F-SCHED-021`, `NFR-SCHED-001`, `F-AI-002`
+- Story titles display with ID prefix: `[F-XXX-###] Story Title` or `[NFR-XXX-###] Story Title`
 - The prefix is hidden when editing for easier text manipulation
 
 **AI-Powered Creation:**
@@ -243,6 +247,144 @@ The analytics dashboard provides real-time insights including:
 3. Provide context or let AI analyze the epic description
 4. Review and edit generated stories
 5. Save all stories at once
+
+### Manual File Management
+
+If you're creating or modifying project files manually (outside the UI), follow these guidelines to ensure changes are visible in the UI:
+
+#### Story ID Format and Structure
+
+**Story ID Format:**
+- **Functional Requirements**: `F-{EPIC_ACRONYM}-{NUMBER}`
+  - Example: `F-RCM-001`, `F-SCHED-021`, `F-AI-002`
+- **Non-Functional Requirements**: `NFR-{EPIC_ACRONYM}-{NUMBER}`
+  - Example: `NFR-SCHED-001`, `NFR-CUSTOM-011`
+- **Epic Acronym**: 2-6 uppercase characters derived from the epic title (e.g., "RCM", "SCHED", "CUSTOM")
+- **Number**: 3-digit sequential number (001-999), unique across the entire project
+
+**Story File Structure:**
+```json
+{
+  "id": "F-SCHED-001",
+  "requirementType": "functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Story Title",
+  "summary": "Brief summary",
+  "description": "Detailed description",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": ["functional", "SCHED", "Provider Schedule Management"],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+```
+
+**Required Fields:**
+- `id`: Must match format `F-XXX-###` or `NFR-XXX-###`
+- `requirementType`: `"functional"` or `"non-functional"`
+- `epicId`: The epic folder name (kebab-case)
+- `title`: Story title (required, min 1 character)
+- `status`: `"todo"`, `"in_progress"`, `"blocked"`, or `"done"`
+- `priority`: `"low"`, `"medium"`, `"high"`, or `"critical"`
+- `createdAt` and `updatedAt`: ISO 8601 datetime strings
+- `deleted`: Boolean (default `false`)
+- `archived`: Boolean (default `false`)
+
+**Optional Fields:**
+- `summary`: Brief summary (can be empty)
+- `description`: Detailed description (can be empty)
+- `acceptanceCriteria`: Array of strings
+- `manager`: Person ID (e.g., `"person-001"`)
+- `dueDate`: ISO 8601 datetime string or `null`
+- `tags`: Array of strings
+- `estimate`: Object with `storyPoints` (number) and `confidence` (string)
+- `plannedStartDate`, `plannedDueDate`, `actualStartDate`, `actualDueDate`: Date strings (YYYY-MM-DD) or `null`
+
+#### Making Manual Changes Visible in the UI
+
+**After Creating/Modifying Files:**
+
+1. **Refresh the Browser**
+   - Hard refresh: `Cmd+Shift+R` (Mac) or `Ctrl+Shift+R` (Windows/Linux)
+   - Or simply refresh: `F5` or `Cmd+R` / `Ctrl+R`
+
+2. **Restart Development Server** (if changes aren't appearing)
+   ```bash
+   # Stop the server (Ctrl+C) and restart
+   npm run dev
+   ```
+
+3. **Check File Structure**
+   - Ensure files are in the correct location: `/pm/[project-name]/[epic-name]/[story-id].json`
+   - Verify file names match the story ID exactly (e.g., `F-SCHED-001.json`)
+
+4. **Update Parent Files**
+   - **Epic JSON**: Add story ID to `storyIds` array in `epic.json`
+   - **Project JSON**: Add epic folder name to `epicIds` array in `project.json`
+
+**Example: Adding a New Story Manually**
+
+1. Create the story file: `/pm/healthcare-platform/intelligent-scheduling/F-SCHED-031.json`
+2. Update `epic.json`:
+   ```json
+   {
+     "storyIds": [
+       "F-SCHED-001",
+       "F-SCHED-002",
+       ...
+       "F-SCHED-031"  // Add new story ID here
+     ]
+   }
+   ```
+3. Refresh the browser or restart the dev server
+
+**Example: Adding a New Epic Manually**
+
+1. Create epic folder: `/pm/healthcare-platform/new-epic-name/`
+2. Create `epic.json` in the folder with proper structure
+3. Update `project.json`:
+   ```json
+   {
+     "epicIds": [
+       "revenue-cycle-management",
+       "intelligent-scheduling",
+       "new-epic-name"  // Add epic folder name here
+     ]
+   }
+   ```
+4. Refresh the browser
+
+**Common Issues:**
+
+- **Stories not showing**: Check that the story ID is in the epic's `storyIds` array
+- **Epic not showing**: Check that the epic folder name is in the project's `epicIds` array
+- **Validation errors**: Ensure all required fields are present and match the schema
+- **ID format errors**: Verify story IDs match `F-XXX-###` or `NFR-XXX-###` format
+- **Date format errors**: Use ISO 8601 format (`YYYY-MM-DDTHH:mm:ssZ`) or date format (`YYYY-MM-DD`) for dates, or `null` for empty dates
+
+**File Naming Conventions:**
+- Project folders: kebab-case (e.g., `healthcare-platform`)
+- Epic folders: kebab-case (e.g., `intelligent-scheduling`)
+- Story files: Match story ID exactly (e.g., `F-SCHED-001.json`, `NFR-RCM-001.json`)
+- Epic files: Always named `epic.json`
+- Project files: Always named `project.json`
 
 ### Editing Stories
 
