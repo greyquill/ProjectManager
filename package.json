@@ -16,6 +16,7 @@
     "update-claude": "node scripts/update-claude-md.js",
     "setup-git-hook": "bash scripts/setup-git-hook.sh",
     "export-to-kv": "tsx scripts/export-to-kv.ts",
+    "update-project-kv": "tsx scripts/update-project-kv.ts",
     "cleanup-kv-project": "tsx scripts/cleanup-kv-project.ts",
     "create-epic-stories": "tsx scripts/create-epic-stories.ts"
   },
