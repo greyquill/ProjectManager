@@ -744,7 +744,79 @@ npm run type-check       # TypeScript type checking
 # Automation
 npm run update-claude    # Update CLAUDE.md files
 npm run setup-git-hook   # Setup git hooks for CLAUDE.md
+
+# KV Storage Management
+npm run export-to-kv     # Export local project data to Vercel KV
+npm run cleanup-kv-project # Remove a project and all its data from KV
 ```
+
+#### Export to KV (`export-to-kv`)
+
+Exports epics and stories from local files to Vercel KV (Redis) storage.
+
+**Usage:**
+```bash
+# Basic export (interactive epic selection)
+npm run export-to-kv <project-name> --
+
+# Dry run (preview without exporting)
+npm run export-to-kv <project-name> -- --dry-run
+
+# Export specific epics only
+npm run export-to-kv <project-name> -- --epics=epic1,epic2
+
+# Force overwrite existing stories
+npm run export-to-kv <project-name> -- --force
+
+# Create backup before exporting
+npm run export-to-kv <project-name> -- --backup
+
+# Combine options
+npm run export-to-kv umami-healthcare -- --dry-run --backup --epics=revenue-cycle-management
+```
+
+**Important Notes:**
+- Project name must be identical for both local files and KV storage
+- The script preserves story order from local `epic.json`
+- Existing stories are skipped by default (use `--force` to overwrite)
+- People data is not exported (ensure it exists in KV separately)
+- See `scripts/EXPORT-TO-KV.md` for detailed documentation
+
+#### Cleanup KV Project (`cleanup-kv-project`)
+
+Removes a project and all its data from Vercel KV storage. Useful for cleaning up old or duplicate projects.
+
+**Usage:**
+```bash
+# Preview what would be deleted (dry run)
+npm run cleanup-kv-project <project-name> -- --dry-run
+
+# Actually delete the project (requires --confirm flag)
+npm run cleanup-kv-project <project-name> -- --confirm
+```
+
+**What Gets Deleted:**
+- Project metadata (`pm:project:<project-name>`)
+- All epic metadata and lists
+- All story data
+- Project epics list
+- Project is removed from the global projects list (without deleting the list itself)
+
+**Safety Features:**
+- `--confirm` flag is required for actual deletion (prevents accidental deletion)
+- Dry run mode shows all keys that would be deleted
+- The global `pm:projects:list` is preserved (only the project name is removed from it)
+
+**Example:**
+```bash
+# Preview deletion
+npm run cleanup-kv-project healthcare-platform -- --dry-run
+
+# Actually delete
+npm run cleanup-kv-project healthcare-platform -- --confirm
+```
+
+**Warning:** This operation is **irreversible**. Always use `--dry-run` first to review what will be deleted.
 
 ### Project Structure
 

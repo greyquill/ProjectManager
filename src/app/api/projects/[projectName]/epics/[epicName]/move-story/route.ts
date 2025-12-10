@@ -99,54 +99,8 @@ export async function PUT(
     await pmRepository.writeEpic(projectName, targetEpicName, updatedTargetEpic)
     await pmRepository.writeStory(projectName, targetEpicName, storyId, updatedStory)
 
-    // Delete the old story file from source epic (for file system)
-    // For KV, we also need to remove from source epic's stories list
-    if (epicName !== targetEpicName) {
-      try {
-        const { getKVRepository } = await import('@/lib/pm-repository')
-        const kvRepo = await getKVRepository()
-
-        if (kvRepo) {
-          // For KV: Remove from source epic's stories list
-          const kv = await import('@vercel/kv').then(m => m.kv).catch(() => null)
-          if (kv) {
-            try {
-              const sourceStoriesListKey = `pm:${projectName}:${epicName}:stories`
-              const storiesList = await kv.get(sourceStoriesListKey) || []
-              const updatedList = Array.isArray(storiesList)
-                ? storiesList.filter((id: string) => id !== storyId)
-                : []
-              await kv.set(sourceStoriesListKey, updatedList)
-            } catch (kvErr) {
-              console.warn(`Could not update source epic's stories list in KV:`, kvErr)
-            }
-          }
-        } else {
-          // For file system: Delete the old story file
-          const path = require('path')
-          const fs = require('fs').promises
-          const oldStoryPath = path.join(
-            process.cwd(),
-            'pm',
-            projectName,
-            epicName,
-            `${storyId}.json`
-          )
-          try {
-            await fs.unlink(oldStoryPath)
-            console.log(`Deleted old story file: ${oldStoryPath}`)
-          } catch (fileErr: any) {
-            // File might not exist, that's okay
-            if (fileErr.code !== 'ENOENT') {
-              console.warn(`Could not delete old story file ${oldStoryPath}:`, fileErr)
-            }
-          }
-        }
-      } catch (err) {
-        // If we can't clean up, log warning but don't fail
-        console.warn(`Could not clean up old story location:`, err)
-      }
-    }
+    // Note: Inter-epic story transfer is disabled
+    // Cleanup is handled automatically by the repository layer
 
     return NextResponse.json({
       success: true,

@@ -14,7 +14,9 @@
     "type-check": "tsc --noEmit",
     "clean": "rm -rf .next node_modules/.cache",
     "update-claude": "node scripts/update-claude-md.js",
-    "setup-git-hook": "bash scripts/setup-git-hook.sh"
+    "setup-git-hook": "bash scripts/setup-git-hook.sh",
+    "export-to-kv": "tsx scripts/export-to-kv.ts",
+    "cleanup-kv-project": "tsx scripts/cleanup-kv-project.ts"
   },
   "keywords": [
     "project-management",
@@ -52,10 +54,12 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.19",
+    "dotenv": "^17.2.3",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.0.4",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.4",
+    "tsx": "^4.21.0",
     "typescript": "^5.4.5"
   }
 }

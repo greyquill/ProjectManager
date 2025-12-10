@@ -294,6 +294,7 @@ export function parseProject(data: unknown): Project {
  */
 export function createStory(overrides: Partial<Story> = {}): Story {
   const now = generateTimestamp()
+  const requirementType: 'functional' | 'non-functional' = overrides.requirementType || 'functional'
   return {
     id: generateStoryId(),
     title: '',
@@ -318,6 +319,7 @@ export function createStory(overrides: Partial<Story> = {}): Story {
       custom: {},
     },
     ...overrides,
+    requirementType, // Ensure requirementType is always set (override spread to prevent undefined)
   }
 }
 
