@@ -36,7 +36,15 @@ yarn-error.log*
 .vercel
 
 # project management data (imported independently to KV)
-/pm
+# Ignore JSON files in pm/ (epics, stories, projects) but allow markdown documentation
+/pm/**/*.json
+/pm/**/people.json
+/pm/people.json
+# Allow documentation markdown files
+!pm/**/business-docs.md
+!pm/**/technical-docs.md
+!pm/**/project-description.md
+!pm/**/DESCRIPTION.md
 
 # typescript
 *.tsbuildinfo
