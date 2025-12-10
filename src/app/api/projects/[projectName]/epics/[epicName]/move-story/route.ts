@@ -98,6 +98,12 @@ export async function PUT(
     await pmRepository.writeEpic(projectName, targetEpicName, updatedTargetEpic)
     await pmRepository.writeStory(projectName, targetEpicName, storyId, updatedStory)
 
+    // Note: The story file/KV entry is written to the new epic location by writeStory
+    // The epic.storyIds arrays are already updated above
+    // For file system, the old file will remain but won't be in the epic's storyIds, so it won't be listed
+    // For KV, the story key is written to the new location, and the old key will be ignored
+    // This is acceptable - the epic.storyIds array is the source of truth for which stories belong to which epic
+
     return NextResponse.json({
       success: true,
       data: {

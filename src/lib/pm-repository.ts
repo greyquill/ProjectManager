@@ -626,8 +626,11 @@ export async function listStories(
       .filter(
         (entry) =>
           entry.isFile() &&
-          entry.name.startsWith('STORY-') &&
-          entry.name.endsWith('.json')
+          entry.name.endsWith('.json') &&
+          entry.name !== 'epic.json' &&
+          // Support both old format (STORY-XXX) and new format (F-XXX-### or NFR-XXX-###)
+          (entry.name.startsWith('STORY-') ||
+           /^(F|NFR)-[A-Z]{2,6}-\d{3}\.json$/.test(entry.name))
       )
       .map((entry) => entry.name.replace('.json', ''))
   } catch (error) {

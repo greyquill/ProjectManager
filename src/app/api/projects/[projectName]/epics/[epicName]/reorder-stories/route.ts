@@ -39,20 +39,25 @@ export async function PUT(
     // Read current epic
     const epic = await pmRepository.readEpic(projectName, epicName)
 
-    // Get actual stories list (source of truth)
+    // Use epic.storyIds as the primary source of truth, but also check actual files/KV
+    const epicStoryIds = epic.storyIds || []
     const actualStories = await pmRepository.listStories(projectName, epicName)
-    const actualStoryIdsSet = new Set(actualStories)
+
+    // Combine both sources - epic.storyIds (ordered) and actualStories (what exists)
+    // This handles cases where files exist but aren't in epic.storyIds yet
+    const allStoryIdsSet = new Set([...epicStoryIds, ...actualStories])
 
     console.log('[Reorder Stories] Debug info:', {
       projectName,
       epicName,
       requestedStoryIds: storyIds,
-      epicStoryIds: epic.storyIds || [],
+      epicStoryIds: epicStoryIds,
       actualStoriesList: actualStories,
+      allStoryIdsSet: Array.from(allStoryIdsSet),
     })
 
-    // Check for invalid story IDs (stories that don't exist)
-    const invalidIds = storyIds.filter((id: string) => !actualStoryIdsSet.has(id))
+    // Check for invalid story IDs (stories that don't exist in either source)
+    const invalidIds = storyIds.filter((id: string) => !allStoryIdsSet.has(id))
 
     if (invalidIds.length > 0) {
       console.error('[Reorder Stories] Invalid story IDs:', invalidIds)
@@ -65,10 +70,9 @@ export async function PUT(
       )
     }
 
-    // Use actual stories list as source of truth
     // Include all stories that exist but aren't in the new order, append them
     const newStoryIdsSet = new Set(storyIds)
-    const missingIds = actualStories.filter((id: string) => !newStoryIdsSet.has(id))
+    const missingIds = Array.from(allStoryIdsSet).filter((id: string) => !newStoryIdsSet.has(id))
 
     // If there are missing IDs, append them to maintain all stories
     const finalStoryIds = missingIds.length > 0
