@@ -6,6 +6,11 @@ import { NextResponse } from 'next/server'
  */
 export async function GET() {
   try {
+    // Check if we should use KV (same logic as pm-repository.ts)
+    const shouldUseKV = (process.env.ENVIRONMENT === 'PROD' || process.env.VERCEL === '1') &&
+                       process.env.ENVIRONMENT !== 'DEV' &&
+                       process.env.NODE_ENV !== 'development'
+
     // Check environment variables
     const hasUpstash = !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
     const hasVercelKV = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN)
@@ -18,13 +23,31 @@ export async function GET() {
       key.includes('REDIS') || key.includes('KV') || key.includes('UPSTASH')
     )
 
-    // Try to initialize Redis client
+    // Try to initialize Redis client (only if we should use KV)
     let redisStatus = 'not_configured'
     let redisError = null
     let envVarDetails: any = {
       availableEnvVarNames: allEnvVars,
       hasRedisUrl,
       hasKvUrl,
+      environment: process.env.ENVIRONMENT || 'not set',
+      nodeEnv: process.env.NODE_ENV,
+      shouldUseKV,
+    }
+
+    // In local development, skip KV connection test to avoid API calls
+    if (!shouldUseKV) {
+      return NextResponse.json({
+        success: true,
+        environment: {
+          isVercel,
+          hasUpstashEnv: hasUpstash,
+          hasVercelKVEnv: hasVercelKV,
+          redisStatus: 'skipped_local_dev',
+          message: 'KV connection test skipped in local development (ENVIRONMENT=DEV or NODE_ENV=development). KV credentials are only used by export scripts.',
+          envVarDetails,
+        },
+      })
     }
 
     try {
