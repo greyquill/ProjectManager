@@ -1,7 +1,9 @@
 {
   "name": "Healthcare Workflow Platform",
   "description": "Overall platform for hospital, patient, and workflow management.",
-  "epicIds": [],
+  "epicIds": [
+    "revenue-cycle-management"
+  ],
   "defaultStatuses": [
     "todo",
     "in_progress",

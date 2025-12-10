@@ -1,0 +1,35 @@
+{
+  "id": "F-RCM-005",
+  "requirementType": "functional",
+  "epicId": "revenue-cycle-management",
+  "title": "Batch claim submission with configurable scheduling",
+  "summary": "Enable batch claim submission with configurable scheduling options for optimal processing.",
+  "description": "Implement batch claim submission functionality that allows users to schedule claim submissions in batches. The system should support configurable scheduling to optimize processing times and reduce system load.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "RCM",
+    "Automated Claim Management"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

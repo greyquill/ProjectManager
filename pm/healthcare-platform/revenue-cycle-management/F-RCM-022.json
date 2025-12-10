@@ -1,0 +1,35 @@
+{
+  "id": "F-RCM-022",
+  "requirementType": "functional",
+  "epicId": "revenue-cycle-management",
+  "title": "Daily End-of-Day (EOD) automated bank deposit reconciliation",
+  "summary": "Automatically reconcile daily bank deposits at end-of-day to ensure accuracy.",
+  "description": "Implement automated daily End-of-Day (EOD) bank deposit reconciliation that matches system transactions with bank deposits. The system should flag discrepancies for review.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "RCM",
+    "Ledger & Reconciliation"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

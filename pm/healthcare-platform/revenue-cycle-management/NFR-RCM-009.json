@@ -1,0 +1,35 @@
+{
+  "id": "NFR-RCM-009",
+  "requirementType": "non-functional",
+  "epicId": "revenue-cycle-management",
+  "title": "Two-factor authentication for financial operations",
+  "summary": "Require two-factor authentication for all financial operations and sensitive transactions.",
+  "description": "Security requirement: Implement two-factor authentication (2FA) for all financial operations including payment processing, refunds, and financial data modifications to add an extra layer of security.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "high",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "RCM",
+    "Security"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

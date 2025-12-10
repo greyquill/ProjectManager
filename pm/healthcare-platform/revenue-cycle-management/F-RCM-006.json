@@ -1,0 +1,35 @@
+{
+  "id": "F-RCM-006",
+  "requirementType": "functional",
+  "epicId": "revenue-cycle-management",
+  "title": "Automated categorization of denied claims by root cause",
+  "summary": "Automatically categorize denied claims by root cause to streamline the denial management process.",
+  "description": "Implement automated categorization system that analyzes denied claims and categorizes them by root cause (e.g., coding errors, eligibility issues, missing documentation). This enables efficient workflow routing and prioritization.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "RCM",
+    "Denial Management"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

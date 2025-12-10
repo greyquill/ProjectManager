@@ -1,0 +1,35 @@
+{
+  "id": "NFR-RCM-006",
+  "requirementType": "non-functional",
+  "epicId": "revenue-cycle-management",
+  "title": "AES-256 encryption for stored financial data",
+  "summary": "Implement AES-256 encryption for all stored financial data at rest.",
+  "description": "Security requirement: All stored financial data must be encrypted using AES-256 encryption to protect sensitive information from unauthorized access.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "high",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "RCM",
+    "Security"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

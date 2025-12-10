@@ -1,0 +1,35 @@
+{
+  "id": "F-RCM-018",
+  "requirementType": "functional",
+  "epicId": "revenue-cycle-management",
+  "title": "Monthly revenue growth comparative analysis",
+  "summary": "Provide monthly revenue growth analysis with comparative views across time periods.",
+  "description": "Create monthly revenue growth analysis reports that compare current performance against previous periods. The analysis should highlight growth trends, identify anomalies, and provide insights into revenue drivers.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "RCM",
+    "Financial Analytics & Reporting"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+
