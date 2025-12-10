@@ -23,7 +23,7 @@ export function MarkdownPreview({ value, className = '' }: MarkdownPreviewProps)
           line-height: 1.4;
         }
         .markdown-preview-compact .w-md-editor-preview h1 {
-          font-size: 2.5rem;
+          font-size: 2rem;
           margin-top: 1.5rem;
           margin-bottom: 1rem;
           font-weight: 600;

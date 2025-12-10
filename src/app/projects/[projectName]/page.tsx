@@ -2466,7 +2466,7 @@ export default function ProjectDetailPage() {
                 <BarChart3 className="h-4 w-4" />
               </Link>
               <h1
-                className="text-[0.9rem] font-semibold text-text-primary cursor-pointer hover:text-primary transition-colors"
+                className="text-xl font-semibold text-text-primary cursor-pointer hover:text-primary transition-colors"
                 onClick={clearSelection}
                 title="Click to view project details"
               >

@@ -183,6 +183,7 @@ export const ProjectMetadataSchema = z.object({
 export const ProjectSchema = z.object({
   id: z.string().optional(), // Optional for hierarchical structure (project name is folder name)
   name: z.string().min(1, 'Project name is required'),
+  summary: z.string().default(''), // One-line summary for project cards
   description: z.string().default(''),
 
   epicIds: z.array(z.string()).default([]),
@@ -357,6 +358,7 @@ export function createProject(overrides: Partial<Project> = {}): Project {
   const now = generateTimestamp()
   return {
     name: '',
+    summary: '',
     description: '',
     epicIds: [],
     defaultStatuses: ['todo', 'in_progress', 'blocked', 'done'],

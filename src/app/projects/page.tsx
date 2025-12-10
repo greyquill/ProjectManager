@@ -16,6 +16,7 @@ interface ProjectWithMetrics extends Project {
   _name?: string
   epicCount?: number
   managerName?: string
+  completionPercentage?: number
 }
 
 export default function ProjectsPage() {
@@ -28,6 +29,7 @@ export default function ProjectsPage() {
   // New project modal state
   const [showNewProjectModal, setShowNewProjectModal] = useState(false)
   const [newProjectName, setNewProjectName] = useState('')
+  const [newProjectSummary, setNewProjectSummary] = useState('')
   const [newProjectDescription, setNewProjectDescription] = useState('')
   const [creating, setCreating] = useState(false)
   const [createError, setCreateError] = useState<string | null>(null)
@@ -71,6 +73,7 @@ export default function ProjectsPage() {
         },
         body: JSON.stringify({
           name: newProjectName.trim(),
+          summary: newProjectSummary.trim(),
           description: newProjectDescription.trim(),
           folderName,
         }),
@@ -82,6 +85,7 @@ export default function ProjectsPage() {
         // Close modal and reset form
         setShowNewProjectModal(false)
         setNewProjectName('')
+        setNewProjectSummary('')
         setNewProjectDescription('')
         // Refresh projects list
         await fetchProjects()
@@ -98,6 +102,7 @@ export default function ProjectsPage() {
   function closeModal() {
     setShowNewProjectModal(false)
     setNewProjectName('')
+    setNewProjectSummary('')
     setNewProjectDescription('')
     setCreateError(null)
   }
@@ -120,18 +125,48 @@ export default function ProjectsPage() {
       if (result.success) {
         console.log('Setting projects:', result.data?.length || 0)
 
-        // Fetch additional data for each project (epic count and manager name)
+        // Fetch additional data for each project (epic count, manager name, and progress)
         const projectsWithMetrics = await Promise.all(
           result.data.map(async (project: any) => {
             const projectName = project._name || project.name
 
             // Fetch epics count
             let epicCount = 0
+            let completionPercentage = 0
             try {
               const epicsResponse = await fetch(`/api/projects/${projectName}/epics`)
               const epicsResult = await epicsResponse.json()
               if (epicsResult.success) {
                 epicCount = epicsResult.data?.length || 0
+
+                // Calculate progress by fetching all stories
+                const allStories: any[] = []
+                for (const epic of epicsResult.data) {
+                  try {
+                    const storiesResponse = await fetch(
+                      `/api/projects/${projectName}/epics/${epic._name}/stories`
+                    )
+                    const storiesResult = await storiesResponse.json()
+                    if (storiesResult.success) {
+                      allStories.push(...storiesResult.data)
+                    }
+                  } catch (err) {
+                    console.error(`Failed to fetch stories for epic ${epic._name}:`, err)
+                  }
+                }
+
+                // Calculate completion percentage
+                const totalStoryPoints = allStories.reduce(
+                  (sum, story) => sum + (story.estimate?.storyPoints || 0),
+                  0
+                )
+                const completedStoryPoints = allStories
+                  .filter((s) => s.status === 'done')
+                  .reduce((sum, story) => sum + (story.estimate?.storyPoints || 0), 0)
+                completionPercentage =
+                  totalStoryPoints > 0
+                    ? Math.round((completedStoryPoints / totalStoryPoints) * 100)
+                    : 0
               }
             } catch (err) {
               console.error(`Failed to fetch epics for ${projectName}:`, err)
@@ -141,7 +176,7 @@ export default function ProjectsPage() {
             let managerName = 'unassigned'
             if (project.metadata?.manager && project.metadata.manager !== 'unassigned') {
               try {
-                const peopleResponse = await fetch(`/api/projects/${projectName}/people`)
+                const peopleResponse = await fetch('/api/people')
                 const peopleResult = await peopleResponse.json()
                 if (peopleResult.success) {
                   const manager = peopleResult.data?.find((p: any) => p.id === project.metadata.manager)
@@ -158,6 +193,7 @@ export default function ProjectsPage() {
               ...project,
               epicCount,
               managerName,
+              completionPercentage,
             }
           })
         )
@@ -290,7 +326,12 @@ export default function ProjectsPage() {
                       <div className="h-12 w-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
                         <FolderKanban className="h-6 w-6" />
                       </div>
-                      <ArrowRight className="h-5 w-5 text-text-secondary" />
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-text-primary">
+                          {project.completionPercentage || 0}%
+                        </span>
+                        <ArrowRight className="h-5 w-5 text-text-secondary" />
+                      </div>
                     </div>
 
                     <h3 className="text-xl font-semibold text-text-primary mb-2">
@@ -298,7 +339,7 @@ export default function ProjectsPage() {
                     </h3>
 
                     <p className="text-text-secondary text-sm mb-4 flex-grow">
-                      {project.description || 'No description'}
+                      {project.summary || 'No summary'}
                     </p>
 
                     <div className="flex items-center justify-between pt-4 border-t border-border-light">
@@ -347,13 +388,27 @@ export default function ProjectsPage() {
 
                     <div>
                       <label className="block text-sm font-medium text-text-primary mb-1">
+                        Summary *
+                      </label>
+                      <input
+                        type="text"
+                        value={newProjectSummary}
+                        onChange={(e) => setNewProjectSummary(e.target.value)}
+                        className="w-full px-3 py-2 border border-border-light rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        placeholder="One-line summary for project card"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-text-primary mb-1">
                         Description
                       </label>
                       <textarea
                         value={newProjectDescription}
                         onChange={(e) => setNewProjectDescription(e.target.value)}
                         className="w-full px-3 py-2 border border-border-light rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                        placeholder="Brief description of the project"
+                        placeholder="Detailed description of the project (markdown supported)"
                         rows={3}
                       />
                     </div>
