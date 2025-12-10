@@ -159,7 +159,6 @@ async function createEpic(
     },
     metadata: {
       createdBy: 'system',
-      lastEditedBy: 'system',
       custom: {},
     },
   }
