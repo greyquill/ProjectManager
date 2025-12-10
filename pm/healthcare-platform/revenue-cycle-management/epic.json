@@ -2,7 +2,7 @@
   "id": "RCM",
   "title": "Revenue Cycle Management (RCM) & Financial Analytics",
   "summary": "End-to-end financial management system designed to optimize practice solvency, minimize claim rejections, and accelerate revenue collection cycles.",
-  "description": "End-to-end financial management system designed to optimize practice solvency, minimize claim rejections, and accelerate revenue collection cycles (Days Sales Outstanding - DSO).",
+  "description": "End-to-end financial management system designed to optimize practice solvency, minimize claim rejections, and accelerate revenue collection cycles (Days Sales Outstanding - DSO).\n\n## Technical Architecture Components\n\n- Clearinghouse integration gateway\n- Predictive analytics engine (ML-based coding validation)\n- Payment processing service (Stripe/Square integration)\n- Financial data warehouse for analytics\n- Automated reconciliation service\n\n## Implementation Timeline\n\n**Week 1:**\n- Gateway configuration and API handshakes\n\n**Week 2:**\n- Historical AR and patient ledger migration\n\n**Week 3:**\n- Fee schedule and denial routing logic customization\n\n**Week 4:**\n- Live transactional stream cutover\n\n## Case Study Reference\n\n**Multi-Specialty Clinic, New York**\n\n- **Challenge:** 45-day average DSO, high manual entry errors\n- **Outcome:** Reduced DSO to 18 days, recaptured $140K annually in under-billed revenue",
   "status": "todo",
   "priority": "medium",
   "manager": "person-001",

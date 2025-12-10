@@ -2,7 +2,8 @@
   "name": "Healthcare Workflow Platform",
   "description": "Overall platform for hospital, patient, and workflow management.",
   "epicIds": [
-    "revenue-cycle-management"
+    "revenue-cycle-management",
+    "intelligent-scheduling"
   ],
   "defaultStatuses": [
     "todo",
