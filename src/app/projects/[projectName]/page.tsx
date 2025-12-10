@@ -350,6 +350,7 @@ export default function ProjectDetailPage() {
   const [newStoryStatus, setNewStoryStatus] = useState<'todo' | 'in_progress' | 'blocked' | 'done'>('todo')
   const [newStoryPriority, setNewStoryPriority] = useState<'low' | 'medium' | 'high' | 'critical'>('medium')
   const [newStoryManager, setNewStoryManager] = useState('unassigned')
+  const [newStoryRequirementType, setNewStoryRequirementType] = useState<'functional' | 'non-functional'>('functional')
   const [creatingStory, setCreatingStory] = useState(false)
 
   // Drag and drop state
@@ -1750,6 +1751,7 @@ export default function ProjectDetailPage() {
         title: title, // Will be formatted with ID prefix after API response
         summary: summary,
         description: '',
+        requirementType: newStoryRequirementType,
         status: newStoryStatus,
         priority: newStoryPriority,
         manager: manager,
@@ -1788,6 +1790,7 @@ export default function ProjectDetailPage() {
       setNewStoryStatus('todo')
       setNewStoryPriority('medium')
       setNewStoryManager('unassigned')
+      setNewStoryRequirementType('functional')
       // Keep form open for quick creation
       // Focus will be maintained on the "+" row automatically
 
@@ -1796,6 +1799,7 @@ export default function ProjectDetailPage() {
         title: title,
         summary: summary,
         description: '',
+        requirementType: newStoryRequirementType,
         status: newStoryStatus,
         priority: newStoryPriority,
         manager: manager,
@@ -1888,6 +1892,7 @@ export default function ProjectDetailPage() {
           title: title,
           summary: summary,
           description: '',
+          requirementType: newStoryRequirementType,
           status: newStoryStatus,
           priority: newStoryPriority,
           manager: manager,
@@ -1940,6 +1945,7 @@ export default function ProjectDetailPage() {
           setNewStoryStatus('todo')
           setNewStoryPriority('medium')
           setNewStoryManager('unassigned')
+          setNewStoryRequirementType('functional')
           setShowNewStoryForm(null)
 
           // Refresh epics to get the new story
@@ -1967,6 +1973,7 @@ export default function ProjectDetailPage() {
     setNewStoryStatus('todo')
     setNewStoryPriority('medium')
     setNewStoryManager('unassigned')
+    setNewStoryRequirementType('functional')
     setError(null)
   }
 
@@ -2876,6 +2883,27 @@ export default function ProjectDetailPage() {
                                     placeholder="Brief summary *"
                                     className="input-field text-sm w-full"
                                   />
+                                </div>
+                                )}
+
+                                {!isFullscreen && (
+                                <div>
+                                  <label className="block text-xs text-text-secondary mb-1">Requirement Type</label>
+                                  <div className="flex gap-2">
+                                    {(['functional', 'non-functional'] as const).map((type) => (
+                                      <label key={type} className="flex items-center gap-1 cursor-pointer">
+                                        <input
+                                          type="radio"
+                                          name={`new-story-requirement-type-${epic._name}`}
+                                          value={type}
+                                          checked={newStoryRequirementType === type}
+                                          onChange={(e) => setNewStoryRequirementType(e.target.value as any)}
+                                          className="w-3 h-3"
+                                        />
+                                        <span className="text-xs capitalize">{type === 'non-functional' ? 'NFR' : 'F'}</span>
+                                      </label>
+                                    ))}
+                                  </div>
                                 </div>
                                 )}
 

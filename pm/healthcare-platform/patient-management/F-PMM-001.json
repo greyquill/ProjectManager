@@ -1,5 +1,5 @@
 {
-  "id": "STORY-004",
+  "id": "F-PMM-001",
   "title": "Implement patient list view",
   "summary": "As a user, I can view a list of all patients with search and filter capabilities.",
   "description": "Create a patient list view that displays all registered patients in a table format. Include search functionality to quickly find patients by name, ID, or other criteria. Add filtering options for status, date range, and other relevant attributes.\n\n## Technical Details\n- Server-side pagination for large datasets\n- Real-time search with debouncing\n- Sortable columns\n- Export functionality (CSV/PDF)\n\n## UI Requirements\n- Responsive table design\n- Search bar with clear button\n- Filter panel (collapsible)\n- Loading states\n- Empty state when no patients found",
@@ -28,7 +28,7 @@
     "confidence": "high"
   },
   "relatedStories": [
-    "STORY-009"
+    "F-ZSDZSD-001"
   ],
   "mentions": [],
   "files": [
@@ -49,5 +49,6 @@
     "createdBy": "unassigned",
     "lastEditedBy": "user",
     "custom": {}
-  }
+  },
+  "requirementType": "functional"
 }

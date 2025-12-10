@@ -1,5 +1,5 @@
 {
-  "id": "STORY-006",
+  "id": "F-PMM-002",
   "title": "[STORY-006] thish",
   "summary": "sdfn",
   "description": "",
@@ -27,5 +27,6 @@
     "custom": {}
   },
   "deleted": false,
-  "archived": false
+  "archived": false,
+  "requirementType": "functional"
 }

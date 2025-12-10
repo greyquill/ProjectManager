@@ -567,39 +567,163 @@ export async function generateNextEpicId(projectName: string): Promise<string> {
   return `EPIC-${nextNumber.toString().padStart(4, '0')}`
 }
 
+/**
+ * Generate a unique 2-6 character acronym from an epic name
+ * Examples: "Revenue Cycle Management" -> "RCM", "Scheduling" -> "SCHED", "AI" -> "AI"
+ */
+async function generateEpicAcronym(
+  projectName: string,
+  epicName: string
+): Promise<string> {
+  // Read the epic to get its title
+  const epic = await readEpic(projectName, epicName)
+  const epicTitle = epic.title || epicName
+
+  // Get all epics in the project to check for uniqueness
+  const allEpics = await listEpics(projectName)
+  const existingAcronyms = new Set<string>()
+
+  // Extract existing acronyms from story IDs (2-6 characters)
+  for (const epic of allEpics) {
+    const stories = await listStories(projectName, epic)
+    for (const storyId of stories) {
+      const match = storyId.match(/^(F|NFR)-([A-Z]{2,6})-\d{3}$/)
+      if (match) {
+        existingAcronyms.add(match[2])
+      }
+    }
+  }
+
+  // Generate acronym from epic title
+  // Remove common words and extract meaningful words
+  const commonWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'])
+  const words = epicTitle
+    .toLowerCase()
+    .split(/[\s\-_]+/)
+    .filter(word => word.length > 0 && !commonWords.has(word))
+
+  let acronym = ''
+  if (words.length >= 3) {
+    // Use first letter of first 3-6 meaningful words (prefer shorter)
+    const maxWords = Math.min(words.length, 6)
+    acronym = words.slice(0, maxWords).map(word => word[0].toUpperCase()).join('')
+  } else if (words.length === 2) {
+    // Use first letters of both words, optionally add more letters for clarity
+    const word1 = words[0]
+    const word2 = words[1]
+    // Try to create a meaningful 2-6 char acronym
+    if (word1.length >= 3 && word2.length >= 3) {
+      // Use first 2-3 letters of each word (e.g., "Scheduling" + "Management" -> "SCHED" or "SCHMAN")
+      const len1 = Math.min(3, word1.length)
+      const len2 = Math.min(3, word2.length)
+      acronym = (word1.substring(0, len1) + word2.substring(0, len2)).toUpperCase()
+    } else {
+      // Use first letters
+      acronym = (word1[0] + word2[0]).toUpperCase()
+    }
+  } else if (words.length === 1) {
+    // Use first 2-6 letters of the word (prefer shorter meaningful acronyms)
+    const word = words[0]
+    if (word.length <= 6) {
+      acronym = word.toUpperCase()
+    } else {
+      // For longer words, try to create a meaningful acronym
+      // Prefer 3-5 characters for readability
+      const preferredLength = Math.min(5, Math.max(3, Math.floor(word.length / 2)))
+      acronym = word.substring(0, preferredLength).toUpperCase()
+    }
+  } else {
+    // Fallback: use first 2-6 letters of epic name
+    const fallback = epicName.replace(/[^A-Za-z0-9]/g, '').toUpperCase()
+    acronym = fallback.substring(0, Math.min(6, Math.max(2, fallback.length)))
+    if (acronym.length < 2) {
+      acronym = (acronym + 'XX').substring(0, 2)
+    }
+  }
+
+  // Ensure minimum length of 2
+  if (acronym.length < 2) {
+    acronym = (acronym + 'XX').substring(0, 2)
+  }
+  // Ensure maximum length of 6
+  if (acronym.length > 6) {
+    acronym = acronym.substring(0, 6)
+  }
+
+  // Ensure uniqueness - if acronym exists, try variations
+  let finalAcronym = acronym
+  let attempts = 0
+  const maxAttempts = 100
+
+  while (existingAcronyms.has(finalAcronym) && attempts < maxAttempts) {
+    attempts++
+
+    // Strategy 1: If length < 6, try appending a letter
+    if (finalAcronym.length < 6) {
+      const lastChar = finalAcronym[finalAcronym.length - 1]
+      const nextChar = String.fromCharCode(((lastChar.charCodeAt(0) - 65 + 1) % 26) + 65)
+      finalAcronym = finalAcronym + nextChar
+    } else {
+      // Strategy 2: Replace last character with next letter
+      const lastChar = finalAcronym[finalAcronym.length - 1]
+      const nextChar = String.fromCharCode(((lastChar.charCodeAt(0) - 65 + 1) % 26) + 65)
+      finalAcronym = finalAcronym.substring(0, finalAcronym.length - 1) + nextChar
+    }
+  }
+
+  // If still not unique, append a number (but keep within 6 char limit)
+  if (existingAcronyms.has(finalAcronym)) {
+    let num = 1
+    const baseAcronym = finalAcronym.substring(0, Math.min(5, finalAcronym.length))
+    while (existingAcronyms.has(baseAcronym + num.toString()) && num < 10) {
+      num++
+    }
+    finalAcronym = baseAcronym + num.toString()
+  }
+
+  return finalAcronym
+}
+
+/**
+ * Generate next sequential story ID (F-XX-001 to F-XXXXXX-999 or NFR-XX-001 to NFR-XXXXXX-999)
+ * Story IDs are unique per epic, starting from 001 for each epic
+ * Format: F-{2-6 chars}-### for functional requirements, NFR-{2-6 chars}-### for non-functional requirements
+ */
 export async function generateNextStoryId(
   projectName: string,
-  epicName: string // Kept for API compatibility but not used for ID generation
+  epicName: string,
+  requirementType: 'functional' | 'non-functional' = 'functional'
 ): Promise<string> {
-  // Get all epics in the project
-  const epics = await listEpics(projectName)
+  // Generate epic acronym
+  const acronym = await generateEpicAcronym(projectName, epicName)
 
-  // Collect all story IDs from all epics in the project
-  const allStoryIds: string[] = []
-  for (const epic of epics) {
-    const storyIds = await listStories(projectName, epic)
-    allStoryIds.push(...storyIds)
+  // Get all stories in this epic to find the next number
+  const storyIds = await listStories(projectName, epicName)
+
+  // Extract story numbers for this epic with matching prefix and acronym
+  // Escape special regex characters in acronym
+  const prefix = requirementType === 'functional' ? 'F' : 'NFR'
+  const escapedAcronym = acronym.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const pattern = new RegExp(`^${prefix}-${escapedAcronym}-(\\d{3})$`)
+
+  const storyNumbers: number[] = []
+  for (const storyId of storyIds) {
+    const match = storyId.match(pattern)
+    if (match) {
+      const num = parseInt(match[1], 10)
+      if (!isNaN(num)) {
+        storyNumbers.push(num)
+      }
+    }
   }
 
-  // Extract all story numbers across the entire project
-  const existingNumbers = allStoryIds
-    .map((id: string) => {
-      const match = id.match(/^STORY-(\d{3})$/)
-      return match ? parseInt(match[1], 10) : null
-    })
-    .filter((n): n is number => n !== null)
-
-  let nextNumber = 1
-  if (existingNumbers.length > 0) {
-    const maxNumber = Math.max(...existingNumbers)
-    nextNumber = maxNumber + 1
-  }
-
+  // Start from 001 for each epic
+  const nextNumber = storyNumbers.length > 0 ? Math.max(...storyNumbers) + 1 : 1
   if (nextNumber > 999) {
-    throw new Error('Maximum number of stories (999) reached for this project')
+    throw new Error(`Maximum number of stories (999) reached for epic ${epicName}`)
   }
 
-  return `STORY-${nextNumber.toString().padStart(3, '0')}`
+  return `${prefix}-${acronym}-${nextNumber.toString().padStart(3, '0')}`
 }
 
 // ============================================================================
@@ -611,11 +735,13 @@ export async function createStory(
   epicName: string,
   storyData: Partial<Story> = {}
 ): Promise<Story> {
-  const storyId = await generateNextStoryId(projectName, epicName)
+  const requirementType = storyData.requirementType || 'functional'
+  const storyId = await generateNextStoryId(projectName, epicName, requirementType)
   const now = generateTimestamp()
 
   const story: Story = {
     id: storyId,
+    requirementType,
     title: storyData.title || '',
     summary: storyData.summary || '',
     description: storyData.description || '',

@@ -1,7 +1,7 @@
 {
-  "id": "STORY-009",
-  "epicId": "zsdzsd",
-  "title": "[STORY-009] Implement patient creation formasdsadas",
+  "id": "F-TESEPI-001",
+  "epicId": "test-epic",
+  "title": "Implement patient creation formasdsadas",
   "summary": "As a user, I can create a new patient profile with basic demographics.",
   "description": "Create a comprehensive patient registration form that captures essential demographic information. The form should be user-friendly, validate input data, and integrate with the patient database.\n\n## Technical Details\n- Form should use React Hook Form for state management\n- Validation using Zod schemas\n- Success notification on submission\n- Redirect to patient list after successful creation\n\n## UI Requirements\n- Clean, accessible form design\n- Clear field labels and placeholders\n- Inline validation feedback\n- Loading states during submission",
   "acceptanceCriteria": [
@@ -15,11 +15,7 @@
   "priority": "low",
   "manager": "person-002",
   "createdAt": "2025-01-05T10:00:00Z",
-  "updatedAt": "2025-12-09T09:24:34.670Z",
-  "plannedStartDate": null,
-  "plannedDueDate": null,
-  "actualStartDate": null,
-  "actualDueDate": null,
+  "updatedAt": "2025-12-09T09:18:38.568Z",
   "dueDate": null,
   "tags": [
     "frontend",
@@ -27,7 +23,7 @@
     "forms"
   ],
   "estimate": {
-    "storyPoints": 3,
+    "storyPoints": 5,
     "confidence": "medium"
   },
   "relatedStories": [],
@@ -48,9 +44,10 @@
   ],
   "metadata": {
     "createdBy": "unassigned",
-    "lastEditedBy": "user",
+    "lastEditedBy": "unassigned",
     "custom": {}
   },
   "deleted": false,
-  "archived": false
+  "archived": false,
+  "requirementType": "functional"
 }

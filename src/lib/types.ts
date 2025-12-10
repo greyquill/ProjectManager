@@ -19,6 +19,8 @@ export const FileRoleSchema = z.enum(['primary', 'supporting', 'test'])
 
 export const ConfidenceSchema = z.enum(['low', 'medium', 'high']).optional()
 
+export const RequirementTypeSchema = z.enum(['functional', 'non-functional']).default('functional')
+
 // ============================================================================
 // Person Types
 // ============================================================================
@@ -54,9 +56,10 @@ export const StoryMetadataSchema = z.object({
 })
 
 export const StorySchema = z.object({
-  id: z.string().regex(/^STORY-\d{3}$/, 'Story ID must match STORY-{3-digit-number} format (e.g., STORY-001)'),
+  id: z.string().regex(/^(F|NFR)-[A-Z]{2,6}-\d{3}$/, 'Story ID must match F-XX-### or NFR-XXXXXX-### format (e.g., F-RCM-001, F-SCHED-021)'),
   epicId: z.string().optional(), // Optional for hierarchical structure (epic name is in path)
 
+  requirementType: RequirementTypeSchema, // 'functional' or 'non-functional'
   title: z.string().min(1, 'Title is required'),
   summary: z.string().default(''), // Allow empty summary for focus mode
   description: z.string().default(''),

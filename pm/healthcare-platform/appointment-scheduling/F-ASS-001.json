@@ -1,5 +1,5 @@
 {
-  "id": "STORY-011",
+  "id": "F-ASS-001",
   "title": "[STORY-011] New story to test the id. This should have11",
   "summary": "some somm",
   "description": "",
@@ -22,5 +22,6 @@
     "lastEditedBy": "user",
     "custom": {}
   },
-  "deleted": false
+  "deleted": false,
+  "requirementType": "functional"
 }
