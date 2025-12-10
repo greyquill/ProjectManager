@@ -1,0 +1,76 @@
+{
+  "projectName": "umami-healthcare",
+  "epic": {
+    "epicId": "NOTIFY",
+    "title": "Notifications & Alerts",
+    "summary": "Comprehensive notification and alert system for system events and patient communications across multiple channels to ensure timely information delivery and improved engagement.",
+    "businessOverview": "Comprehensive notification and alert system for system events and patient communications across multiple channels to ensure timely information delivery and improved engagement. The system provides real-time alerts for critical clinical events, automated patient notifications for appointments and care activities, and system-wide announcements to keep all stakeholders informed and engaged.",
+    "technicalArchitecture": "## Technical Architecture Components\n\n- Multi-channel notification service (SMS, email, push, WhatsApp)\n- Alert routing and prioritization engine\n- Template management system\n- Delivery tracking and analytics\n- Notification preference management\n- Real-time event monitoring",
+    "implementationTimeline": "## Implementation Timeline\n\n**Week 1:**\n- Notification service setup and channel integration\n\n**Week 2:**\n- Alert rules and routing configuration\n\n**Week 3:**\n- Patient notification templates and preferences\n\n**Week 4:**\n- Testing and delivery optimization",
+    "caseStudyReference": "## Case Study Reference\n\n**Community Health Center**\n\n- **Challenge:** Low appointment show rates, missed critical alerts\n- **Outcome:** 30% reduction in no-shows, 100% critical alert delivery rate"
+  },
+  "stories": [
+    {
+      "title": "Critical lab result alerts",
+      "requirementType": "functional",
+      "category": "System Notifications",
+      "description": "Send immediate alerts to providers when critical lab results are received to ensure timely clinical intervention and patient safety."
+    },
+    {
+      "title": "Prescription refill requests",
+      "requirementType": "functional",
+      "category": "System Notifications",
+      "description": "Notify providers and pharmacy staff when patients request prescription refills to facilitate timely processing and medication access."
+    },
+    {
+      "title": "Claim denial notifications",
+      "requirementType": "functional",
+      "category": "System Notifications",
+      "description": "Alert billing staff when insurance claims are denied to enable prompt follow-up and resolution of payment issues."
+    },
+    {
+      "title": "Credential expiration warnings",
+      "requirementType": "functional",
+      "category": "System Notifications",
+      "description": "Send warnings to staff and administrators when credentials (licenses, certifications, insurance) are approaching expiration to ensure compliance and prevent service disruptions."
+    },
+    {
+      "title": "System maintenance announcements",
+      "requirementType": "functional",
+      "category": "System Notifications",
+      "description": "Broadcast system maintenance announcements to all users to inform them of scheduled downtime and service interruptions."
+    },
+    {
+      "title": "Appointment reminders (SMS, email, WhatsApp)",
+      "requirementType": "functional",
+      "category": "Patient Notifications",
+      "description": "Send appointment reminders via SMS, email, and WhatsApp to reduce no-shows and improve appointment attendance rates."
+    },
+    {
+      "title": "Lab results available notifications",
+      "requirementType": "functional",
+      "category": "Patient Notifications",
+      "description": "Notify patients when lab results are available for review through patient portal or secure messaging to improve patient engagement and care transparency."
+    },
+    {
+      "title": "Prescription ready for pickup",
+      "requirementType": "functional",
+      "category": "Patient Notifications",
+      "description": "Send notifications to patients when prescriptions are ready for pickup at the pharmacy to improve medication adherence and patient convenience."
+    },
+    {
+      "title": "Outstanding balance reminders",
+      "requirementType": "functional",
+      "category": "Patient Notifications",
+      "description": "Send reminders to patients about outstanding balances to improve collection rates and reduce accounts receivable aging."
+    },
+    {
+      "title": "Health maintenance reminders (annual physical due)",
+      "requirementType": "functional",
+      "category": "Patient Notifications",
+      "description": "Send proactive health maintenance reminders such as annual physical due dates to support preventive care and care gap closure."
+    }
+  ],
+  "manager": "person-001"
+}
+

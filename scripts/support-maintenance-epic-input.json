@@ -1,0 +1,76 @@
+{
+  "projectName": "umami-healthcare",
+  "epic": {
+    "epicId": "SUP",
+    "title": "Support & Maintenance",
+    "summary": "Comprehensive customer support and system maintenance framework ensuring 24/7 assistance, rapid issue resolution, and continuous system improvements to maintain high service quality and user satisfaction.",
+    "businessOverview": "Comprehensive customer support and system maintenance framework ensuring 24/7 assistance, rapid issue resolution, and continuous system improvements to maintain high service quality and user satisfaction. The system provides round-the-clock support, proactive maintenance, and regular feature updates to ensure healthcare organizations can rely on the platform for their critical operations.",
+    "technicalArchitecture": "## Technical Architecture Components\n\n- Customer support ticketing system\n- Live chat and phone support infrastructure\n- Knowledge base platform\n- System health monitoring and alerting\n- Automated deployment pipeline\n- Rollback and version control system\n- Feature release management\n- Security patch management system",
+    "implementationTimeline": "## Implementation Timeline\n\n**Month 1:**\n- Support infrastructure setup (phone, chat, ticketing)\n\n**Month 2:**\n- Knowledge base and documentation\n\n**Month 3:**\n- Monitoring and maintenance automation\n\n**Month 4:**\n- Deployment pipeline and rollback capabilities\n\n**Ongoing:**\n- Continuous support operations and maintenance",
+    "caseStudyReference": "## Case Study Reference\n\n**Large Healthcare Network**\n\n- **Challenge:** Slow support response, frequent downtime, user frustration\n- **Outcome:** 24/7 support, <5 min response time, 99.9% uptime, 85% first call resolution"
+  },
+  "stories": [
+    {
+      "title": "24/7 phone and chat support",
+      "requirementType": "non-functional",
+      "category": "Customer Support",
+      "description": "Provide 24/7 phone and chat support to ensure healthcare organizations can receive assistance at any time, supporting critical healthcare operations that operate around the clock."
+    },
+    {
+      "title": "Average response time < 5 minutes for critical issues",
+      "requirementType": "non-functional",
+      "category": "Customer Support",
+      "description": "Maintain average response time of less than 5 minutes for critical issues to ensure rapid resolution of problems that impact patient care or system availability."
+    },
+    {
+      "title": "First call resolution rate > 80%",
+      "requirementType": "non-functional",
+      "category": "Customer Support",
+      "description": "Achieve first call resolution rate greater than 80% to resolve most issues on the initial contact, improving customer satisfaction and reducing support workload."
+    },
+    {
+      "title": "Dedicated account manager for enterprise clients",
+      "requirementType": "non-functional",
+      "category": "Customer Support",
+      "description": "Assign dedicated account managers to enterprise clients to provide personalized support, strategic guidance, and ensure high-value customer relationships."
+    },
+    {
+      "title": "Online knowledge base and video tutorials",
+      "requirementType": "non-functional",
+      "category": "Customer Support",
+      "description": "Maintain comprehensive online knowledge base and video tutorials to enable self-service support and reduce support ticket volume while improving user education."
+    },
+    {
+      "title": "Monthly feature releases",
+      "requirementType": "non-functional",
+      "category": "System Maintenance",
+      "description": "Deliver monthly feature releases to provide regular enhancements, new capabilities, and continuous improvement of the healthcare platform."
+    },
+    {
+      "title": "Weekly security patches",
+      "requirementType": "non-functional",
+      "category": "System Maintenance",
+      "description": "Apply weekly security patches to address vulnerabilities promptly and maintain system security posture in the face of evolving threats."
+    },
+    {
+      "title": "Zero-downtime deployments for most updates",
+      "requirementType": "non-functional",
+      "category": "System Maintenance",
+      "description": "Implement zero-downtime deployment capabilities for most updates to ensure continuous availability of critical healthcare systems during maintenance."
+    },
+    {
+      "title": "Rollback capability within 15 minutes",
+      "requirementType": "non-functional",
+      "category": "System Maintenance",
+      "description": "Provide rollback capability to revert deployments within 15 minutes to quickly recover from issues and minimize impact on healthcare operations."
+    },
+    {
+      "title": "System health monitoring dashboard",
+      "requirementType": "non-functional",
+      "category": "System Maintenance",
+      "description": "Provide system health monitoring dashboard to track system performance, availability, and key metrics, enabling proactive issue detection and resolution."
+    }
+  ],
+  "manager": "person-001"
+}
+

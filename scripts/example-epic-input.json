@@ -1,0 +1,40 @@
+{
+  "projectName": "umami-healthcare",
+  "epic": {
+    "epicId": "SCHED",
+    "title": "Intelligent Scheduling & Patient Access",
+    "summary": "Heuristic scheduling engine with omnichannel patient engagement (WhatsApp, web portal, mobile app) designed to maximize provider utilization and reduce no-shows.",
+    "businessOverview": "Heuristic scheduling engine with omnichannel patient engagement (WhatsApp, web portal, mobile app) designed to maximize provider utilization and reduce no-shows.",
+    "technicalArchitecture": "## Technical Architecture Components\n\n- Heuristic scheduling algorithm engine\n- WhatsApp Business API integration\n- Twilio/SMS gateway service\n- Real-time sync engine (WebSocket/SSE)\n- Calendar integration service (Google/Microsoft)",
+    "implementationTimeline": "## Implementation Timeline\n\n**Day 1:**\n- Provider schedule configuration\n\n**Day 2:**\n- Patient contact list import\n\n**Day 3:**\n- Portal and WhatsApp activation\n\n**Week 2:**\n- Reminder cadence optimization",
+    "caseStudyReference": "## Case Study Reference\n\n**Dermatology Center, Austin**\n\n- **Outcome:** Reduced no-show rate from 18% to 4% in 60 days, added 12 billable hours/week"
+  },
+  "stories": [
+    {
+      "title": "Multi-provider calendar view (day/week/month)",
+      "requirementType": "functional",
+      "category": "Provider Schedule Management",
+      "description": "Implement a multi-provider calendar view that supports day, week, and month views with real-time availability updates."
+    },
+    {
+      "title": "Appointment type configuration (consultation, follow-up, procedure)",
+      "requirementType": "functional",
+      "category": "Provider Schedule Management",
+      "description": "Allow configuration of different appointment types (consultation, follow-up, procedure) with customizable durations and requirements."
+    },
+    {
+      "title": "Real-time availability updates < 1 second",
+      "requirementType": "non-functional",
+      "category": "Performance",
+      "description": "Ensure real-time availability updates are delivered within 1 second to provide accurate booking information to patients."
+    },
+    {
+      "title": "Support 100 concurrent booking requests",
+      "requirementType": "non-functional",
+      "category": "Performance",
+      "description": "System must support handling 100 concurrent booking requests without degradation in performance or availability."
+    }
+  ],
+  "manager": "person-001"
+}
+

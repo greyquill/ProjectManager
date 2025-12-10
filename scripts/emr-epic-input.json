@@ -1,0 +1,424 @@
+{
+  "projectName": "umami-healthcare",
+  "epic": {
+    "epicId": "EMR",
+    "title": "Electronic Medical Records (EMR) System",
+    "summary": "Comprehensive cloud-native EMR system for complete patient record management, clinical documentation, and care coordination.",
+    "businessOverview": "Comprehensive cloud-native EMR system designed to digitize and manage complete patient medical records, enabling healthcare providers to deliver efficient, coordinated care. The system supports clinical documentation, medication management, orders and results tracking, vitals monitoring, and patient portal access. Built with interoperability standards (HL7, FHIR) and HIPAA compliance to ensure secure, seamless data exchange across care settings.",
+    "technicalArchitecture": "## Technical Architecture Components\n\n- Cloud-native database (PostgreSQL with partitioning)\n- Document storage (S3-compatible object storage)\n- Search engine (Elasticsearch for full-text search)\n- HL7/FHIR integration engine\n- Audit logging service (immutable ledger)\n- IoT device gateway (MQTT/CoAP)",
+    "implementationTimeline": "## Implementation Timeline\n\n**Week 1:**\n- Chart digitization (professional scanning)\n\n**Week 2:**\n- Cloud migration and data import\n\n**Week 3:**\n- Data verification and validation\n\n**Week 4:**\n- Go-live with staff training",
+    "caseStudyReference": "## Case Study Reference\n\n**Family Practice, Seattle**\n\n- **Challenge:** 15,000 paper charts, slow retrieval\n- **Outcome:** 100% digital in 3 weeks, retrieval time: 5 minutes → 5 seconds"
+  },
+  "stories": [
+    {
+      "title": "Preferred language and communication preferences",
+      "requirementType": "functional",
+      "category": "Patient Demographics",
+      "description": "Capture and store patient's preferred language and communication preferences to ensure effective patient-provider communication and compliance with language access requirements."
+    },
+    {
+      "title": "Patient photo capture and storage",
+      "requirementType": "functional",
+      "category": "Patient Demographics",
+      "description": "Enable capture and secure storage of patient photos for identification purposes, supporting visual patient verification and improving care coordination."
+    },
+    {
+      "title": "Encounter note templates (SOAP, H&P, Procedure)",
+      "requirementType": "functional",
+      "category": "Clinical Documentation",
+      "description": "Provide structured encounter note templates including SOAP (Subjective, Objective, Assessment, Plan), History & Physical (H&P), and Procedure notes to standardize documentation and improve clinical efficiency."
+    },
+    {
+      "title": "Chief complaint and HPI documentation",
+      "requirementType": "functional",
+      "category": "Clinical Documentation",
+      "description": "Enable structured documentation of chief complaint and History of Present Illness (HPI) to capture the patient's primary reason for visit and relevant medical history."
+    },
+    {
+      "title": "Review of systems (ROS) checklist",
+      "requirementType": "functional",
+      "category": "Clinical Documentation",
+      "description": "Provide a comprehensive Review of Systems (ROS) checklist covering all body systems to systematically document patient symptoms and findings."
+    },
+    {
+      "title": "Physical examination templates by specialty",
+      "requirementType": "functional",
+      "category": "Clinical Documentation",
+      "description": "Offer specialty-specific physical examination templates (e.g., Cardiology, Orthopedics, Pediatrics) to streamline documentation and ensure comprehensive exam capture."
+    },
+    {
+      "title": "Assessment and plan free-text and structured entry",
+      "requirementType": "functional",
+      "category": "Clinical Documentation",
+      "description": "Support both free-text and structured entry for assessment and plan documentation, allowing flexibility while maintaining data structure for clinical decision support."
+    },
+    {
+      "title": "Addendum and amendment tracking",
+      "requirementType": "functional",
+      "category": "Clinical Documentation",
+      "description": "Enable addendum and amendment tracking for clinical notes, maintaining audit trail and ensuring documentation integrity with proper versioning."
+    },
+    {
+      "title": "Co-signature workflow for resident/attending",
+      "requirementType": "functional",
+      "category": "Clinical Documentation",
+      "description": "Implement co-signature workflow allowing residents to create notes that require attending physician review and signature for compliance and quality assurance."
+    },
+    {
+      "title": "Active problem list management",
+      "requirementType": "functional",
+      "category": "Problem List & Diagnoses",
+      "description": "Enable comprehensive management of active problem list, allowing providers to add, update, and resolve patient health conditions over time."
+    },
+    {
+      "title": "ICD-10-CM coded diagnoses",
+      "requirementType": "functional",
+      "category": "Problem List & Diagnoses",
+      "description": "Support ICD-10-CM coded diagnoses with searchable diagnosis database, ensuring accurate coding for billing, reporting, and clinical decision support."
+    },
+    {
+      "title": "Problem status tracking (active, resolved, chronic)",
+      "requirementType": "functional",
+      "category": "Problem List & Diagnoses",
+      "description": "Track problem status (active, resolved, chronic) to maintain accurate longitudinal health record and support care planning."
+    },
+    {
+      "title": "Problem onset date and resolution date",
+      "requirementType": "functional",
+      "category": "Problem List & Diagnoses",
+      "description": "Capture and track problem onset date and resolution date to maintain complete problem history and support clinical timeline analysis."
+    },
+    {
+      "title": "Problem severity classification",
+      "requirementType": "functional",
+      "category": "Problem List & Diagnoses",
+      "description": "Enable problem severity classification to prioritize care and support clinical decision-making based on problem acuity."
+    },
+    {
+      "title": "E-prescribing (Surescripts integration)",
+      "requirementType": "functional",
+      "category": "Medication Management",
+      "description": "Integrate with Surescripts network for electronic prescribing, enabling providers to send prescriptions directly to pharmacies and check medication history."
+    },
+    {
+      "title": "Medication reconciliation workflow",
+      "requirementType": "functional",
+      "category": "Medication Management",
+      "description": "Support medication reconciliation workflow to compare current medications with historical records, identify discrepancies, and ensure accurate medication lists."
+    },
+    {
+      "title": "Allergy and adverse reaction recording",
+      "requirementType": "functional",
+      "category": "Medication Management",
+      "description": "Enable comprehensive recording of allergies and adverse drug reactions with severity and reaction details to prevent medication errors."
+    },
+    {
+      "title": "Drug formulary checking (insurance coverage)",
+      "requirementType": "functional",
+      "category": "Medication Management",
+      "description": "Integrate drug formulary checking to verify insurance coverage and suggest covered alternatives, improving medication adherence and reducing patient costs."
+    },
+    {
+      "title": "Medication adherence tracking",
+      "requirementType": "functional",
+      "category": "Medication Management",
+      "description": "Track medication adherence through patient-reported data and pharmacy fill records to monitor treatment effectiveness and identify non-compliance."
+    },
+    {
+      "title": "Prescription refill requests (patient-initiated)",
+      "requirementType": "functional",
+      "category": "Medication Management",
+      "description": "Enable patient-initiated prescription refill requests through patient portal, streamlining the refill process and reducing administrative burden."
+    },
+    {
+      "title": "Controlled substance prescribing (DEA compliance)",
+      "requirementType": "functional",
+      "category": "Medication Management",
+      "description": "Support controlled substance prescribing with DEA compliance features including prescription drug monitoring program (PDMP) integration and required documentation."
+    },
+    {
+      "title": "Laboratory test ordering (Quest, LabCorp integration)",
+      "requirementType": "functional",
+      "category": "Orders & Results Management",
+      "description": "Integrate with major laboratory networks (Quest, LabCorp) for electronic lab ordering, enabling seamless test ordering and result delivery."
+    },
+    {
+      "title": "Radiology order entry with clinical indication",
+      "requirementType": "functional",
+      "category": "Orders & Results Management",
+      "description": "Enable radiology order entry with required clinical indication to support appropriate use criteria and ensure proper documentation for imaging studies."
+    },
+    {
+      "title": "Procedure order management",
+      "requirementType": "functional",
+      "category": "Orders & Results Management",
+      "description": "Support comprehensive procedure order management including scheduling, preparation instructions, and coordination with procedural departments."
+    },
+    {
+      "title": "Result receipt and auto-filing",
+      "requirementType": "functional",
+      "category": "Orders & Results Management",
+      "description": "Automatically receive and file lab, imaging, and procedure results into patient charts, reducing manual filing and ensuring timely result availability."
+    },
+    {
+      "title": "Critical value alerting (automatic notification)",
+      "requirementType": "functional",
+      "category": "Orders & Results Management",
+      "description": "Implement automatic critical value alerting to notify providers immediately when lab results exceed critical thresholds, ensuring timely intervention."
+    },
+    {
+      "title": "Result review and acknowledgment tracking",
+      "requirementType": "functional",
+      "category": "Orders & Results Management",
+      "description": "Track result review and acknowledgment by providers, ensuring all results are reviewed and documented, supporting quality metrics and patient safety."
+    },
+    {
+      "title": "Trending and graphing (glucose, A1C, lipids)",
+      "requirementType": "functional",
+      "category": "Orders & Results Management",
+      "description": "Provide trending and graphing capabilities for key lab values (glucose, A1C, lipids) to visualize patient progress over time and support clinical decision-making."
+    },
+    {
+      "title": "Vital signs entry (BP, HR, Temp, RR, SpO2, Weight, Height)",
+      "requirementType": "functional",
+      "category": "Vitals & Flowsheet",
+      "description": "Enable comprehensive vital signs entry including blood pressure, heart rate, temperature, respiratory rate, oxygen saturation, weight, and height with validation and normal range indicators."
+    },
+    {
+      "title": "BMI auto-calculation",
+      "requirementType": "functional",
+      "category": "Vitals & Flowsheet",
+      "description": "Automatically calculate Body Mass Index (BMI) from weight and height measurements, displaying BMI category and supporting obesity management."
+    },
+    {
+      "title": "Pediatric growth chart plotting",
+      "requirementType": "functional",
+      "category": "Vitals & Flowsheet",
+      "description": "Generate pediatric growth charts (WHO, CDC) plotting height, weight, and head circumference percentiles to monitor child development and identify growth concerns."
+    },
+    {
+      "title": "IoT device integration (connected BP cuffs, scales, glucometers)",
+      "requirementType": "functional",
+      "category": "Vitals & Flowsheet",
+      "description": "Integrate with IoT devices including connected blood pressure cuffs, scales, and glucometers to automatically capture and record vital signs, reducing manual entry errors."
+    },
+    {
+      "title": "Vital signs trend visualization",
+      "requirementType": "functional",
+      "category": "Vitals & Flowsheet",
+      "description": "Provide visual trend graphs for vital signs over time, enabling providers to identify patterns, monitor patient progress, and detect concerning changes."
+    },
+    {
+      "title": "Abnormal vital alerts (customizable thresholds)",
+      "requirementType": "functional",
+      "category": "Vitals & Flowsheet",
+      "description": "Implement customizable abnormal vital alerts with provider-defined thresholds to notify clinicians when vital signs fall outside normal ranges."
+    },
+    {
+      "title": "Scanned document upload and OCR",
+      "requirementType": "functional",
+      "category": "Document Management",
+      "description": "Enable scanned document upload with Optical Character Recognition (OCR) to digitize paper documents and make them searchable within the EMR."
+    },
+    {
+      "title": "External records import (CCD, PDF)",
+      "requirementType": "functional",
+      "category": "Document Management",
+      "description": "Support import of external medical records in CCD (Continuity of Care Document) and PDF formats to consolidate patient information from multiple sources."
+    },
+    {
+      "title": "Document categorization (lab, imaging, referral, etc.)",
+      "requirementType": "functional",
+      "category": "Document Management",
+      "description": "Enable document categorization and tagging (lab, imaging, referral, etc.) to organize documents and facilitate quick retrieval by document type."
+    },
+    {
+      "title": "Full-text search across all documents",
+      "requirementType": "functional",
+      "category": "Document Management",
+      "description": "Provide full-text search capability across all documents in the patient record, enabling providers to quickly find relevant information using keyword searches."
+    },
+    {
+      "title": "Document versioning and audit trail",
+      "requirementType": "functional",
+      "category": "Document Management",
+      "description": "Maintain document versioning and comprehensive audit trail to track document changes, edits, and access history for compliance and quality assurance."
+    },
+    {
+      "title": "Secure patient portal with MFA",
+      "requirementType": "functional",
+      "category": "Patient Portal",
+      "description": "Provide secure patient portal access with multi-factor authentication (MFA) to ensure patient data security and comply with HIPAA requirements."
+    },
+    {
+      "title": "View visit summaries and lab results",
+      "requirementType": "functional",
+      "category": "Patient Portal",
+      "description": "Enable patients to view visit summaries and lab results through the patient portal, promoting patient engagement and transparency in care."
+    },
+    {
+      "title": "Download medical records (Blue Button)",
+      "requirementType": "functional",
+      "category": "Patient Portal",
+      "description": "Support Blue Button functionality allowing patients to download their complete medical records in standardized formats (CCD, PDF) for personal health records and care coordination."
+    },
+    {
+      "title": "Secure messaging with care team",
+      "requirementType": "functional",
+      "category": "Patient Portal",
+      "description": "Enable secure messaging between patients and care team members through the patient portal, facilitating communication and care coordination while maintaining HIPAA compliance."
+    },
+    {
+      "title": "Appointment requests and prescription refills",
+      "requirementType": "functional",
+      "category": "Patient Portal",
+      "description": "Allow patients to request appointments and prescription refills through the patient portal, improving access to care and reducing administrative burden."
+    },
+    {
+      "title": "Health education material library",
+      "requirementType": "functional",
+      "category": "Patient Portal",
+      "description": "Provide a comprehensive health education material library accessible through the patient portal, enabling patients to access condition-specific educational resources and improve health literacy."
+    },
+    {
+      "title": "Patient chart load time < 1 second (sub-second)",
+      "requirementType": "non-functional",
+      "category": "Performance",
+      "description": "Ensure patient chart load time is less than 1 second (sub-second) to provide instant access to patient information and maintain clinical workflow efficiency."
+    },
+    {
+      "title": "Search query response < 500ms for 1M+ records",
+      "requirementType": "non-functional",
+      "category": "Performance",
+      "description": "Maintain search query response time under 500ms even with 1 million or more patient records to ensure fast information retrieval and optimal user experience."
+    },
+    {
+      "title": "Support 500 concurrent users without degradation",
+      "requirementType": "non-functional",
+      "category": "Performance",
+      "description": "Support 500 concurrent users accessing the system simultaneously without performance degradation, ensuring scalability for large healthcare organizations."
+    },
+    {
+      "title": "Document upload processing < 3 seconds per document",
+      "requirementType": "non-functional",
+      "category": "Performance",
+      "description": "Process document uploads in less than 3 seconds per document to minimize wait times and maintain efficient clinical workflows."
+    },
+    {
+      "title": "HIPAA-compliant data storage and transmission",
+      "requirementType": "non-functional",
+      "category": "Security & Compliance",
+      "description": "Ensure all patient data storage and transmission meets HIPAA compliance requirements, including administrative, physical, and technical safeguards."
+    },
+    {
+      "title": "AES-256 encryption at rest",
+      "requirementType": "non-functional",
+      "category": "Security & Compliance",
+      "description": "Implement AES-256 encryption for all data at rest to protect patient information from unauthorized access and meet security best practices."
+    },
+    {
+      "title": "TLS 1.3 for data in transit",
+      "requirementType": "non-functional",
+      "category": "Security & Compliance",
+      "description": "Use TLS 1.3 encryption for all data in transit to ensure secure communication between clients and servers, protecting data during transmission."
+    },
+    {
+      "title": "SOC 2 Type II certified infrastructure",
+      "requirementType": "non-functional",
+      "category": "Security & Compliance",
+      "description": "Deploy on SOC 2 Type II certified infrastructure to demonstrate comprehensive security controls and meet enterprise security requirements."
+    },
+    {
+      "title": "GDPR-compliant for international deployments",
+      "requirementType": "non-functional",
+      "category": "Security & Compliance",
+      "description": "Ensure GDPR compliance for international deployments, including data protection, privacy rights, and cross-border data transfer requirements."
+    },
+    {
+      "title": "Role-based access control (RBAC) with granular permissions",
+      "requirementType": "non-functional",
+      "category": "Security & Compliance",
+      "description": "Implement role-based access control (RBAC) with granular permissions to ensure users only access data and functions appropriate to their role and responsibilities."
+    },
+    {
+      "title": "Audit logging of all PHI access (who, what, when)",
+      "requirementType": "non-functional",
+      "category": "Security & Compliance",
+      "description": "Maintain comprehensive audit logging of all Protected Health Information (PHI) access, recording who accessed what data and when, for compliance and security monitoring."
+    },
+    {
+      "title": "Automatic session timeout (15 minutes inactivity)",
+      "requirementType": "non-functional",
+      "category": "Security & Compliance",
+      "description": "Implement automatic session timeout after 15 minutes of inactivity to prevent unauthorized access to patient data on unattended workstations."
+    },
+    {
+      "title": "Break-the-glass emergency access with justification",
+      "requirementType": "non-functional",
+      "category": "Security & Compliance",
+      "description": "Support break-the-glass emergency access functionality allowing authorized users to access patient records in emergencies with required justification and audit logging."
+    },
+    {
+      "title": "HL7 v2.x message support (ADT, ORM, ORU)",
+      "requirementType": "non-functional",
+      "category": "Interoperability",
+      "description": "Support HL7 v2.x message formats including ADT (Admit/Discharge/Transfer), ORM (Order), and ORU (Observation Result) for integration with hospital information systems and other healthcare applications."
+    },
+    {
+      "title": "FHIR R4 API for data exchange",
+      "requirementType": "non-functional",
+      "category": "Interoperability",
+      "description": "Provide FHIR R4 API for modern healthcare data exchange, enabling standardized interoperability with other healthcare systems and supporting app-based integrations."
+    },
+    {
+      "title": "CCD/CCDA document generation and import",
+      "requirementType": "non-functional",
+      "category": "Interoperability",
+      "description": "Support CCD (Continuity of Care Document) and CCDA (Consolidated Clinical Document Architecture) document generation and import for care coordination and patient record portability."
+    },
+    {
+      "title": "Direct messaging for care coordination",
+      "requirementType": "non-functional",
+      "category": "Interoperability",
+      "description": "Enable Direct messaging for secure, HIPAA-compliant communication and care coordination between healthcare providers and organizations."
+    },
+    {
+      "title": "Carequality/CommonWell HIE participation",
+      "requirementType": "non-functional",
+      "category": "Interoperability",
+      "description": "Support participation in Carequality and CommonWell Health Information Exchanges (HIE) to enable nationwide patient data sharing and care coordination."
+    },
+    {
+      "title": "99.95% system uptime SLA",
+      "requirementType": "non-functional",
+      "category": "Reliability",
+      "description": "Maintain 99.95% system uptime SLA to ensure continuous availability of critical patient care systems and minimize service disruptions."
+    },
+    {
+      "title": "Automated hourly incremental backups",
+      "requirementType": "non-functional",
+      "category": "Reliability",
+      "description": "Perform automated hourly incremental backups to protect patient data and enable rapid recovery in case of system failures or data corruption."
+    },
+    {
+      "title": "Point-in-time recovery capability (15-minute granularity)",
+      "requirementType": "non-functional",
+      "category": "Reliability",
+      "description": "Provide point-in-time recovery capability with 15-minute granularity to restore system state to any specific point in time, minimizing data loss."
+    },
+    {
+      "title": "Multi-region redundancy (active-active)",
+      "requirementType": "non-functional",
+      "category": "Reliability",
+      "description": "Implement multi-region redundancy with active-active configuration to ensure high availability and disaster recovery capabilities across geographic regions."
+    },
+    {
+      "title": "Zero data loss guarantee (RPO: 0)",
+      "requirementType": "non-functional",
+      "category": "Reliability",
+      "description": "Guarantee zero data loss with Recovery Point Objective (RPO) of 0, ensuring all patient data is continuously protected and recoverable without loss."
+    }
+  ],
+  "manager": "person-001"
+}
+

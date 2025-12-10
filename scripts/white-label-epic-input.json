@@ -1,0 +1,316 @@
+{
+  "projectName": "umami-healthcare",
+  "epic": {
+    "epicId": "CUSTOM",
+    "title": "White-Label Digital Patient Experience",
+    "summary": "Custom-branded mobile applications (iOS/Android) and web portals that extend clinic branding while leveraging Umami's backend infrastructure, enabling telemedicine and patient engagement.",
+    "businessOverview": "Custom-branded mobile applications (iOS/Android) and web portals that extend clinic branding while leveraging Umami's backend infrastructure, enabling telemedicine and patient engagement.",
+    "technicalArchitecture": "## Technical Architecture Components\n\n- React Native framework for cross-platform apps\n- WebRTC media server (Jitsi/Twilio)\n- Push notification service (FCM/APNS)\n- CDN for content delivery (Cloudflare)\n- Backend-as-a-Service (BaaS) API layer\n- Analytics platform (Firebase/Mixpanel)",
+    "implementationTimeline": "## Implementation Timeline\n\n**Week 1:**\n- Requirements workshop and brand asset collection\n\n**Week 2-4:**\n- Mobile app development and testing\n\n**Week 5:**\n- App Store submission and review\n\n**Week 6:**\n- Launch with marketing support",
+    "caseStudyReference": "## Case Study Reference\n\n**Pediatric Clinic, Miami**\n\n- **Challenge:** Low engagement, difficult telehealth scheduling\n- **Outcome:** 5,000+ downloads in month 1, 40% increase in telehealth utilization"
+  },
+  "stories": [
+    {
+      "title": "Custom branding (logo, colors, splash screen)",
+      "requirementType": "functional",
+      "category": "Branded Mobile Applications",
+      "description": "Enable custom branding of mobile applications including clinic logo, color scheme, and splash screen to maintain brand consistency and provide a personalized patient experience."
+    },
+    {
+      "title": "App Store and Google Play submission under clinic account",
+      "requirementType": "functional",
+      "category": "Branded Mobile Applications",
+      "description": "Support App Store and Google Play submission process allowing clinics to publish apps under their own developer accounts, maintaining brand ownership and control."
+    },
+    {
+      "title": "Push notification service for appointment reminders",
+      "requirementType": "functional",
+      "category": "Branded Mobile Applications",
+      "description": "Implement push notification service to send appointment reminders, reducing no-shows and improving patient engagement through timely notifications."
+    },
+    {
+      "title": "Biometric authentication (Face ID, Touch ID, fingerprint)",
+      "requirementType": "functional",
+      "category": "Branded Mobile Applications",
+      "description": "Enable biometric authentication using Face ID, Touch ID, and fingerprint recognition to provide secure, convenient access to patient health information."
+    },
+    {
+      "title": "Offline mode for viewing cached records",
+      "requirementType": "functional",
+      "category": "Branded Mobile Applications",
+      "description": "Support offline mode allowing patients to view cached medical records and information when network connectivity is unavailable, improving accessibility."
+    },
+    {
+      "title": "In-app chat with care team",
+      "requirementType": "functional",
+      "category": "Branded Mobile Applications",
+      "description": "Provide secure in-app messaging functionality enabling patients to communicate with their care team, facilitating care coordination and patient support."
+    },
+    {
+      "title": "Appointment booking and management",
+      "requirementType": "functional",
+      "category": "Branded Mobile Applications",
+      "description": "Enable appointment booking and management directly through the mobile app, allowing patients to schedule, reschedule, and cancel appointments conveniently."
+    },
+    {
+      "title": "Prescription refill requests",
+      "requirementType": "functional",
+      "category": "Branded Mobile Applications",
+      "description": "Allow patients to request prescription refills through the mobile app, streamlining the refill process and reducing administrative burden for clinics."
+    },
+    {
+      "title": "Bill payment and insurance card upload",
+      "requirementType": "functional",
+      "category": "Branded Mobile Applications",
+      "description": "Enable bill payment functionality and insurance card upload through the mobile app, providing convenient financial management and insurance verification."
+    },
+    {
+      "title": "WebRTC-based video calls (HIPAA-compliant)",
+      "requirementType": "functional",
+      "category": "Telemedicine Infrastructure",
+      "description": "Implement WebRTC-based video calling infrastructure with HIPAA compliance to enable secure telemedicine consultations between patients and providers."
+    },
+    {
+      "title": "Waiting room with queue management",
+      "requirementType": "functional",
+      "category": "Telemedicine Infrastructure",
+      "description": "Provide virtual waiting room functionality with queue management to organize patient flow and ensure smooth telemedicine visit experiences."
+    },
+    {
+      "title": "Screen sharing for document review",
+      "requirementType": "functional",
+      "category": "Telemedicine Infrastructure",
+      "description": "Enable screen sharing capability during video calls to allow providers and patients to review documents, test results, and other materials together."
+    },
+    {
+      "title": "In-call chat and file sharing",
+      "requirementType": "functional",
+      "category": "Telemedicine Infrastructure",
+      "description": "Support in-call chat messaging and secure file sharing during telemedicine sessions to facilitate communication and information exchange."
+    },
+    {
+      "title": "Visit recording (with consent)",
+      "requirementType": "functional",
+      "category": "Telemedicine Infrastructure",
+      "description": "Enable visit recording functionality with patient consent to allow review of telemedicine consultations and support care documentation."
+    },
+    {
+      "title": "Post-visit summary and prescriptions",
+      "requirementType": "functional",
+      "category": "Telemedicine Infrastructure",
+      "description": "Automatically generate and deliver post-visit summaries and prescriptions after telemedicine consultations, ensuring patients have access to care instructions."
+    },
+    {
+      "title": "Virtual visit billing integration",
+      "requirementType": "functional",
+      "category": "Telemedicine Infrastructure",
+      "description": "Integrate virtual visit billing with clinic billing systems to ensure accurate coding, claims submission, and reimbursement for telemedicine services."
+    },
+    {
+      "title": "Medication list with reminders",
+      "requirementType": "functional",
+      "category": "Patient Engagement",
+      "description": "Display patient medication list with customizable reminders to improve medication adherence and support medication management."
+    },
+    {
+      "title": "Lab result viewing with explanations",
+      "requirementType": "functional",
+      "category": "Patient Engagement",
+      "description": "Enable patients to view lab results with plain-language explanations to improve health literacy and patient understanding of test results."
+    },
+    {
+      "title": "Health education content library",
+      "requirementType": "functional",
+      "category": "Patient Engagement",
+      "description": "Provide comprehensive health education content library accessible to patients, supporting health literacy and self-management of conditions."
+    },
+    {
+      "title": "Symptom checker (AI-powered triage)",
+      "requirementType": "functional",
+      "category": "Patient Engagement",
+      "description": "Implement AI-powered symptom checker to help patients assess symptoms and determine appropriate care level, supporting triage and care navigation."
+    },
+    {
+      "title": "Care plan tracking (diabetes, hypertension)",
+      "requirementType": "functional",
+      "category": "Patient Engagement",
+      "description": "Enable care plan tracking for chronic conditions like diabetes and hypertension, allowing patients to monitor progress and adhere to treatment plans."
+    },
+    {
+      "title": "Wearable device integration (Apple Health, Google Fit)",
+      "requirementType": "functional",
+      "category": "Patient Engagement",
+      "description": "Integrate with wearable devices through Apple Health and Google Fit to automatically sync health data and support comprehensive health monitoring."
+    },
+    {
+      "title": "Immunization record and reminders",
+      "requirementType": "functional",
+      "category": "Patient Engagement",
+      "description": "Maintain immunization records and send reminders for upcoming vaccinations to ensure patients stay up-to-date with recommended immunizations."
+    },
+    {
+      "title": "Custom domain hosting (portal.yourclinic.com)",
+      "requirementType": "functional",
+      "category": "Custom Web Portal",
+      "description": "Support custom domain hosting allowing clinics to use their own domain (e.g., portal.yourclinic.com) for the patient portal, maintaining brand consistency."
+    },
+    {
+      "title": "SSL certificate management",
+      "requirementType": "functional",
+      "category": "Custom Web Portal",
+      "description": "Automatically manage SSL certificates for custom domains to ensure secure, encrypted connections and maintain compliance with security standards."
+    },
+    {
+      "title": "Responsive design (mobile, tablet, desktop)",
+      "requirementType": "functional",
+      "category": "Custom Web Portal",
+      "description": "Implement responsive design ensuring optimal user experience across mobile devices, tablets, and desktop computers for maximum accessibility."
+    },
+    {
+      "title": "White-label branding across all pages",
+      "requirementType": "functional",
+      "category": "Custom Web Portal",
+      "description": "Apply white-label branding consistently across all portal pages, including clinic logos, colors, and styling to maintain brand identity."
+    },
+    {
+      "title": "SEO optimization for clinic visibility",
+      "requirementType": "functional",
+      "category": "Custom Web Portal",
+      "description": "Implement SEO optimization features to improve clinic visibility in search engine results and support patient acquisition through organic search."
+    },
+    {
+      "title": "Analytics dashboard for patient engagement metrics",
+      "requirementType": "functional",
+      "category": "Custom Web Portal",
+      "description": "Provide analytics dashboard displaying patient engagement metrics to help clinics understand portal usage and identify opportunities for improvement."
+    },
+    {
+      "title": "Targeted health campaigns (flu shot reminders)",
+      "requirementType": "functional",
+      "category": "Marketing & Communication",
+      "description": "Enable targeted health campaigns such as flu shot reminders to proactively engage patients and promote preventive care services."
+    },
+    {
+      "title": "Email newsletter management",
+      "requirementType": "functional",
+      "category": "Marketing & Communication",
+      "description": "Support email newsletter creation and distribution to keep patients informed about clinic news, health tips, and service updates."
+    },
+    {
+      "title": "SMS broadcast for clinic updates",
+      "requirementType": "functional",
+      "category": "Marketing & Communication",
+      "description": "Enable SMS broadcast functionality to send clinic updates, announcements, and important information to patients via text messaging."
+    },
+    {
+      "title": "Patient satisfaction surveys (NPS)",
+      "requirementType": "functional",
+      "category": "Marketing & Communication",
+      "description": "Implement patient satisfaction surveys including Net Promoter Score (NPS) to measure patient experience and identify areas for improvement."
+    },
+    {
+      "title": "Referral program management",
+      "requirementType": "functional",
+      "category": "Marketing & Communication",
+      "description": "Support referral program management to track patient referrals, reward referrers, and measure program effectiveness for patient acquisition."
+    },
+    {
+      "title": "Automated birthday and anniversary greetings",
+      "requirementType": "functional",
+      "category": "Marketing & Communication",
+      "description": "Send automated personalized birthday and anniversary greetings to patients to enhance patient relationships and demonstrate care and attention."
+    },
+    {
+      "title": "App load time < 2 seconds on 4G network",
+      "requirementType": "non-functional",
+      "category": "Performance",
+      "description": "Ensure mobile app load time is less than 2 seconds on 4G network to provide fast, responsive user experience and reduce abandonment."
+    },
+    {
+      "title": "Video call quality: 720p at 30fps minimum",
+      "requirementType": "non-functional",
+      "category": "Performance",
+      "description": "Maintain video call quality at minimum 720p resolution and 30 frames per second to ensure clear, smooth telemedicine consultations."
+    },
+    {
+      "title": "Support 100 concurrent video sessions",
+      "requirementType": "non-functional",
+      "category": "Performance",
+      "description": "Support 100 concurrent video sessions simultaneously without degradation to accommodate multiple telemedicine consultations across the clinic."
+    },
+    {
+      "title": "Push notification delivery < 5 seconds",
+      "requirementType": "non-functional",
+      "category": "Performance",
+      "description": "Ensure push notification delivery within 5 seconds to provide timely alerts and reminders for appointments and important updates."
+    },
+    {
+      "title": "App Store rating target: 4.5+ stars",
+      "requirementType": "non-functional",
+      "category": "Usability",
+      "description": "Design and optimize app to achieve and maintain App Store rating of 4.5+ stars through excellent user experience and functionality."
+    },
+    {
+      "title": "Maximum 3 taps to access key features",
+      "requirementType": "non-functional",
+      "category": "Usability",
+      "description": "Ensure key features are accessible within maximum 3 taps from the home screen to provide intuitive navigation and reduce user friction."
+    },
+    {
+      "title": "Support iOS 15+ and Android 10+",
+      "requirementType": "non-functional",
+      "category": "Usability",
+      "description": "Support iOS 15 and later, and Android 10 and later to ensure compatibility with current and recent mobile operating systems."
+    },
+    {
+      "title": "Accessibility: VoiceOver/TalkBack support",
+      "requirementType": "non-functional",
+      "category": "Usability",
+      "description": "Implement full accessibility support including VoiceOver (iOS) and TalkBack (Android) to ensure app is usable by patients with visual impairments."
+    },
+    {
+      "title": "HIPAA-compliant video infrastructure (Twilio/Agora)",
+      "requirementType": "non-functional",
+      "category": "Security",
+      "description": "Deploy HIPAA-compliant video infrastructure using providers like Twilio or Agora to ensure secure, compliant telemedicine communications."
+    },
+    {
+      "title": "Certificate pinning for API security",
+      "requirementType": "non-functional",
+      "category": "Security",
+      "description": "Implement certificate pinning for API communications to prevent man-in-the-middle attacks and ensure secure data transmission."
+    },
+    {
+      "title": "Encrypted local storage for cached data",
+      "requirementType": "non-functional",
+      "category": "Security",
+      "description": "Use encrypted local storage for all cached patient data to protect sensitive information stored on mobile devices."
+    },
+    {
+      "title": "Automatic logout on app backgrounding (configurable)",
+      "requirementType": "non-functional",
+      "category": "Security",
+      "description": "Implement automatic logout when app is backgrounded (configurable) to prevent unauthorized access to patient data on unattended devices."
+    },
+    {
+      "title": "Support 10,000+ active users per clinic",
+      "requirementType": "non-functional",
+      "category": "Scalability",
+      "description": "Support 10,000+ active users per clinic without performance degradation to accommodate large patient populations and high usage."
+    },
+    {
+      "title": "CDN distribution for global app downloads",
+      "requirementType": "non-functional",
+      "category": "Scalability",
+      "description": "Use CDN distribution for global app downloads to ensure fast, reliable app delivery to patients worldwide regardless of geographic location."
+    },
+    {
+      "title": "Auto-scaling for video infrastructure",
+      "requirementType": "non-functional",
+      "category": "Scalability",
+      "description": "Implement auto-scaling for video infrastructure to automatically adjust capacity based on demand, ensuring consistent performance during peak usage."
+    }
+  ],
+  "manager": "person-001"
+}
+

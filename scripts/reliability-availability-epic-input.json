@@ -1,0 +1,94 @@
+{
+  "projectName": "umami-healthcare",
+  "epic": {
+    "epicId": "REL",
+    "title": "Reliability & Availability",
+    "summary": "Comprehensive reliability and availability framework ensuring high system uptime, robust disaster recovery, and comprehensive backup strategies to maintain continuous healthcare operations.",
+    "businessOverview": "Comprehensive reliability and availability framework ensuring high system uptime, robust disaster recovery, and comprehensive backup strategies to maintain continuous healthcare operations. The system is designed to minimize downtime, provide rapid recovery from failures, and ensure data protection through automated backups and multi-region redundancy to support critical healthcare workflows that require 24/7 availability.",
+    "technicalArchitecture": "## Technical Architecture Components\n\n- High availability infrastructure (load balancers, redundant servers)\n- Multi-region data replication\n- Automated backup systems\n- Disaster recovery orchestration\n- Monitoring and alerting systems\n- Failover mechanisms\n- Geo-redundant storage\n- Key management for encrypted backups",
+    "implementationTimeline": "## Implementation Timeline\n\n**Month 1:**\n- High availability infrastructure setup\n\n**Month 2:**\n- Multi-region replication and failover\n\n**Month 3:**\n- Automated backup and recovery systems\n\n**Month 4:**\n- Disaster recovery testing and validation\n\n**Ongoing:**\n- Quarterly DR drills and continuous monitoring",
+    "caseStudyReference": "## Case Study Reference\n\n**Regional Hospital Network**\n\n- **Challenge:** Frequent outages, data loss incidents, long recovery times\n- **Outcome:** 99.95% uptime achieved, zero data loss, 2-hour recovery time"
+  },
+  "stories": [
+    {
+      "title": "99.95% system availability (SLA)",
+      "requirementType": "non-functional",
+      "category": "Uptime",
+      "description": "Maintain 99.95% system availability SLA to ensure healthcare operations can continue with minimal interruption and meet service level commitments."
+    },
+    {
+      "title": "Planned maintenance windows < 4 hours/month",
+      "requirementType": "non-functional",
+      "category": "Uptime",
+      "description": "Limit planned maintenance windows to less than 4 hours per month to minimize service disruption and maintain high availability for healthcare operations."
+    },
+    {
+      "title": "Maximum unplanned downtime: 2 hours/month",
+      "requirementType": "non-functional",
+      "category": "Uptime",
+      "description": "Ensure maximum unplanned downtime does not exceed 2 hours per month to maintain system reliability and support critical healthcare workflows."
+    },
+    {
+      "title": "Recovery Point Objective (RPO): 15 minutes",
+      "requirementType": "non-functional",
+      "category": "Disaster Recovery",
+      "description": "Achieve Recovery Point Objective (RPO) of 15 minutes to minimize data loss in the event of a disaster or system failure."
+    },
+    {
+      "title": "Recovery Time Objective (RTO): 4 hours",
+      "requirementType": "non-functional",
+      "category": "Disaster Recovery",
+      "description": "Achieve Recovery Time Objective (RTO) of 4 hours to restore critical services and resume operations within acceptable timeframes after a disaster."
+    },
+    {
+      "title": "Multi-region data replication (active-passive)",
+      "requirementType": "non-functional",
+      "category": "Disaster Recovery",
+      "description": "Implement multi-region data replication with active-passive configuration to ensure data availability and enable rapid failover to secondary regions."
+    },
+    {
+      "title": "Automated failover for critical services",
+      "requirementType": "non-functional",
+      "category": "Disaster Recovery",
+      "description": "Implement automated failover mechanisms for critical services to minimize downtime and ensure seamless transition to backup systems during failures."
+    },
+    {
+      "title": "Quarterly disaster recovery drills",
+      "requirementType": "non-functional",
+      "category": "Disaster Recovery",
+      "description": "Conduct quarterly disaster recovery drills to test recovery procedures, validate RPO/RTO targets, and ensure team readiness for actual disaster scenarios."
+    },
+    {
+      "title": "Automated hourly incremental backups",
+      "requirementType": "non-functional",
+      "category": "Backup & Recovery",
+      "description": "Perform automated hourly incremental backups to minimize data loss and enable frequent recovery points for critical healthcare data."
+    },
+    {
+      "title": "Daily full backups with 90-day retention",
+      "requirementType": "non-functional",
+      "category": "Backup & Recovery",
+      "description": "Create daily full backups with 90-day retention period to ensure comprehensive data protection and support long-term recovery requirements."
+    },
+    {
+      "title": "Point-in-time recovery capability",
+      "requirementType": "non-functional",
+      "category": "Backup & Recovery",
+      "description": "Provide point-in-time recovery capability to restore data to any specific point in time, enabling recovery from data corruption or accidental deletions."
+    },
+    {
+      "title": "Geo-redundant backup storage (3+ regions)",
+      "requirementType": "non-functional",
+      "category": "Backup & Recovery",
+      "description": "Store backups in geo-redundant locations across 3 or more regions to protect against regional disasters and ensure backup availability."
+    },
+    {
+      "title": "Backup encryption with separate key storage",
+      "requirementType": "non-functional",
+      "category": "Backup & Recovery",
+      "description": "Encrypt all backups with separate key storage to protect backup data and ensure security even if backup storage is compromised."
+    }
+  ],
+  "manager": "person-001"
+}
+

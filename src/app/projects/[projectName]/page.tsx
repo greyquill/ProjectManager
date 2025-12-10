@@ -8,7 +8,9 @@ import { Card } from '@/components/Card'
 import { Button } from '@/components/Button'
 import { Badge } from '@/components/Badge'
 import { MarkdownEditor } from '@/components/MarkdownEditor'
+import { MarkdownPreview } from '@/components/MarkdownPreview'
 import { Select } from '@/components/Select'
+import { ProjectDefaultView } from './components/ProjectDefaultView'
 import { DatePicker } from '@/components/DatePicker'
 import {
   ArrowLeft,
@@ -281,6 +283,7 @@ export default function ProjectDetailPage() {
   const [epics, setEpics] = useState<(Epic & { _name: string; stories: Story[] })[]>([])
   const [people, setPeople] = useState<Person[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadingPeople, setLoadingPeople] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [expandedEpics, setExpandedEpics] = useState<Set<string>>(new Set())
   const [saving, setSaving] = useState(false)
@@ -508,6 +511,7 @@ export default function ProjectDetailPage() {
 
   const fetchPeople = useCallback(async () => {
     try {
+      setLoadingPeople(true)
       // Use the working /api/people endpoint instead of project-specific one
       // Both should return the same data (global people list)
       const response = await fetch(`/api/people`)
@@ -522,6 +526,8 @@ export default function ProjectDetailPage() {
     } catch (err) {
       console.error('[Project Page] Failed to load people:', err)
       setPeople([])
+    } finally {
+      setLoadingPeople(false)
     }
   }, []) // Remove projectName dependency since we're using global endpoint
 
@@ -2460,7 +2466,7 @@ export default function ProjectDetailPage() {
                 <BarChart3 className="h-4 w-4" />
               </Link>
               <h1
-                className="text-lg font-semibold text-text-primary cursor-pointer hover:text-primary transition-colors"
+                className="text-[0.9rem] font-semibold text-text-primary cursor-pointer hover:text-primary transition-colors"
                 onClick={clearSelection}
                 title="Click to view project details"
               >
@@ -3192,98 +3198,21 @@ export default function ProjectDetailPage() {
           {!isFullscreen && (
           <div ref={detailPanelRef} className="lg:col-span-2 overflow-y-auto">
             {selection.type === null ? (
-              <Card className="p-6">
-                <div className="text-center mb-6">
-                  <FileText className="h-16 w-16 text-text-secondary mx-auto mb-4 opacity-50" />
-                  <h3 className="text-lg font-semibold text-text-primary mb-2">
-                    Select an Epic or Story
-                  </h3>
-                  <p className="text-text-secondary text-sm mb-6">
-                    Click on an epic or story from the list to view and edit details
-                  </p>
-                </div>
-                {project.description && (
-                  <div className="border-t border-border-light pt-6 mb-6">
-                    <h4 className="text-sm font-medium text-text-primary mb-2">Project Description</h4>
-                    <p className="text-text-secondary text-sm whitespace-pre-line">
-                      {project.description}
-                    </p>
-                  </div>
-                )}
-
-                {/* Project Metadata Editor */}
-                <div className="border-t border-border-light pt-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-sm font-medium text-text-primary">Project Team</h4>
-                    {hasProjectChanges && (
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        onClick={saveProjectMetadata}
-                        isLoading={savingProject}
-                      >
-                        <Save className="h-4 w-4 mr-2" />
-                        Save Changes
-                      </Button>
-                    )}
-                  </div>
-
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-text-primary mb-1">
-                        Manager
-                      </label>
-                      <Select
-                        value={projectManager}
-                        onChange={(value) => {
-                          setProjectManager(value)
-                          setHasProjectChanges(true)
-                        }}
-                        options={[
-                          { value: 'unassigned', label: 'Unassigned' },
-                          ...people.map((person) => ({
-                            value: person.id,
-                            label: `${person.name} (${person.designation})`,
-                          })),
-                        ]}
-                        className="text-sm"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-text-primary mb-2">
-                        Contributors
-                      </label>
-                      <div className="space-y-2 max-h-48 overflow-y-auto">
-                        {people.map((person) => (
-                          <label
-                            key={person.id}
-                            className="flex items-center gap-2 p-2 rounded hover:bg-surface-muted cursor-pointer"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={projectContributors.includes(person.id)}
-                              onChange={() => toggleContributor(person.id)}
-                              className="rounded"
-                            />
-                            <div className="flex-1">
-                              <div className="text-sm text-text-primary">{person.name}</div>
-                              <div className="text-xs text-text-secondary">
-                                {person.designation} • {person.roleInProject || 'Contributor'}
-                              </div>
-                            </div>
-                          </label>
-                        ))}
-                        {people.length === 0 && (
-                          <p className="text-sm text-text-secondary">
-                            No people available. Add people in the People page.
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
+              <ProjectDefaultView
+                project={project}
+                projectManager={projectManager}
+                projectContributors={projectContributors}
+                people={people}
+                hasProjectChanges={hasProjectChanges}
+                savingProject={savingProject}
+                isLoading={loadingPeople || !project}
+                onManagerChange={(value) => {
+                  setProjectManager(value)
+                  setHasProjectChanges(true)
+                }}
+                onContributorToggle={toggleContributor}
+                onSave={saveProjectMetadata}
+              />
             ) : selection.type === 'epic' && selectedEpic ? (
               <Card className="p-6">
                 <div className="flex items-center justify-between mb-6 gap-4">

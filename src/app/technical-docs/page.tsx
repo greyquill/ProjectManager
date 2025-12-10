@@ -266,30 +266,30 @@ export default function DocsPage() {
 
           {/* Main Content */}
           <main className="flex-1 min-w-0 max-w-4xl">
-            <div id="doc-content" className="prose prose-slate max-w-none">
+            <div id="doc-content" className="prose prose-slate max-w-none prose-sm text-sm">
               {/* Getting Started */}
               <section id="introduction">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                  <p className="text-sm text-blue-800">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                  <p className="text-xs text-blue-800">
                     <strong>Note:</strong> This is technical documentation for developers. For user-facing documentation on how to use the application, see{' '}
                     <Link href="/docs" className="text-blue-600 hover:underline font-medium">
                       User Documentation
                     </Link>.
                   </p>
                 </div>
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light">
+                <h2 className="text-xl font-bold text-text-primary mb-2 pb-1.5 border-b border-border-light">
                   Introduction
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Welcome to Project Manager, an AI-native, file-based project management tool designed specifically
                   for developers who want to keep their project planning close to their code.
                 </p>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Philosophy</h3>
-                <p className="text-text-secondary mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Philosophy</h3>
+                <p className="text-xs text-text-secondary mb-3">
                   Project Manager is built on a simple but powerful philosophy: <strong>every epic and story is a
                   JSON file in your repository</strong>. This approach gives you:
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><strong>Full version control</strong> - Track changes to requirements over time with Git</li>
                   <li><strong>Type safety</strong> - TypeScript types and Zod validation for all data</li>
                   <li><strong>AI integration</strong> - Use Cursor AI to expand epics, generate stories, and refine acceptance criteria</li>
@@ -299,17 +299,17 @@ export default function DocsPage() {
               </section>
 
               <section id="installation">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Installation
                 </h2>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Prerequisites</h3>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Prerequisites</h3>
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li>Node.js 18+ and npm 9+</li>
                   <li>Git for version control</li>
                 </ul>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Setup Steps</h3>
-                <div className="bg-surface border border-border-light rounded-lg p-4 mb-4">
-                  <code className="text-sm">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Setup Steps</h3>
+                <div className="bg-surface border border-border-light rounded-lg p-2.5 mb-2">
+                  <code className="text-[11px]">
                     <div className="mb-2"># 1. Clone the repository</div>
                     <div className="mb-2">git clone &lt;your-repo-url&gt;</div>
                     <div className="mb-2">cd ProjectManager</div>
@@ -327,13 +327,13 @@ export default function DocsPage() {
               </section>
 
               <section id="quick-start">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Quick Start
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Follow these steps to start managing your projects:
                 </p>
-                <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
+                <ol className="list-decimal list-inside text-xs text-text-secondary space-y-1.5 mb-3">
                   <li><strong>Navigate to Projects</strong> - Click &quot;Projects&quot; in the header</li>
                   <li><strong>Create a Project</strong> - Click &quot;New Project&quot; and fill in the details</li>
                   <li><strong>Add People</strong> - Go to &quot;People&quot; and add team members to your projects</li>
@@ -345,17 +345,17 @@ export default function DocsPage() {
 
               {/* Core Concepts */}
               <section id="file-based-storage">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   File-Based Storage
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   All project data is stored as JSON files in a hierarchical <code>/pm</code> directory within your
                   repository. This structure makes it easy to navigate, organize, and version control your project
                   management data.
                 </p>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Directory Structure</h3>
-                <div className="bg-surface border border-border-light rounded-lg p-4 mb-4">
-                  <code className="text-sm">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Directory Structure</h3>
+                <div className="bg-surface border border-border-light rounded-lg p-2.5 mb-2">
+                  <code className="text-[11px]">
                     <div>/pm</div>
                     <div>&nbsp;&nbsp;/[project-name]/</div>
                     <div>&nbsp;&nbsp;&nbsp;&nbsp;project.json&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Project metadata</div>
@@ -365,8 +365,8 @@ export default function DocsPage() {
                     <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;STORY-*.json&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Story files</div>
                   </code>
                 </div>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Benefits</h3>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Benefits</h3>
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li>Navigate related items (project → epics → stories)</li>
                   <li>Organize by feature or module</li>
                   <li>Perform bulk operations on epics or projects</li>
@@ -376,15 +376,15 @@ export default function DocsPage() {
               </section>
 
               <section id="projects">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Projects
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Projects are the top-level containers that organize your work. Each project represents a major
                   initiative, product, or codebase.
                 </p>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Project Properties</h3>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Project Properties</h3>
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><strong>Name</strong> - Unique identifier for the project</li>
                   <li><strong>Description</strong> - Markdown description of the project</li>
                   <li><strong>Manager</strong> - Person ID of the project manager</li>
@@ -395,15 +395,15 @@ export default function DocsPage() {
               </section>
 
               <section id="epics">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Epics
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Epics represent high-level features or initiatives. They group related stories and provide a
                   higher-level view of your project&apos;s progress.
                 </p>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Epic Properties</h3>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Epic Properties</h3>
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><strong>ID</strong> - Unique identifier (e.g., EPIC-1)</li>
                   <li><strong>Title</strong> - Short, descriptive name</li>
                   <li><strong>Summary</strong> - One-line description</li>
@@ -413,11 +413,11 @@ export default function DocsPage() {
                   <li><strong>Manager</strong> - Person ID of the epic manager</li>
                   <li><strong>Target Release</strong> - Target completion date</li>
                 </ul>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Epic Metrics</h3>
-                <p className="text-text-secondary mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Epic Metrics</h3>
+                <p className="text-xs text-text-secondary mb-3">
                   Epics automatically calculate cumulative metrics from their stories:
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li>Total story points</li>
                   <li>Number of stories</li>
                   <li>Progress percentage</li>
@@ -426,15 +426,15 @@ export default function DocsPage() {
               </section>
 
               <section id="stories">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Stories
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Stories are the smallest unit of work. Each story represents a specific, actionable task that can
                   be completed independently.
                 </p>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Story Properties</h3>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Story Properties</h3>
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><strong>ID</strong> - Unique identifier (STORY-timestamp-random)</li>
                   <li><strong>Epic ID</strong> - Link to parent epic</li>
                   <li><strong>Title</strong> - Descriptive name</li>
@@ -452,26 +452,26 @@ export default function DocsPage() {
               </section>
 
               <section id="people-management">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   People Management
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Each project maintains a <code>people.json</code> file that stores information about team members.
                   These people can be assigned as managers or contributors across projects, epics, and stories.
                 </p>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Person Properties</h3>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Person Properties</h3>
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><strong>ID</strong> - Unique identifier (person-timestamp-random)</li>
                   <li><strong>Name</strong> - Full name</li>
                   <li><strong>Email</strong> - Contact email</li>
                   <li><strong>Designation</strong> - Job title or role</li>
                   <li><strong>Role in Project</strong> - Project-specific role</li>
                 </ul>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Managing People</h3>
-                <p className="text-text-secondary mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Managing People</h3>
+                <p className="text-xs text-text-secondary mb-3">
                   Navigate to the &quot;People&quot; page to view all people across all projects. You can:
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li>Add new people with their details</li>
                   <li>Edit existing person information</li>
                   <li>Delete people (only if not assigned to any work)</li>
@@ -481,32 +481,32 @@ export default function DocsPage() {
 
               {/* Working with Projects */}
               <section id="creating-projects">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Creating Projects
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   To create a new project:
                 </p>
-                <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
+                <ol className="list-decimal list-inside text-xs text-text-secondary space-y-1.5 mb-3">
                   <li>Navigate to the Projects page</li>
                   <li>Click the &quot;New Project&quot; button</li>
                   <li>Fill in the project name and description</li>
                   <li>Click Save</li>
                 </ol>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   This creates a new directory in <code>/pm/[project-name]/</code> with a <code>project.json</code> file
                   and an empty <code>people.json</code> file.
                 </p>
               </section>
 
               <section id="project-metadata">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Project Metadata
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   The <code>project.json</code> file contains all project-level information:
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><strong>Name</strong> - Must be unique and URL-friendly</li>
                   <li><strong>Description</strong> - Supports markdown formatting</li>
                   <li><strong>Manager</strong> - Select from people in the project</li>
@@ -518,20 +518,20 @@ export default function DocsPage() {
               </section>
 
               <section id="project-team">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Managing Project Team
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   When viewing a project, you can manage the team by:
                 </p>
-                <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
+                <ol className="list-decimal list-inside text-xs text-text-secondary space-y-1.5 mb-3">
                   <li>Click the project name to deselect any epic/story</li>
                   <li>Scroll down to the &quot;Project Team&quot; section</li>
                   <li>Click &quot;Add Person&quot; to add team members</li>
                   <li>Fill in their details (name, email, designation, role)</li>
                   <li>Assign them as manager or add them to contributors</li>
                 </ol>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   People added to a project become available in dropdown menus for epics and stories within that
                   project.
                 </p>
@@ -539,69 +539,69 @@ export default function DocsPage() {
 
               {/* Working with Epics */}
               <section id="creating-epics">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Creating Epics
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   To create a new epic within a project:
                 </p>
-                <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
+                <ol className="list-decimal list-inside text-xs text-text-secondary space-y-1.5 mb-3">
                   <li>Open the project detail page</li>
                   <li>Click the &quot;New Epic&quot; button</li>
                   <li>Fill in the epic details (title, summary, description)</li>
                   <li>Set the status, priority, and manager</li>
                   <li>Click Save</li>
                 </ol>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   This creates a new directory in <code>/pm/[project-name]/[epic-name]/</code> with an
                   <code>epic.json</code> file.
                 </p>
               </section>
 
               <section id="epic-structure">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Epic Structure
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Each epic folder contains:
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><code>epic.json</code> - Epic metadata and properties</li>
                   <li><code>STORY-*.json</code> - One file per story in the epic</li>
                 </ul>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   The folder name is derived from the epic title (lowercase, hyphenated) and serves as the epic&apos;s
                   identifier in URLs.
                 </p>
               </section>
 
               <section id="epic-metrics">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Epic Metrics
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   When you select an epic, the right panel displays:
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><strong>Total Story Points</strong> - Sum of all story estimates</li>
                   <li><strong>Story Count</strong> - Number of stories in the epic</li>
                   <li><strong>Progress</strong> - Percentage of completed stories</li>
                   <li><strong>Status Breakdown</strong> - Count by status (todo, in progress, done, etc.)</li>
                 </ul>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   These metrics are calculated in real-time from the stories in the epic.
                 </p>
               </section>
 
               {/* Working with Stories */}
               <section id="creating-stories">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Creating Stories
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   To create a new story within an epic:
                 </p>
-                <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
+                <ol className="list-decimal list-inside text-xs text-text-secondary space-y-1.5 mb-3">
                   <li>Expand an epic in the accordion list</li>
                   <li>Click the &quot;New Story&quot; button</li>
                   <li>Fill in the story details</li>
@@ -609,20 +609,20 @@ export default function DocsPage() {
                   <li>Link relevant code files (optional)</li>
                   <li>Click Save</li>
                 </ol>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   This creates a new <code>STORY-[timestamp]-[random].json</code> file in the epic&apos;s folder.
                 </p>
               </section>
 
               <section id="story-fields">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Story Fields
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Each story has multiple fields that help define the work:
                 </p>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Metadata Fields</h3>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Metadata Fields</h3>
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><strong>Status</strong> - Select from project&apos;s default statuses</li>
                   <li><strong>Priority</strong> - Select from project&apos;s default priorities</li>
                   <li><strong>Manager</strong> - Select from project&apos;s people</li>
@@ -630,8 +630,8 @@ export default function DocsPage() {
                   <li><strong>Story Points</strong> - Numeric effort estimate</li>
                   <li><strong>Tags</strong> - Comma-separated labels</li>
                 </ul>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Content Fields</h3>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Content Fields</h3>
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><strong>Title</strong> - Short, descriptive name</li>
                   <li><strong>Summary</strong> - One-line description</li>
                   <li><strong>Description</strong> - Detailed markdown description with preview</li>
@@ -639,25 +639,25 @@ export default function DocsPage() {
               </section>
 
               <section id="acceptance-criteria">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Acceptance Criteria
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Acceptance criteria define what &quot;done&quot; means for a story. They are displayed as a list of
                   requirements that must be met.
                 </p>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Adding Criteria</h3>
-                <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Adding Criteria</h3>
+                <ol className="list-decimal list-inside text-xs text-text-secondary space-y-1.5 mb-3">
                   <li>Click &quot;Add Criterion&quot; button</li>
                   <li>Enter the requirement in the text field</li>
                   <li>Click the plus icon or press Enter</li>
                   <li>Repeat for additional criteria</li>
                 </ol>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Editing Criteria</h3>
-                <p className="text-text-secondary mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Editing Criteria</h3>
+                <p className="text-xs text-text-secondary mb-3">
                   You can edit or delete existing criteria:
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li>Click in the text field to edit</li>
                   <li>Click the X icon to remove a criterion</li>
                   <li>Click Save to persist changes</li>
@@ -665,23 +665,23 @@ export default function DocsPage() {
               </section>
 
               <section id="story-files">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Linking Code Files
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Stories can reference specific code files that are relevant to the work. This creates a clear
                   connection between planning and implementation.
                 </p>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Adding Files</h3>
-                <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Adding Files</h3>
+                <ol className="list-decimal list-inside text-xs text-text-secondary space-y-1.5 mb-3">
                   <li>Scroll to the &quot;Files&quot; section</li>
                   <li>Click &quot;Add File&quot;</li>
                   <li>Enter the file path (e.g., <code>src/components/Button.tsx</code>)</li>
                   <li>Select the role: primary, supporting, or test</li>
                   <li>Click Save</li>
                 </ol>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">File Roles</h3>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">File Roles</h3>
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><strong>Primary</strong> - Main files being created or modified</li>
                   <li><strong>Supporting</strong> - Related files that may need changes</li>
                   <li><strong>Test</strong> - Test files for the story</li>
@@ -690,13 +690,13 @@ export default function DocsPage() {
 
               {/* User Interface */}
               <section id="navigation">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Navigation
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   The application has a simple header navigation:
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><strong>Project Manager</strong> - Logo/home link</li>
                   <li><strong>Projects</strong> - View all projects</li>
                   <li><strong>People</strong> - Manage team members</li>
@@ -705,46 +705,46 @@ export default function DocsPage() {
               </section>
 
               <section id="project-view">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Project View
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   The project detail page uses a two-panel layout:
                 </p>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Left Panel - Accordion List</h3>
-                <p className="text-text-secondary mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Left Panel - Accordion List</h3>
+                <p className="text-xs text-text-secondary mb-3">
                   Shows all epics as collapsible sections. Each epic row displays:
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li>Epic title</li>
                   <li>Status badge</li>
                   <li>Story count</li>
                   <li>Total story points</li>
                   <li>Progress percentage</li>
                 </ul>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   When expanded, stories are shown as rows with:
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li>Story title</li>
                   <li>Manager name</li>
                   <li>Status badge</li>
                 </ul>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Right Panel - Detail View</h3>
-                <p className="text-text-secondary mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Right Panel - Detail View</h3>
+                <p className="text-xs text-text-secondary mb-3">
                   Displays the full details of the selected epic or story, or the project overview if nothing is
                   selected.
                 </p>
               </section>
 
               <section id="accordion-list">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Accordion List
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   The accordion on the left allows you to quickly navigate between epics and stories:
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li>Click an epic row to expand/collapse its stories</li>
                   <li>Click an epic title to select it and view details</li>
                   <li>Click a story row to select it and view details</li>
@@ -754,40 +754,40 @@ export default function DocsPage() {
               </section>
 
               <section id="editing-in-place">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Editing In Place
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   All editing happens directly on the project detail page:
                 </p>
-                <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
+                <ol className="list-decimal list-inside text-xs text-text-secondary space-y-1.5 mb-3">
                   <li>Select an epic or story from the accordion</li>
                   <li>Edit fields in the right panel</li>
                   <li>The Save button becomes enabled when changes are detected</li>
                   <li>Click Save to persist changes to the JSON file</li>
                   <li>Changes are saved immediately to disk</li>
                 </ol>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   No separate edit pages or modals - everything is inline for a seamless experience.
                 </p>
               </section>
 
               <section id="markdown-preview">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Markdown Preview
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   The description field for epics and stories supports markdown formatting with a live preview:
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li>By default, the preview is shown</li>
                   <li>Click the &quot;Edit&quot; button to switch to edit mode</li>
                   <li>Click the &quot;Preview&quot; button to see the rendered markdown</li>
                   <li>Supports headers, bold, italic, code blocks, lists, and links</li>
                 </ul>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Markdown Syntax</h3>
-                <div className="bg-surface border border-border-light rounded-lg p-4 mb-4">
-                  <code className="text-sm">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Markdown Syntax</h3>
+                <div className="bg-surface border border-border-light rounded-lg p-2.5 mb-2">
+                  <code className="text-[11px]">
                     <div># Heading 1</div>
                     <div>## Heading 2</div>
                     <div>### Heading 3</div>
@@ -806,17 +806,17 @@ export default function DocsPage() {
 
               {/* Data Model */}
               <section id="json-schema">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   JSON Schema
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   All data in Project Manager is validated using Zod schemas. This ensures type safety and prevents
                   invalid data from being saved.
                 </p>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   The schemas are defined in <code>src/lib/types.ts</code> and include:
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li>ProjectSchema</li>
                   <li>EpicSchema</li>
                   <li>StorySchema</li>
@@ -826,10 +826,10 @@ export default function DocsPage() {
               </section>
 
               <section id="project-json">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   project.json
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Example structure:
                 </p>
                 <div className="bg-surface border border-border-light rounded-lg p-4 mb-4 overflow-x-auto">
@@ -863,10 +863,10 @@ export default function DocsPage() {
               </section>
 
               <section id="epic-json">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   epic.json
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Example structure:
                 </p>
                 <div className="bg-surface border border-border-light rounded-lg p-4 mb-4 overflow-x-auto">
@@ -893,10 +893,10 @@ export default function DocsPage() {
               </section>
 
               <section id="story-json">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   STORY-*.json
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Example structure:
                 </p>
                 <div className="bg-surface border border-border-light rounded-lg p-4 mb-4 overflow-x-auto">
@@ -940,10 +940,10 @@ export default function DocsPage() {
               </section>
 
               <section id="people-json">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   people.json
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Example structure:
                 </p>
                 <div className="bg-surface border border-border-light rounded-lg p-4 mb-4 overflow-x-auto">
@@ -970,13 +970,13 @@ export default function DocsPage() {
 
               {/* Best Practices */}
               <section id="organizing-epics">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Organizing Epics
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Tips for organizing your epics effectively:
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><strong>Group by feature</strong> - Each epic should represent a cohesive feature or module</li>
                   <li><strong>Keep them independent</strong> - Minimize dependencies between epics</li>
                   <li><strong>Use descriptive names</strong> - Epic names become folder names, so keep them clear</li>
@@ -986,13 +986,13 @@ export default function DocsPage() {
               </section>
 
               <section id="writing-stories">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Writing Good Stories
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Follow these guidelines for effective stories:
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><strong>Keep them small</strong> - Stories should be completable in a few days</li>
                   <li><strong>Be specific</strong> - Clearly define what needs to be built</li>
                   <li><strong>Include context</strong> - Explain why the story is needed</li>
@@ -1004,27 +1004,27 @@ export default function DocsPage() {
               </section>
 
               <section id="acceptance-criteria-tips">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Acceptance Criteria Tips
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Write clear acceptance criteria:
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><strong>Make them testable</strong> - Each criterion should be verifiable</li>
                   <li><strong>Be specific</strong> - Avoid vague language like &quot;works well&quot;</li>
                   <li><strong>Cover edge cases</strong> - Include error scenarios and validations</li>
                   <li><strong>Keep them independent</strong> - Each criterion should stand alone</li>
                   <li><strong>Focus on behavior</strong> - Describe what should happen, not how to implement it</li>
                 </ul>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Good Examples</h3>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Good Examples</h3>
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li>✅ &quot;Form validates email format and shows error message for invalid emails&quot;</li>
                   <li>✅ &quot;User can select a date from the date picker&quot;</li>
                   <li>✅ &quot;Save button is disabled when no changes are made&quot;</li>
                 </ul>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Bad Examples</h3>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Bad Examples</h3>
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li>❌ &quot;Everything works correctly&quot;</li>
                   <li>❌ &quot;Use React Hook Form for validation&quot;</li>
                   <li>❌ &quot;It should be fast&quot;</li>
@@ -1032,15 +1032,15 @@ export default function DocsPage() {
               </section>
 
               <section id="version-control">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Version Control
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Since all project data is stored as JSON files, you can use Git to track changes:
                 </p>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Committing Changes</h3>
-                <div className="bg-surface border border-border-light rounded-lg p-4 mb-4">
-                  <code className="text-sm">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Committing Changes</h3>
+                <div className="bg-surface border border-border-light rounded-lg p-2.5 mb-2">
+                  <code className="text-[11px]">
                     <div># View changes to project management data</div>
                     <div>git status</div>
                     <div>&nbsp;</div>
@@ -1052,8 +1052,8 @@ export default function DocsPage() {
                     <div>git commit -m &quot;Add user authentication epic with 3 stories&quot;</div>
                   </code>
                 </div>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Benefits</h3>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Benefits</h3>
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><strong>History</strong> - Track how requirements evolve over time</li>
                   <li><strong>Collaboration</strong> - Multiple team members can edit and merge changes</li>
                   <li><strong>Branching</strong> - Work on planning in feature branches</li>
@@ -1064,15 +1064,15 @@ export default function DocsPage() {
 
               {/* Advanced */}
               <section id="direct-url-navigation">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Direct URL Navigation
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   You can navigate directly to specific epics and stories using URL parameters:
                 </p>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">URL Format</h3>
-                <div className="bg-surface border border-border-light rounded-lg p-4 mb-4">
-                  <code className="text-sm">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">URL Format</h3>
+                <div className="bg-surface border border-border-light rounded-lg p-2.5 mb-2">
+                  <code className="text-[11px]">
                     <div># View a project</div>
                     <div>/projects/[project-name]</div>
                     <div>&nbsp;</div>
@@ -1083,28 +1083,28 @@ export default function DocsPage() {
                     <div>/projects/[project-name]?epic=[epic-name]&story=[story-id]</div>
                   </code>
                 </div>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Examples</h3>
-                <div className="bg-surface border border-border-light rounded-lg p-4 mb-4">
-                  <code className="text-sm">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Examples</h3>
+                <div className="bg-surface border border-border-light rounded-lg p-2.5 mb-2">
+                  <code className="text-[11px]">
                     <div>/projects/healthcare-platform</div>
                     <div>/projects/healthcare-platform?epic=appointment-scheduling</div>
                     <div>/projects/healthcare-platform?epic=appointment-scheduling&story=STORY-125</div>
                   </code>
                 </div>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   These URLs can be bookmarked or shared with team members to link directly to specific work items.
                   The accordion will automatically expand to show the selected story.
                 </p>
               </section>
 
               <section id="keyboard-shortcuts">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   Keyboard Shortcuts
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Keyboard shortcuts for common actions (planned for future release):
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><strong>Ctrl/Cmd + S</strong> - Save current epic or story</li>
                   <li><strong>Ctrl/Cmd + E</strong> - Toggle markdown preview</li>
                   <li><strong>Ctrl/Cmd + N</strong> - Create new story (when epic is selected)</li>
@@ -1113,14 +1113,14 @@ export default function DocsPage() {
               </section>
 
               <section id="ai-integration">
-                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                <h2 className="text-xl font-bold text-text-primary mb-3 pb-2 border-b border-border-light mt-8">
                   AI Integration (Future)
                 </h2>
-                <p className="text-text-secondary mb-4">
+                <p className="text-xs text-text-secondary mb-3">
                   Future versions will include AI-powered features:
                 </p>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Planned Features</h3>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Planned Features</h3>
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li><strong>Epic Expansion</strong> - Generate stories from an epic description</li>
                   <li><strong>Acceptance Criteria</strong> - AI suggests acceptance criteria for stories</li>
                   <li><strong>File Path Suggestions</strong> - AI recommends relevant code files</li>
@@ -1128,11 +1128,11 @@ export default function DocsPage() {
                   <li><strong>Story Estimation</strong> - AI assists with story point estimation</li>
                   <li><strong>Dependency Detection</strong> - Identify dependencies between stories</li>
                 </ul>
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Cursor AI Integration</h3>
-                <p className="text-text-secondary mb-4">
+                <h3 className="text-base font-semibold text-text-primary mt-5 mb-2">Cursor AI Integration</h3>
+                <p className="text-xs text-text-secondary mb-3">
                   Project Manager is designed to work seamlessly with Cursor AI. You can already use Cursor to:
                 </p>
-                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                <ul className="list-disc list-inside text-xs text-text-secondary space-y-1 mb-3">
                   <li>Read JSON files and understand project structure</li>
                   <li>Generate code based on story descriptions</li>
                   <li>Suggest improvements to acceptance criteria</li>

@@ -1,0 +1,358 @@
+{
+  "projectName": "umami-healthcare",
+  "epic": {
+    "epicId": "STAFF",
+    "title": "Workforce Management & Human Capital Management (HCM)",
+    "summary": "Unified human resources platform tailored for shift-based medical environments, handling rostering, credentialing, payroll, and performance management.",
+    "businessOverview": "Unified human resources platform tailored for shift-based medical environments, handling rostering, credentialing, payroll, and performance management.",
+    "technicalArchitecture": "## Technical Architecture Components\n\n- Constraint satisfaction algorithm for scheduling\n- Biometric time clock integration (fingerprint, facial recognition)\n- Mobile workforce app (React Native)\n- Payroll connector middleware\n- Credential monitoring service with renewal alerts\n- HR data warehouse for analytics",
+    "implementationTimeline": "## Implementation Timeline\n\n**Day 1:**\n- Staff profile creation and role assignment\n\n**Day 2:**\n- Shift pattern configuration\n\n**Day 3:**\n- Payroll system integration\n\n**Day 7:**\n- Full deployment with mobile app access",
+    "caseStudyReference": "## Case Study Reference\n\n**Multi-Location Urgent Care, Dallas**\n\n- **Challenge:** Manual scheduling across 8 locations, frequent gaps\n- **Outcome:** Zero scheduling conflicts, 25% reduction in overtime costs, improved staff satisfaction"
+  },
+  "stories": [
+    {
+      "title": "Employee profile creation (demographics, credentials, specialties)",
+      "requirementType": "functional",
+      "category": "Staff Management",
+      "description": "Enable comprehensive employee profile creation including demographics, credentials, and specialties to maintain complete staff information and support workforce management."
+    },
+    {
+      "title": "Role-based access provisioning",
+      "requirementType": "functional",
+      "category": "Staff Management",
+      "description": "Implement role-based access provisioning to automatically assign appropriate system permissions based on employee roles and responsibilities."
+    },
+    {
+      "title": "Onboarding workflow and document collection",
+      "requirementType": "functional",
+      "category": "Staff Management",
+      "description": "Provide structured onboarding workflow with automated document collection to streamline new employee onboarding and ensure compliance with required documentation."
+    },
+    {
+      "title": "Offboarding and access revocation",
+      "requirementType": "functional",
+      "category": "Staff Management",
+      "description": "Support offboarding workflow with automatic access revocation to ensure security and compliance when employees leave the organization."
+    },
+    {
+      "title": "Organizational hierarchy management",
+      "requirementType": "functional",
+      "category": "Staff Management",
+      "description": "Enable organizational hierarchy management to define reporting structures, departments, and organizational relationships for effective workforce organization."
+    },
+    {
+      "title": "Multi-location staff assignment",
+      "requirementType": "functional",
+      "category": "Staff Management",
+      "description": "Support multi-location staff assignment allowing employees to be assigned to multiple locations and manage cross-location scheduling and coverage."
+    },
+    {
+      "title": "Medical license tracking (state-by-state)",
+      "requirementType": "functional",
+      "category": "Credentialing Management",
+      "description": "Track medical licenses on a state-by-state basis to ensure providers maintain valid licenses in all states where they practice."
+    },
+    {
+      "title": "DEA registration monitoring",
+      "requirementType": "functional",
+      "category": "Credentialing Management",
+      "description": "Monitor DEA registration status and expiration dates to ensure compliance with controlled substance prescribing regulations."
+    },
+    {
+      "title": "Board certification tracking",
+      "requirementType": "functional",
+      "category": "Credentialing Management",
+      "description": "Track board certifications and their expiration dates to ensure providers maintain current certifications required for practice."
+    },
+    {
+      "title": "Malpractice insurance verification",
+      "requirementType": "functional",
+      "category": "Credentialing Management",
+      "description": "Verify and track malpractice insurance coverage and expiration dates to ensure providers maintain adequate insurance protection."
+    },
+    {
+      "title": "CLIA/OSHA training records",
+      "requirementType": "functional",
+      "category": "Credentialing Management",
+      "description": "Maintain CLIA and OSHA training records to track compliance training completion and ensure staff meet regulatory training requirements."
+    },
+    {
+      "title": "Automated renewal alerts (30/60/90 day warnings)",
+      "requirementType": "functional",
+      "category": "Credentialing Management",
+      "description": "Send automated renewal alerts at 30, 60, and 90 days before credential expiration to ensure timely renewal and prevent lapses."
+    },
+    {
+      "title": "Document vault for credential uploads",
+      "requirementType": "functional",
+      "category": "Credentialing Management",
+      "description": "Provide secure document vault for credential uploads and storage, ensuring all credential documents are centrally managed and accessible."
+    },
+    {
+      "title": "Shift template creation (day/evening/night)",
+      "requirementType": "functional",
+      "category": "Smart Rostering & Scheduling",
+      "description": "Enable creation of shift templates for day, evening, and night shifts to standardize scheduling patterns and streamline roster generation."
+    },
+    {
+      "title": "Multi-week rotation schedules",
+      "requirementType": "functional",
+      "category": "Smart Rostering & Scheduling",
+      "description": "Support multi-week rotation schedules to accommodate complex scheduling patterns and ensure fair distribution of shifts over time."
+    },
+    {
+      "title": "Provider-nurse ratio enforcement",
+      "requirementType": "functional",
+      "category": "Smart Rostering & Scheduling",
+      "description": "Enforce provider-nurse ratios to ensure adequate staffing levels and compliance with regulatory requirements for patient safety."
+    },
+    {
+      "title": "Skill-mix requirements (RN vs LPN vs MA)",
+      "requirementType": "functional",
+      "category": "Smart Rostering & Scheduling",
+      "description": "Enforce skill-mix requirements distinguishing between RN, LPN, and MA roles to ensure appropriate staffing levels for each skill level."
+    },
+    {
+      "title": "Overtime threshold monitoring",
+      "requirementType": "functional",
+      "category": "Smart Rostering & Scheduling",
+      "description": "Monitor overtime thresholds and alert when staff approach or exceed overtime limits to control labor costs and ensure compliance."
+    },
+    {
+      "title": "Shift swap requests and approval workflow",
+      "requirementType": "functional",
+      "category": "Smart Rostering & Scheduling",
+      "description": "Enable shift swap requests with approval workflow to allow staff to exchange shifts while maintaining proper authorization and coverage."
+    },
+    {
+      "title": "On-call schedule management",
+      "requirementType": "functional",
+      "category": "Smart Rostering & Scheduling",
+      "description": "Manage on-call schedules to ensure adequate coverage for after-hours and emergency situations with clear assignment and notification."
+    },
+    {
+      "title": "Coverage gap detection and alerts",
+      "requirementType": "functional",
+      "category": "Smart Rostering & Scheduling",
+      "description": "Automatically detect coverage gaps in schedules and send alerts to ensure all shifts are properly staffed and prevent understaffing situations."
+    },
+    {
+      "title": "Clock in/out via mobile app or kiosk",
+      "requirementType": "functional",
+      "category": "Time & Attendance",
+      "description": "Enable clock in/out functionality through mobile app or kiosk to provide flexible time tracking options for staff across different locations."
+    },
+    {
+      "title": "GPS-based location verification",
+      "requirementType": "functional",
+      "category": "Time & Attendance",
+      "description": "Use GPS-based location verification for mobile clock-ins to ensure staff are at the correct location when clocking in."
+    },
+    {
+      "title": "Meal break and rest period compliance",
+      "requirementType": "functional",
+      "category": "Time & Attendance",
+      "description": "Track meal breaks and rest periods to ensure compliance with labor laws and regulations regarding required break times."
+    },
+    {
+      "title": "Overtime auto-calculation (Federal/State laws)",
+      "requirementType": "functional",
+      "category": "Time & Attendance",
+      "description": "Automatically calculate overtime based on Federal and State labor laws to ensure accurate compensation and compliance with wage regulations."
+    },
+    {
+      "title": "PTO (Paid Time Off) accrual tracking",
+      "requirementType": "functional",
+      "category": "Time & Attendance",
+      "description": "Track PTO accrual based on employment tenure and policy rules to provide accurate leave balances for staff."
+    },
+    {
+      "title": "Leave request and approval workflow",
+      "requirementType": "functional",
+      "category": "Time & Attendance",
+      "description": "Enable leave request submission and approval workflow to streamline PTO requests and ensure proper authorization and coverage planning."
+    },
+    {
+      "title": "Attendance exception flagging (late, absent)",
+      "requirementType": "functional",
+      "category": "Time & Attendance",
+      "description": "Automatically flag attendance exceptions such as late arrivals and absences to support attendance management and identify patterns."
+    },
+    {
+      "title": "Multiple pay structures (hourly, salaried, per-diem)",
+      "requirementType": "functional",
+      "category": "Payroll Integration",
+      "description": "Support multiple pay structures including hourly, salaried, and per-diem to accommodate different employment types and compensation models."
+    },
+    {
+      "title": "Shift differential calculation (night/weekend premiums)",
+      "requirementType": "functional",
+      "category": "Payroll Integration",
+      "description": "Automatically calculate shift differentials for night and weekend shifts to ensure accurate premium pay compensation."
+    },
+    {
+      "title": "Integration with payroll processors (ADP, Paychex, Gusto)",
+      "requirementType": "functional",
+      "category": "Payroll Integration",
+      "description": "Integrate with major payroll processors (ADP, Paychex, Gusto) to seamlessly transfer time and attendance data for payroll processing."
+    },
+    {
+      "title": "Direct deposit setup and management",
+      "requirementType": "functional",
+      "category": "Payroll Integration",
+      "description": "Enable direct deposit setup and management allowing employees to configure and update their bank account information for payroll."
+    },
+    {
+      "title": "Tax withholding configuration (W-4, state)",
+      "requirementType": "functional",
+      "category": "Payroll Integration",
+      "description": "Support tax withholding configuration including W-4 forms and state-specific requirements to ensure accurate tax deductions."
+    },
+    {
+      "title": "Year-end W-2 generation",
+      "requirementType": "functional",
+      "category": "Payroll Integration",
+      "description": "Automatically generate year-end W-2 forms for all employees to comply with tax reporting requirements and provide employee tax documents."
+    },
+    {
+      "title": "Payroll audit trail and reporting",
+      "requirementType": "functional",
+      "category": "Payroll Integration",
+      "description": "Maintain comprehensive payroll audit trail and reporting to track all payroll changes and support compliance and financial auditing."
+    },
+    {
+      "title": "360-degree feedback collection",
+      "requirementType": "functional",
+      "category": "Performance Management",
+      "description": "Enable 360-degree feedback collection from peers, supervisors, and subordinates to provide comprehensive performance evaluation."
+    },
+    {
+      "title": "Productivity metrics (Patients Per Hour, RVU generation)",
+      "requirementType": "functional",
+      "category": "Performance Management",
+      "description": "Track productivity metrics including Patients Per Hour and RVU (Relative Value Unit) generation to measure provider efficiency and output."
+    },
+    {
+      "title": "Goal setting and tracking (SMART goals)",
+      "requirementType": "functional",
+      "category": "Performance Management",
+      "description": "Support SMART goal setting and tracking to enable structured performance goal management and progress monitoring."
+    },
+    {
+      "title": "Annual review workflow with ratings",
+      "requirementType": "functional",
+      "category": "Performance Management",
+      "description": "Provide annual review workflow with rating system to conduct structured performance evaluations and document employee development."
+    },
+    {
+      "title": "Performance improvement plan (PIP) tracking",
+      "requirementType": "functional",
+      "category": "Performance Management",
+      "description": "Enable Performance Improvement Plan (PIP) tracking to document and monitor employee improvement plans and development activities."
+    },
+    {
+      "title": "Peer recognition and kudos system",
+      "requirementType": "functional",
+      "category": "Performance Management",
+      "description": "Provide peer recognition and kudos system to encourage positive feedback and recognition among staff members."
+    },
+    {
+      "title": "Schedule generation < 5 seconds for 100+ staff",
+      "requirementType": "non-functional",
+      "category": "Performance",
+      "description": "Ensure schedule generation completes in less than 5 seconds for 100+ staff members to provide fast, responsive scheduling capabilities."
+    },
+    {
+      "title": "Time clock response time < 1 second",
+      "requirementType": "non-functional",
+      "category": "Performance",
+      "description": "Maintain time clock response time under 1 second to provide instant feedback and prevent delays during clock in/out operations."
+    },
+    {
+      "title": "Support 500+ concurrent mobile clock-ins",
+      "requirementType": "non-functional",
+      "category": "Performance",
+      "description": "Support 500+ concurrent mobile clock-ins without performance degradation to accommodate peak usage during shift changes."
+    },
+    {
+      "title": "Payroll processing for 1000 employees < 10 minutes",
+      "requirementType": "non-functional",
+      "category": "Performance",
+      "description": "Complete payroll processing for 1000 employees in less than 10 minutes to ensure efficient payroll operations for large organizations."
+    },
+    {
+      "title": "FLSA (Fair Labor Standards Act) compliance",
+      "requirementType": "non-functional",
+      "category": "Compliance",
+      "description": "Ensure FLSA compliance in all time tracking, overtime calculation, and payroll processing to meet federal labor law requirements."
+    },
+    {
+      "title": "State-specific labor law adherence",
+      "requirementType": "non-functional",
+      "category": "Compliance",
+      "description": "Adhere to state-specific labor laws and regulations to ensure compliance across different jurisdictions where the organization operates."
+    },
+    {
+      "title": "EEOC reporting capability",
+      "requirementType": "non-functional",
+      "category": "Compliance",
+      "description": "Provide EEOC reporting capability to generate required employment data reports for Equal Employment Opportunity Commission compliance."
+    },
+    {
+      "title": "I-9 and E-Verify integration",
+      "requirementType": "non-functional",
+      "category": "Compliance",
+      "description": "Integrate with I-9 and E-Verify systems to verify employment eligibility and maintain compliance with immigration and employment verification requirements."
+    },
+    {
+      "title": "OSHA recordkeeping compliance",
+      "requirementType": "non-functional",
+      "category": "Compliance",
+      "description": "Maintain OSHA recordkeeping compliance to track workplace injuries and illnesses as required by Occupational Safety and Health Administration regulations."
+    },
+    {
+      "title": "Mobile app for staff (iOS/Android)",
+      "requirementType": "non-functional",
+      "category": "Usability",
+      "description": "Provide native mobile apps for iOS and Android platforms to enable staff access to scheduling, time tracking, and other workforce features on mobile devices."
+    },
+    {
+      "title": "Shift swap completion in < 3 taps",
+      "requirementType": "non-functional",
+      "category": "Usability",
+      "description": "Enable shift swap completion in less than 3 taps to provide quick, intuitive shift exchange functionality for staff."
+    },
+    {
+      "title": "Automated schedule distribution via push notification",
+      "requirementType": "non-functional",
+      "category": "Usability",
+      "description": "Automatically distribute schedules via push notifications to ensure staff receive schedule updates immediately and stay informed."
+    },
+    {
+      "title": "Self-service PTO requests",
+      "requirementType": "non-functional",
+      "category": "Usability",
+      "description": "Enable self-service PTO requests allowing staff to submit leave requests independently without requiring administrative assistance."
+    },
+    {
+      "title": "ADP/Paychex API integration for payroll",
+      "requirementType": "non-functional",
+      "category": "Integration",
+      "description": "Integrate with ADP and Paychex APIs for seamless payroll data exchange and automated payroll processing."
+    },
+    {
+      "title": "Background check provider integration (Checkr, Sterling)",
+      "requirementType": "non-functional",
+      "category": "Integration",
+      "description": "Integrate with background check providers (Checkr, Sterling) to streamline employee screening and credential verification processes."
+    },
+    {
+      "title": "Learning Management System (LMS) integration for training",
+      "requirementType": "non-functional",
+      "category": "Integration",
+      "description": "Integrate with Learning Management Systems to track training completion, certifications, and compliance training requirements."
+    }
+  ],
+  "manager": "person-001"
+}
+

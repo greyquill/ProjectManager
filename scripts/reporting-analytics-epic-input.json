@@ -1,0 +1,130 @@
+{
+  "projectName": "umami-healthcare",
+  "epic": {
+    "epicId": "REPORT",
+    "title": "Reporting & Analytics",
+    "summary": "Comprehensive reporting and analytics platform providing operational, financial, clinical quality, and custom reports to support data-driven decision making in healthcare operations.",
+    "businessOverview": "Comprehensive reporting and analytics platform providing operational, financial, clinical quality, and custom reports to support data-driven decision making in healthcare operations. The system enables healthcare organizations to track key performance indicators, monitor financial health, measure clinical quality metrics, and generate custom reports for strategic planning and compliance.",
+    "technicalArchitecture": "## Technical Architecture Components\n\n- Data warehouse and ETL pipeline\n- Business intelligence (BI) engine\n- Report generation service\n- Data visualization framework\n- Query builder and SQL engine\n- Scheduled job processor\n- Export and delivery service",
+    "implementationTimeline": "## Implementation Timeline\n\n**Week 1:**\n- Data warehouse setup and ETL configuration\n\n**Week 2:**\n- Standard report development\n\n**Week 3:**\n- Custom reporting tools and query builder\n\n**Week 4:**\n- Report scheduling and delivery system",
+    "caseStudyReference": "## Case Study Reference\n\n**Regional Health Network**\n\n- **Challenge:** Manual reporting processes, delayed insights, compliance reporting gaps\n- **Outcome:** Automated reporting, real-time dashboards, 80% reduction in report generation time"
+  },
+  "stories": [
+    {
+      "title": "Daily census and patient volume",
+      "requirementType": "functional",
+      "category": "Operational Reports",
+      "description": "Generate daily census reports showing patient volume, occupancy rates, and capacity utilization to support operational planning and resource allocation."
+    },
+    {
+      "title": "Provider productivity (RVU, patients seen, revenue)",
+      "requirementType": "functional",
+      "category": "Operational Reports",
+      "description": "Track and report provider productivity metrics including RVU (Relative Value Units), number of patients seen, and revenue generated to measure provider performance."
+    },
+    {
+      "title": "Appointment utilization (filled vs available slots)",
+      "requirementType": "functional",
+      "category": "Operational Reports",
+      "description": "Report appointment utilization metrics comparing filled appointments to available slots to identify scheduling efficiency and optimization opportunities."
+    },
+    {
+      "title": "No-show and cancellation trends",
+      "requirementType": "functional",
+      "category": "Operational Reports",
+      "description": "Analyze and report no-show and cancellation trends to identify patterns, improve scheduling strategies, and reduce appointment waste."
+    },
+    {
+      "title": "Average wait time by provider/location",
+      "requirementType": "functional",
+      "category": "Operational Reports",
+      "description": "Calculate and report average wait times by provider and location to monitor patient experience and identify bottlenecks in care delivery."
+    },
+    {
+      "title": "Accounts receivable aging (30/60/90/120+)",
+      "requirementType": "functional",
+      "category": "Financial Reports",
+      "description": "Generate accounts receivable aging reports showing outstanding balances by age buckets (30/60/90/120+ days) to monitor cash flow and collection efforts."
+    },
+    {
+      "title": "Revenue by payer type (commercial, Medicare, Medicaid, self-pay)",
+      "requirementType": "functional",
+      "category": "Financial Reports",
+      "description": "Report revenue breakdown by payer type including commercial insurance, Medicare, Medicaid, and self-pay to analyze payer mix and financial performance."
+    },
+    {
+      "title": "Collection rate analysis",
+      "requirementType": "functional",
+      "category": "Financial Reports",
+      "description": "Analyze and report collection rates to measure revenue cycle effectiveness and identify opportunities to improve cash collection."
+    },
+    {
+      "title": "Denial rate by payer and reason",
+      "requirementType": "functional",
+      "category": "Financial Reports",
+      "description": "Report denial rates by payer and denial reason to identify patterns, address root causes, and improve claim acceptance rates."
+    },
+    {
+      "title": "Budget vs actual variance",
+      "requirementType": "functional",
+      "category": "Financial Reports",
+      "description": "Compare budgeted amounts to actual performance and report variances to support financial planning and budget management."
+    },
+    {
+      "title": "HEDIS measure tracking (diabetes, hypertension control)",
+      "requirementType": "functional",
+      "category": "Clinical Quality Reports",
+      "description": "Track and report HEDIS (Healthcare Effectiveness Data and Information Set) measures including diabetes and hypertension control to measure quality of care."
+    },
+    {
+      "title": "MIPS/MACRA quality reporting",
+      "requirementType": "functional",
+      "category": "Clinical Quality Reports",
+      "description": "Generate MIPS (Merit-based Incentive Payment System) and MACRA (Medicare Access and CHIP Reauthorization Act) quality reports for CMS submission and reimbursement."
+    },
+    {
+      "title": "Vaccination rate tracking",
+      "requirementType": "functional",
+      "category": "Clinical Quality Reports",
+      "description": "Track and report vaccination rates for different patient populations to monitor preventive care delivery and public health outcomes."
+    },
+    {
+      "title": "Medication adherence rates",
+      "requirementType": "functional",
+      "category": "Clinical Quality Reports",
+      "description": "Calculate and report medication adherence rates to measure patient compliance with prescribed medications and identify intervention opportunities."
+    },
+    {
+      "title": "Preventive care gaps (mammograms, colonoscopies)",
+      "requirementType": "functional",
+      "category": "Clinical Quality Reports",
+      "description": "Identify and report preventive care gaps such as overdue mammograms and colonoscopies to support care gap closure and quality improvement."
+    },
+    {
+      "title": "Ad-hoc query builder (no-code)",
+      "requirementType": "functional",
+      "category": "Custom Reporting",
+      "description": "Provide no-code ad-hoc query builder allowing users to create custom reports without technical knowledge, enabling self-service analytics."
+    },
+    {
+      "title": "Scheduled report delivery (email, dashboard)",
+      "requirementType": "functional",
+      "category": "Custom Reporting",
+      "description": "Enable scheduled report delivery via email or dashboard to automatically distribute reports to stakeholders on a recurring basis."
+    },
+    {
+      "title": "Data export (Excel, CSV, PDF)",
+      "requirementType": "functional",
+      "category": "Custom Reporting",
+      "description": "Support data export in multiple formats including Excel, CSV, and PDF to enable further analysis and sharing of report data."
+    },
+    {
+      "title": "Report sharing and collaboration",
+      "requirementType": "functional",
+      "category": "Custom Reporting",
+      "description": "Enable report sharing and collaboration features allowing users to share reports with colleagues and collaborate on data analysis."
+    }
+  ],
+  "manager": "person-001"
+}
+

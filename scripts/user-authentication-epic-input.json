@@ -1,0 +1,82 @@
+{
+  "projectName": "umami-healthcare",
+  "epic": {
+    "epicId": "AUTH",
+    "title": "User Authentication & Authorization",
+    "summary": "Comprehensive identity management and role-based access control system ensuring secure access to healthcare data and applications.",
+    "businessOverview": "Comprehensive identity management and role-based access control system ensuring secure access to healthcare data and applications. The system provides multi-factor authentication, single sign-on capabilities, and granular role-based permissions to protect patient information and ensure compliance with HIPAA and other regulatory requirements.",
+    "technicalArchitecture": "## Technical Architecture Components\n\n- Identity Provider (IdP) integration\n- SAML 2.0 and OAuth 2.0 protocol support\n- Multi-factor authentication service\n- Role-based access control (RBAC) engine\n- Session management service\n- Audit logging and monitoring system",
+    "implementationTimeline": "## Implementation Timeline\n\n**Week 1:**\n- Identity provider setup and configuration\n\n**Week 2:**\n- SSO integration and testing\n\n**Week 3:**\n- Role-based access control implementation\n\n**Week 4:**\n- Security testing and compliance validation",
+    "caseStudyReference": "## Case Study Reference\n\n**Multi-Specialty Healthcare Group**\n\n- **Challenge:** Managing access across 500+ users with varying roles and permissions\n- **Outcome:** Centralized authentication, 99.9% uptime, zero security incidents"
+  },
+  "stories": [
+    {
+      "title": "Multi-factor authentication (MFA) required",
+      "requirementType": "functional",
+      "category": "Identity Management",
+      "description": "Require multi-factor authentication (MFA) for all user logins to enhance security and protect against unauthorized access to patient data and systems."
+    },
+    {
+      "title": "Single Sign-On (SSO) support (SAML 2.0, OAuth 2.0)",
+      "requirementType": "functional",
+      "category": "Identity Management",
+      "description": "Support Single Sign-On (SSO) using SAML 2.0 and OAuth 2.0 protocols to enable seamless authentication across multiple applications and reduce password fatigue."
+    },
+    {
+      "title": "Password complexity enforcement",
+      "requirementType": "functional",
+      "category": "Identity Management",
+      "description": "Enforce password complexity requirements including minimum length, character variety, and complexity rules to ensure strong password security."
+    },
+    {
+      "title": "Account lockout after 5 failed attempts",
+      "requirementType": "functional",
+      "category": "Identity Management",
+      "description": "Automatically lock user accounts after 5 failed login attempts to prevent brute force attacks and unauthorized access attempts."
+    },
+    {
+      "title": "Password reset via email/SMS",
+      "requirementType": "functional",
+      "category": "Identity Management",
+      "description": "Enable password reset functionality via email or SMS to allow users to securely recover access to their accounts when passwords are forgotten."
+    },
+    {
+      "title": "Session management with configurable timeout",
+      "requirementType": "functional",
+      "category": "Identity Management",
+      "description": "Implement session management with configurable timeout settings to balance security and user convenience, automatically logging out inactive sessions."
+    },
+    {
+      "title": "Pre-defined roles (Admin, Provider, Nurse, Front Desk, Billing)",
+      "requirementType": "functional",
+      "category": "Role-Based Access Control",
+      "description": "Provide pre-defined roles including Admin, Provider, Nurse, Front Desk, and Billing with appropriate permissions for each role to streamline access management."
+    },
+    {
+      "title": "Custom role creation with granular permissions",
+      "requirementType": "functional",
+      "category": "Role-Based Access Control",
+      "description": "Enable creation of custom roles with granular permission settings to accommodate unique organizational needs and access requirements."
+    },
+    {
+      "title": "Data access controls (patient, location, department)",
+      "requirementType": "functional",
+      "category": "Role-Based Access Control",
+      "description": "Implement data access controls based on patient, location, and department to ensure users only access data relevant to their role and responsibilities."
+    },
+    {
+      "title": "Audit logging of privilege escalation",
+      "requirementType": "functional",
+      "category": "Role-Based Access Control",
+      "description": "Maintain comprehensive audit logging of all privilege escalation events to track when users gain elevated access and support security monitoring."
+    },
+    {
+      "title": "Emergency \"break-the-glass\" access with justification",
+      "requirementType": "functional",
+      "category": "Role-Based Access Control",
+      "description": "Provide emergency \"break-the-glass\" access functionality requiring justification to allow authorized users to access restricted data in emergency situations while maintaining audit trail."
+    }
+  ],
+  "manager": "person-001"
+}
+

@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Epic and Stories Input Format",
+  "description": "JSON format for creating epics and stories. Convert your text format to this JSON structure.",
+  "type": "object",
+  "required": ["projectName", "epic"],
+  "properties": {
+    "projectName": {
+      "type": "string",
+      "description": "Project folder name (kebab-case, e.g., 'umami-healthcare')"
+    },
+    "epic": {
+      "type": "object",
+      "required": ["title", "businessOverview", "epicId"],
+      "properties": {
+        "epicId": {
+          "type": "string",
+          "description": "2-6 character uppercase acronym for the epic (e.g., 'RCM', 'SCHED', 'AI'). Used in story IDs like F-XXX-001",
+          "pattern": "^[A-Z]{2,6}$"
+        },
+        "title": {
+          "type": "string",
+          "description": "Full epic title (e.g., 'Revenue Cycle Management (RCM) & Financial Analytics')"
+        },
+        "summary": {
+          "type": "string",
+          "description": "Short summary of the epic (first sentence from Business Overview)"
+        },
+        "businessOverview": {
+          "type": "string",
+          "description": "Full Business Overview text. This becomes the epic description."
+        },
+        "technicalArchitecture": {
+          "type": "string",
+          "description": "Optional: Technical Architecture Components section (markdown format)"
+        },
+        "implementationTimeline": {
+          "type": "string",
+          "description": "Optional: Implementation Timeline section (markdown format)"
+        },
+        "caseStudyReference": {
+          "type": "string",
+          "description": "Optional: Case Study Reference section (markdown format)"
+        }
+      }
+    },
+    "stories": {
+      "type": "array",
+      "description": "Array of story definitions",
+      "items": {
+        "type": "object",
+        "required": ["title", "requirementType", "category"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Story title"
+          },
+          "requirementType": {
+            "type": "string",
+            "enum": ["functional", "non-functional"],
+            "description": "Type of requirement"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category/heading for the story (e.g., 'Automated Claim Management', 'Performance'). Used as a tag and to prefix the summary."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Optional: Story summary. If not provided, will be auto-generated as '{category}: {title}'"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the story"
+          }
+        }
+      }
+    },
+    "manager": {
+      "type": "string",
+      "description": "Person ID for the manager/owner (default: 'person-001')",
+      "default": "person-001"
+    }
+  },
+  "example": {
+    "projectName": "umami-healthcare",
+    "epic": {
+      "epicId": "RCM",
+      "title": "Revenue Cycle Management (RCM) & Financial Analytics",
+      "summary": "Automated revenue cycle management with predictive analytics to reduce DSO and improve cash flow.",
+      "businessOverview": "Automated revenue cycle management with predictive analytics to reduce DSO and improve cash flow...",
+      "technicalArchitecture": "## Technical Architecture Components\n\n- Clearinghouse integration gateway\n- Predictive analytics engine...",
+      "implementationTimeline": "## Implementation Timeline\n\n**Week 1:**\n- Gateway configuration...",
+      "caseStudyReference": "## Case Study Reference\n\n**Multi-Specialty Clinic, New York**\n\n- **Challenge:** 45-day average DSO..."
+    },
+    "stories": [
+      {
+        "title": "Multi-provider calendar view (day/week/month)",
+        "requirementType": "functional",
+        "category": "Provider Schedule Management",
+        "description": "Implement a multi-provider calendar view that supports day, week, and month views..."
+      },
+      {
+        "title": "Real-time availability updates < 1 second",
+        "requirementType": "non-functional",
+        "category": "Performance",
+        "description": "Ensure real-time availability updates are delivered within 1 second..."
+      }
+    ],
+    "manager": "person-001"
+  }
+}
+
