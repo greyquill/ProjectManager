@@ -3,9 +3,9 @@
 import { Card } from '@/components/Card'
 import { Button } from '@/components/Button'
 import { Select } from '@/components/Select'
-import { MarkdownPreview } from '@/components/MarkdownPreview'
 import { FileText, Save } from 'lucide-react'
 import type { Project, Person } from '@/lib/types'
+import Link from 'next/link'
 
 interface ProjectDefaultViewProps {
   project: Project
@@ -87,12 +87,119 @@ export function ProjectDefaultView({
           Click on an epic or story from the list to view and edit details
         </p>
       </div>
-      {project.description && (
-        <div className="border-t border-border-light pt-6 mb-6">
-          <h4 className="text-base font-semibold text-text-primary mb-4">Description</h4>
-          <MarkdownPreview value={project.description} />
-        </div>
-      )}
+      {project.description && (() => {
+        // Parse markdown table and text
+        const lines = project.description.split('\n')
+        const textParts: string[] = []
+        const tableRows: Array<{ document: string; description: string; link?: string }> = []
+        let inTable = false
+        let tableHeaders: string[] = []
+
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i].trim()
+
+          // Check if this is a table header separator
+          if (line.match(/^\|[\s-:]+\|$/)) {
+            inTable = true
+            continue
+          }
+
+          // Check if this is a table row
+          if (line.startsWith('|') && line.endsWith('|')) {
+            const cells = line.split('|').map(c => c.trim()).filter(c => c)
+
+            // Skip separator rows (rows with only dashes/hyphens)
+            if (cells.every(cell => /^[\s-:]+$/.test(cell))) {
+              inTable = true
+              continue
+            }
+
+            if (!inTable && cells.length > 0) {
+              // This might be the header row
+              tableHeaders = cells
+              inTable = true
+              continue
+            }
+
+            if (inTable && cells.length >= 2) {
+              // Parse link from first cell: [text](url)
+              const firstCell = cells[0]
+              const linkMatch = firstCell.match(/\[([^\]]+)\]\(([^)]+)\)/)
+
+              if (linkMatch) {
+                tableRows.push({
+                  document: linkMatch[1],
+                  description: cells[1] || '',
+                  link: linkMatch[2],
+                })
+              } else {
+                tableRows.push({
+                  document: firstCell,
+                  description: cells[1] || '',
+                })
+              }
+              continue
+            }
+          }
+
+          // If we were in a table and hit a non-table line, we're done with the table
+          if (inTable && !line.startsWith('|')) {
+            inTable = false
+          }
+
+          // Collect non-table text
+          if (!inTable && line) {
+            textParts.push(line)
+          }
+        }
+
+        return (
+          <div className="border-t border-border-light pt-6 mb-6">
+            <h4 className="text-base font-semibold text-text-primary mb-4">Description</h4>
+            <div className="prose prose-sm max-w-none text-sm text-text-secondary">
+              {textParts.map((text, idx) => (
+                <p key={idx} className="mb-3 text-text-secondary">
+                  {text}
+                </p>
+              ))}
+              {tableRows.length > 0 && (
+                <div className="overflow-x-auto my-4">
+                  <table className="min-w-full border border-border-light rounded-lg">
+                    <thead className="bg-surface-muted">
+                      <tr>
+                        <th className="px-4 py-2 text-left text-xs font-semibold text-text-primary border-b border-border-light">
+                          Document
+                        </th>
+                        <th className="px-4 py-2 text-left text-xs font-semibold text-text-primary border-b border-border-light">
+                          Description
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tableRows.map((row, idx) => (
+                        <tr key={idx} className="hover:bg-surface-muted/50">
+                          <td className="px-4 py-2 text-xs text-text-secondary border-b border-border-light">
+                            {row.link ? (
+                              <Link href={row.link} className="text-primary hover:underline">
+                                {row.document}
+                              </Link>
+                            ) : (
+                              row.document
+                            )}
+                          </td>
+                          <td className="px-4 py-2 text-xs text-text-secondary border-b border-border-light">
+                            {row.description}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      })()}
 
       {/* Project Metadata Editor */}
       <div className="border-t border-border-light pt-6">
