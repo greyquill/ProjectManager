@@ -45,6 +45,7 @@ const docStructure: DocSection[] = [
     children: [
       { id: 'creating-epics', title: 'Creating Epics' },
       { id: 'epic-metrics', title: 'Epic Metrics' },
+      { id: 'epic-id-management', title: 'Epic ID Management' },
     ],
   },
   {
@@ -52,6 +53,7 @@ const docStructure: DocSection[] = [
     title: 'Working with Stories',
     children: [
       { id: 'creating-stories', title: 'Creating Stories' },
+      { id: 'story-id-format', title: 'Story ID Format' },
       { id: 'story-fields', title: 'Story Fields' },
       { id: 'acceptance-criteria', title: 'Acceptance Criteria' },
       { id: 'story-files', title: 'Linking Code Files' },
@@ -525,6 +527,82 @@ export default function DocsPage() {
                 </p>
               </section>
 
+              <section id="epic-id-management">
+                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                  Epic ID Management
+                </h2>
+                <p className="text-text-secondary mb-4">
+                  Each epic has an ID (acronym) that is used in story IDs. The Epic ID is automatically generated from the epic title when the first story is created, but you can update it if needed.
+                </p>
+
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Understanding Epic IDs</h3>
+                <p className="text-text-secondary mb-4">
+                  The Epic ID is a 2-6 character uppercase acronym that appears in all story IDs under that epic:
+                </p>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li>Epic: &quot;Revenue Cycle Management&quot; → Epic ID: &quot;RCM&quot;</li>
+                  <li>Stories in this epic: F-RCM-001, F-RCM-002, NFR-RCM-001, etc.</li>
+                  <li>The Epic ID is extracted from the first story&apos;s ID when viewing an epic</li>
+                </ul>
+
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Updating Epic ID</h3>
+                <p className="text-text-secondary mb-4">
+                  To update an epic&apos;s ID:
+                </p>
+                <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
+                  <li>Select the epic from the accordion list</li>
+                  <li>In the epic detail panel, scroll to the &quot;Epic ID&quot; section (above the Metrics section)</li>
+                  <li>Click the &quot;Update&quot; button next to the current Epic ID</li>
+                  <li>A confirmation modal will appear showing the change (from old ID to new ID)</li>
+                  <li>Enter the new Epic ID (2-6 uppercase letters)</li>
+                  <li>Enter your login code (2341) to confirm the change</li>
+                  <li>Click &quot;Update Epic ID&quot; to complete the change</li>
+                </ol>
+
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">What Happens When You Update Epic ID</h3>
+                <p className="text-text-secondary mb-4">
+                  When you update an epic&apos;s ID, the system automatically:
+                </p>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li>Updates all story IDs under that epic to use the new acronym</li>
+                  <li>For example, if changing from &quot;RCM&quot; to &quot;REV&quot;:
+                    <ul className="list-disc list-inside ml-6 mt-2 space-y-1">
+                      <li>F-RCM-001 → F-REV-001</li>
+                      <li>F-RCM-002 → F-REV-002</li>
+                      <li>NFR-RCM-001 → NFR-REV-001</li>
+                    </ul>
+                  </li>
+                  <li>Updates all story files to reflect the new IDs</li>
+                  <li>Updates the epic&apos;s <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">storyIds</code> array</li>
+                  <li>Updates any <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">relatedStories</code> references in other stories</li>
+                </ul>
+
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Epic ID Requirements</h3>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li>Must be 2-6 uppercase letters (A-Z)</li>
+                  <li>No numbers, spaces, or special characters</li>
+                  <li>Must be different from the current Epic ID</li>
+                  <li>Example valid IDs: <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">RCM</code>, <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">SCHED</code>, <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">AI</code>, <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">CUSTOM</code></li>
+                </ul>
+
+                <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded mb-4 mt-6">
+                  <p className="text-sm text-text-secondary">
+                    <strong className="text-text-primary">Important:</strong> Updating an Epic ID will change all story IDs under that epic. This action requires authentication (login code) and cannot be undone. Make sure you want to change the Epic ID before confirming.
+                  </p>
+                </div>
+
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">When to Update Epic ID</h3>
+                <p className="text-text-secondary mb-4">
+                  You might want to update an Epic ID if:
+                </p>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li>The automatically generated acronym is unclear or too long</li>
+                  <li>You want to use a more standard or recognizable acronym</li>
+                  <li>The epic title has changed significantly and the acronym no longer makes sense</li>
+                  <li>You need to align with organizational naming conventions</li>
+                </ul>
+              </section>
+
               {/* Working with Stories */}
               <section id="creating-stories">
                 <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
@@ -567,9 +645,80 @@ export default function DocsPage() {
                 </ol>
 
                 <p className="text-text-secondary mb-4">
-                  New stories are automatically assigned a sequential ID (STORY-001, STORY-002, etc.) and start with
-                  &quot;To Do&quot; status. Story titles always display with the ID prefix: <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">[STORY-XXX] Story Title</code>. You can add more details like acceptance criteria and files after creation.
+                  New stories are automatically assigned a unique ID based on the story format (F-XXX-### or NFR-XXX-###) and start with
+                  &quot;To Do&quot; status. Story titles always display with the ID prefix. You can add more details like acceptance criteria and files after creation.
                 </p>
+              </section>
+
+              <section id="story-id-format">
+                <h2 className="text-3xl font-bold text-text-primary mb-4 pb-3 border-b border-border-light mt-12">
+                  Story ID Format
+                </h2>
+                <p className="text-text-secondary mb-4">
+                  Stories use a structured ID format that includes the requirement type, epic acronym, and a sequential number:
+                </p>
+
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Format Structure</h3>
+                <div className="bg-surface border border-border-light rounded-lg p-4 mb-4">
+                  <code className="text-sm">
+                    <div><strong>Format:</strong> [PREFIX]-[EPIC_ACRONYM]-[NUMBER]</div>
+                    <div>&nbsp;</div>
+                    <div><strong>Examples:</strong></div>
+                    <div>F-RCM-001 (Functional requirement in Revenue Cycle Management epic)</div>
+                    <div>F-SCHED-021 (Functional requirement in Scheduling epic)</div>
+                    <div>NFR-RCM-001 (Non-functional requirement in Revenue Cycle Management epic)</div>
+                    <div>F-AI-002 (Functional requirement in AI epic)</div>
+                  </code>
+                </div>
+
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Components</h3>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li><strong>Prefix:</strong>
+                    <ul className="list-disc list-inside ml-6 mt-2 space-y-1">
+                      <li><code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">F-</code> for functional requirements</li>
+                      <li><code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">NFR-</code> for non-functional requirements</li>
+                    </ul>
+                  </li>
+                  <li><strong>Epic Acronym:</strong> A 2-6 character uppercase acronym derived from the epic title (e.g., &quot;Revenue Cycle Management&quot; → &quot;RCM&quot;, &quot;Scheduling&quot; → &quot;SCHED&quot;)</li>
+                  <li><strong>Number:</strong> A 3-digit sequential number (001, 002, 003, etc.) that is unique across the entire project</li>
+                </ul>
+
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">How Story IDs Are Generated</h3>
+                <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
+                  <li>When creating a story, you select the requirement type (Functional or Non-Functional)</li>
+                  <li>The system automatically generates a unique acronym from the epic title (2-6 characters)</li>
+                  <li>The system finds the highest existing story number across all epics in the project</li>
+                  <li>The next sequential number is assigned (starting from 001 for the first story)</li>
+                  <li>The complete ID is formatted as: <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">[PREFIX]-[ACRONYM]-[NUMBER]</code></li>
+                </ol>
+
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Epic Acronym Generation</h3>
+                <p className="text-text-secondary mb-4">
+                  The epic acronym is automatically generated from the epic title using intelligent word extraction:
+                </p>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li>Common words (the, a, an, and, or, etc.) are filtered out</li>
+                  <li>For 3+ words: Uses first letter of first 3-6 meaningful words</li>
+                  <li>For 2 words: Uses first 2-3 letters of each word</li>
+                  <li>For 1 word: Uses first 2-6 letters of the word</li>
+                  <li>The acronym is automatically made unique if conflicts exist</li>
+                </ul>
+
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Uniqueness</h3>
+                <p className="text-text-secondary mb-4">
+                  Story IDs are unique across the entire project, not just within an epic. This means:
+                </p>
+                <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
+                  <li>If Epic A has stories F-RCM-001, F-RCM-002, F-RCM-003</li>
+                  <li>And Epic B creates its first story, it will get F-XXX-004 (not F-XXX-001)</li>
+                  <li>This ensures no duplicate story IDs across the project</li>
+                </ul>
+
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mb-4 mt-6">
+                  <p className="text-sm text-text-secondary">
+                    <strong className="text-text-primary">Note:</strong> Story IDs are displayed in the UI with brackets: <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">[F-RCM-001] Story Title</code>. When editing titles, the ID prefix is hidden for easier editing and automatically added back when saving.
+                  </p>
+                </div>
               </section>
 
               <section id="story-fields">
@@ -655,9 +804,13 @@ export default function DocsPage() {
                   Story Prioritization & Reordering
                 </h2>
                 <p className="text-text-secondary mb-4">
-                  Stories can be reordered within an epic or moved between epics using drag-and-drop. This allows you to
-                  prioritize work based on business needs, dependencies, or sprint planning, independent of when stories
-                  were created or their IDs.
+                  Stories can be reordered within an epic using drag-and-drop. This allows you to prioritize work based
+                  on business needs, dependencies, or sprint planning, independent of when stories were created or their IDs.
+                </p>
+                <p className="text-text-secondary mb-4">
+                  <strong>Note:</strong> Stories cannot be moved between epics. Each story belongs to a specific epic and
+                  must remain within that epic. If you need to move a story to a different epic, you would need to delete
+                  it and create a new one in the target epic.
                 </p>
 
                 <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Reordering Stories Within an Epic</h3>
@@ -667,28 +820,28 @@ export default function DocsPage() {
                 <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
                   <li>Expand the epic to see its stories</li>
                   <li>Click and hold the grip icon (<code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">⋮⋮</code>) on the left side of a story row</li>
-                  <li>Drag the story up or down to the desired position</li>
+                  <li>Drag the story up or down to the desired position within the same epic</li>
                   <li>Release to drop the story in its new position</li>
                   <li>The order is automatically saved</li>
                 </ol>
                 <p className="text-text-secondary mb-4">
-                  <strong>Note:</strong> Story order is independent of story IDs. A story created early (e.g., STORY-001)
+                  <strong>Note:</strong> Story order is independent of story IDs. A story created early (e.g., F-XXX-001)
                   can be placed at the bottom of the list if it&apos;s lower priority than newer stories.
                 </p>
 
-                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Moving Stories Between Epics</h3>
+                <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Keyboard Reordering (Focus Mode)</h3>
                 <p className="text-text-secondary mb-4">
-                  To move a story from one epic to another:
+                  In focus mode, you can reorder stories using keyboard shortcuts:
                 </p>
                 <ol className="list-decimal list-inside text-text-secondary space-y-3 mb-4">
-                  <li>Expand both the source epic (containing the story) and the target epic</li>
-                  <li>Click and hold the grip icon on the story you want to move</li>
-                  <li>Drag the story over to the target epic</li>
-                  <li>Drop it in the desired position within the target epic</li>
-                  <li>The story is automatically moved and the order is saved</li>
+                  <li>Navigate to the story you want to move using arrow keys</li>
+                  <li>Hold the <kbd className="bg-surface-muted px-2 py-1 rounded text-sm">Shift</kbd> key</li>
+                  <li>Press <kbd className="bg-surface-muted px-2 py-1 rounded text-sm">↑</kbd> or <kbd className="bg-surface-muted px-2 py-1 rounded text-sm">↓</kbd> to move the story up or down</li>
+                  <li>The story will be reordered within the same epic</li>
                 </ol>
                 <p className="text-text-secondary mb-4">
-                  You can also drop a story on a collapsed epic - it will be added to the end of that epic&apos;s story list.
+                  <strong>Note:</strong> Keyboard reordering only works within the same epic. Stories cannot be moved
+                  between epics using keyboard shortcuts.
                 </p>
 
                 <h3 className="text-xl font-semibold text-text-primary mt-6 mb-3">Visual Feedback</h3>
@@ -698,7 +851,6 @@ export default function DocsPage() {
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
                   <li>The dragged story becomes semi-transparent (50% opacity)</li>
                   <li>A preview of the story being dragged appears as an overlay</li>
-                  <li>The target epic highlights with a blue ring when you hover over it</li>
                   <li>Stories automatically shift to make room for the dropped story</li>
                 </ul>
 
@@ -708,7 +860,7 @@ export default function DocsPage() {
                 </p>
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4">
                   <li><strong>Order is stored separately:</strong> Each epic maintains a <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">storyIds</code> array that defines the display order</li>
-                  <li><strong>ID independence:</strong> Story IDs (STORY-001, STORY-002, etc.) remain unchanged when reordering</li>
+                  <li><strong>ID independence:</strong> Story IDs (F-XXX-001, F-XXX-002, etc.) remain unchanged when reordering</li>
                   <li><strong>Project-wide IDs:</strong> Story IDs are unique across the entire project, not just within an epic</li>
                   <li><strong>Persistent order:</strong> The order you set is saved and persists across page refreshes</li>
                   <li><strong>Future-ready:</strong> This ordering system supports future containers like Sprints, which will use the same mechanism</li>
@@ -728,7 +880,7 @@ export default function DocsPage() {
 
                 <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mb-4 mt-6">
                   <p className="text-sm text-text-secondary">
-                    <strong className="text-text-primary">Tip:</strong> Story order is completely independent of when stories were created. A story created months ago (STORY-001) can be at the bottom of the list if it&apos;s lower priority, while a newly created story (STORY-050) can be at the top if it&apos;s critical.
+                    <strong className="text-text-primary">Tip:</strong> Story order is completely independent of when stories were created. A story created months ago (F-XXX-001) can be at the bottom of the list if it&apos;s lower priority, while a newly created story (F-XXX-050) can be at the top if it&apos;s critical.
                   </p>
                 </div>
               </section>
@@ -937,8 +1089,8 @@ export default function DocsPage() {
                 <div className="bg-surface border border-border-light rounded-lg p-4 mb-4">
                   <code className="text-sm">
                     <div>/projects/healthcare-platform</div>
-                    <div>/projects/healthcare-platform?epic=EPIC-0001</div>
-                    <div>/projects/healthcare-platform?epic=EPIC-0001&story=STORY-001</div>
+                    <div>/projects/healthcare-platform?epic=patient-management</div>
+                    <div>/projects/healthcare-platform?epic=patient-management&story=F-PMME-001</div>
                   </code>
                 </div>
                 <p className="text-text-secondary mb-4">
@@ -1006,7 +1158,7 @@ export default function DocsPage() {
                       </tr>
                       <tr className="border-b border-border-light">
                         <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">Shift</kbd> + <kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">↑</kbd>/<kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">↓</kbd></td>
-                        <td className="py-2 px-3">Move the focused story or epic up (↑) or down (↓) in order. Hold Shift to activate drag mode - the item will lift up with a shadow effect and cursor changes to grab. Release Shift to complete the move.</td>
+                        <td className="py-2 px-3">Move the focused story up (↑) or down (↓) within the same epic. Hold Shift to activate drag mode - the item will lift up with a shadow effect and cursor changes to grab. Release Shift to complete the move. <strong>Note:</strong> Stories cannot be moved between epics using keyboard shortcuts.</td>
                       </tr>
                       <tr className="border-b border-border-light">
                         <td className="py-2 px-3"><kbd className="bg-background px-2 py-1 rounded border border-border-light font-mono">Enter</kbd></td>
@@ -1067,7 +1219,7 @@ export default function DocsPage() {
                   For easy identification, items display their IDs:
                 </p>
                 <ul className="list-disc list-inside text-text-secondary space-y-2 mb-4 ml-4">
-                  <li><strong>Stories:</strong> Always display as <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">[STORY-XXX] Story Title</code> (e.g., [STORY-125] Implement patient creation form)</li>
+                  <li><strong>Stories:</strong> Always display as <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">[F-XXX-###] Story Title</code> or <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">[NFR-XXX-###] Story Title</code> (e.g., [F-RCM-001] Implement patient creation form, [NFR-RCM-001] Performance requirements)</li>
                   <li><strong>Epics:</strong> In Focus Mode, display as <code className="bg-surface-muted px-1.5 py-0.5 rounded text-sm">[EPIC-XXXX] Epic Title</code> (e.g., [EPIC-0001] Patient Management Module)</li>
                   <li>When editing titles, the ID prefix is hidden for easier editing</li>
                   <li>The prefix is automatically added back when saving</li>

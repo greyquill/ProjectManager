@@ -76,8 +76,11 @@ interface DroppableEpicProps {
 }
 
 function DroppableEpic({ epicName, children, isExpanded }: DroppableEpicProps) {
-  const { setNodeRef, isOver } = useDroppable({
+  // Disable epic as drop target - stories can only be reordered within their own epic
+  // We still use useDroppable for the ref, but disable dropping
+  const { setNodeRef } = useDroppable({
     id: epicName,
+    disabled: true, // Disable epic as drop target
     data: {
       type: 'epic',
       epicName,
@@ -85,10 +88,7 @@ function DroppableEpic({ epicName, children, isExpanded }: DroppableEpicProps) {
   })
 
   return (
-    <div
-      ref={setNodeRef}
-      className={isOver ? 'ring-2 ring-blue-500 ring-offset-2 bg-blue-50' : ''}
-    >
+    <div ref={setNodeRef}>
       {children}
     </div>
   )
@@ -665,8 +665,16 @@ export default function ProjectDetailPage() {
         targetPosition = targetEpic.stories.findIndex(s => s.id === over.id)
       }
     } else {
-      // Dropped on an epic (epic name as ID) - add to end
-      targetEpicName = over.id as string
+      // Dropped on an epic header - prevent inter-epic moves
+      // Only allow reordering within the same epic
+      const droppedEpicName = over.id as string
+      if (droppedEpicName !== sourceEpicName) {
+        // Prevent dropping on different epic - revert drag
+        await fetchEpics()
+        return
+      }
+      // If dropped on same epic header, add to end
+      targetEpicName = droppedEpicName
       const targetEpic = epics.find(e => e._name === targetEpicName)
       if (targetEpic) {
         targetPosition = targetEpic.stories.length
@@ -675,7 +683,14 @@ export default function ProjectDetailPage() {
 
     if (!targetEpicName) return
 
-    // Check if moving within same epic or to different epic
+    // Only allow reordering within the same epic - prevent inter-epic moves
+    if (targetEpicName !== sourceEpicName) {
+      // Prevent inter-epic moves - revert drag
+      await fetchEpics()
+      return
+    }
+
+    // Reordering within same epic
     if (targetEpicName === sourceEpicName) {
       // Reordering within same epic
       const epic = epics.find(e => e._name === sourceEpicName)
@@ -718,60 +733,6 @@ export default function ProjectDetailPage() {
         console.error('Reorder stories exception:', err)
         await fetchEpics()
         setError(err instanceof Error ? err.message : 'Failed to reorder stories')
-      }
-    } else {
-      // Moving between epics
-      const sourceEpic = epics.find(e => e._name === sourceEpicName)
-      const targetEpic = epics.find(e => e._name === targetEpicName)
-
-      if (!sourceEpic || !targetEpic) return
-
-      const story = sourceEpic.stories.find(s => s.id === storyId)
-      if (!story) return
-
-      // Optimistically update UI
-      const newSourceStories = sourceEpic.stories.filter(s => s.id !== storyId)
-      const newTargetStories = [...targetEpic.stories]
-      newTargetStories.splice(targetPosition, 0, story)
-
-      setEpics(prev => prev.map(e => {
-        if (e._name === sourceEpicName) {
-          return { ...e, stories: newSourceStories }
-        } else if (e._name === targetEpicName) {
-          return { ...e, stories: newTargetStories }
-        }
-        return e
-      }))
-
-      // Save to backend
-      try {
-        const response = await fetch(
-          `/api/projects/${projectName}/epics/${sourceEpicName}/move-story`,
-          {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              storyId,
-              targetEpicName,
-              targetPosition,
-            }),
-          }
-        )
-
-        if (!response.ok) {
-          // Revert on error
-          await fetchEpics()
-          setError('Failed to move story')
-        } else {
-          await fetchEpics()
-          // Update selection if story was selected
-          if (selection.type === 'story' && selection.storyId === storyId) {
-            navigateToStory(targetEpicName, storyId)
-          }
-        }
-      } catch (err) {
-        await fetchEpics()
-        setError('Failed to move story')
       }
     }
   }

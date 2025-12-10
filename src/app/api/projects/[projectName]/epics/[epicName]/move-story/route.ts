@@ -74,7 +74,8 @@ export async function PUT(
     }
 
     // Add story to target epic's storyIds at specified position
-    const targetStoryIds = [...(targetEpic.storyIds || [])]
+    // First, remove any existing duplicate of this storyId (in case it was already there)
+    const targetStoryIds = [...(targetEpic.storyIds || [])].filter((id: string) => id !== storyId)
     const insertPosition = targetPosition !== undefined && targetPosition >= 0 && targetPosition <= targetStoryIds.length
       ? targetPosition
       : targetStoryIds.length // Default to end if position is invalid
@@ -98,11 +99,54 @@ export async function PUT(
     await pmRepository.writeEpic(projectName, targetEpicName, updatedTargetEpic)
     await pmRepository.writeStory(projectName, targetEpicName, storyId, updatedStory)
 
-    // Note: The story file/KV entry is written to the new epic location by writeStory
-    // The epic.storyIds arrays are already updated above
-    // For file system, the old file will remain but won't be in the epic's storyIds, so it won't be listed
-    // For KV, the story key is written to the new location, and the old key will be ignored
-    // This is acceptable - the epic.storyIds array is the source of truth for which stories belong to which epic
+    // Delete the old story file from source epic (for file system)
+    // For KV, we also need to remove from source epic's stories list
+    if (epicName !== targetEpicName) {
+      try {
+        const { getKVRepository } = await import('@/lib/pm-repository')
+        const kvRepo = await getKVRepository()
+
+        if (kvRepo) {
+          // For KV: Remove from source epic's stories list
+          const kv = await import('@vercel/kv').then(m => m.kv).catch(() => null)
+          if (kv) {
+            try {
+              const sourceStoriesListKey = `pm:${projectName}:${epicName}:stories`
+              const storiesList = await kv.get(sourceStoriesListKey) || []
+              const updatedList = Array.isArray(storiesList)
+                ? storiesList.filter((id: string) => id !== storyId)
+                : []
+              await kv.set(sourceStoriesListKey, updatedList)
+            } catch (kvErr) {
+              console.warn(`Could not update source epic's stories list in KV:`, kvErr)
+            }
+          }
+        } else {
+          // For file system: Delete the old story file
+          const path = require('path')
+          const fs = require('fs').promises
+          const oldStoryPath = path.join(
+            process.cwd(),
+            'pm',
+            projectName,
+            epicName,
+            `${storyId}.json`
+          )
+          try {
+            await fs.unlink(oldStoryPath)
+            console.log(`Deleted old story file: ${oldStoryPath}`)
+          } catch (fileErr: any) {
+            // File might not exist, that's okay
+            if (fileErr.code !== 'ENOENT') {
+              console.warn(`Could not delete old story file ${oldStoryPath}:`, fileErr)
+            }
+          }
+        }
+      } catch (err) {
+        // If we can't clean up, log warning but don't fail
+        console.warn(`Could not clean up old story location:`, err)
+      }
+    }
 
     return NextResponse.json({
       success: true,

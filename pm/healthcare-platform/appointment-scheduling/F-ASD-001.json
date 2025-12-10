@@ -1,5 +1,6 @@
 {
-  "id": "F-ASS-001",
+  "id": "F-ASD-001",
+  "requirementType": "functional",
   "title": "[STORY-011] New story to test the id. This should have11",
   "summary": "some somm",
   "description": "",
@@ -8,7 +9,7 @@
   "priority": "medium",
   "manager": "person-001",
   "createdAt": "2025-12-09T07:44:11.178Z",
-  "updatedAt": "2025-12-09T07:44:11.376Z",
+  "updatedAt": "2025-12-10T08:44:44.996Z",
   "dueDate": null,
   "tags": [],
   "estimate": {
@@ -23,5 +24,5 @@
     "custom": {}
   },
   "deleted": false,
-  "requirementType": "functional"
+  "archived": false
 }
