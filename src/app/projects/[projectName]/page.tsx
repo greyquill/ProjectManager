@@ -3286,8 +3286,8 @@ export default function ProjectDetailPage() {
               </Card>
             ) : selection.type === 'epic' && selectedEpic ? (
               <Card className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex-1">
+                <div className="flex items-center justify-between mb-6 gap-4">
+                  <div className="flex-1 min-w-0">
                     {/* Breadcrumb */}
                     {selection.epicName && (
                       <div className="text-sm text-text-secondary mb-2">
@@ -3302,17 +3302,20 @@ export default function ProjectDetailPage() {
                         setEpicTitle(e.target.value)
                         setHasChanges(true)
                       }}
-                      className="text-2xl font-bold text-text-primary bg-transparent border-none outline-none focus:outline-none focus:ring-0 p-0 w-full"
+                      className="text-xl font-bold text-text-primary bg-transparent border-none outline-none focus:outline-none focus:ring-0 p-0 w-full truncate"
                       style={{ borderBottom: '2px solid transparent' }}
                       onFocus={(e) => {
                         e.target.style.borderBottom = '2px solid var(--primary, #3b82f6)'
+                        e.target.classList.remove('truncate')
                       }}
                       onBlur={(e) => {
                         e.target.style.borderBottom = '2px solid transparent'
+                        e.target.classList.add('truncate')
                       }}
+                      title={epicTitle}
                     />
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 flex-shrink-0">
                     {hasChanges && (
                       <span className="text-sm text-text-secondary">Unsaved changes</span>
                     )}
@@ -3609,8 +3612,8 @@ export default function ProjectDetailPage() {
               </Card>
             ) : selection.type === 'story' && selectedStory ? (
               <Card className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex-1">
+                <div className="flex items-center justify-between mb-6 gap-4">
+                  <div className="flex-1 min-w-0">
                     {/* Breadcrumb */}
                     {selection.epicName && selection.storyId && (
                       <div className="text-sm text-text-secondary mb-2">
@@ -3632,17 +3635,20 @@ export default function ProjectDetailPage() {
                         setStoryTitle(e.target.value)
                         setHasChanges(true)
                       }}
-                      className="text-2xl font-bold text-text-primary bg-transparent border-none outline-none focus:outline-none focus:ring-0 p-0 w-full"
+                      className="text-xl font-bold text-text-primary bg-transparent border-none outline-none focus:outline-none focus:ring-0 p-0 w-full truncate"
                       style={{ borderBottom: '2px solid transparent' }}
                       onFocus={(e) => {
                         e.target.style.borderBottom = '2px solid var(--primary, #3b82f6)'
+                        e.target.classList.remove('truncate')
                       }}
                       onBlur={(e) => {
                         e.target.style.borderBottom = '2px solid transparent'
+                        e.target.classList.add('truncate')
                       }}
+                      title={storyTitle}
                     />
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 flex-shrink-0">
                     {hasChanges && (
                       <span className="text-sm text-text-secondary">Unsaved changes</span>
                     )}
