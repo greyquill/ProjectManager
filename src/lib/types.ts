@@ -374,3 +374,5 @@ export function createProject(overrides: Partial<Project> = {}): Project {
   }
 }
 
+// Explicit export to ensure this file is recognized as a module
+export {}

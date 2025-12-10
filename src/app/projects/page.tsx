@@ -16,7 +16,6 @@ interface ProjectWithMetrics extends Project {
   _name?: string
   epicCount?: number
   managerName?: string
-  completionPercentage?: number
 }
 
 export default function ProjectsPage() {
@@ -125,75 +124,46 @@ export default function ProjectsPage() {
       if (result.success) {
         console.log('Setting projects:', result.data?.length || 0)
 
-        // Fetch additional data for each project (epic count, manager name, and progress)
+        // Fetch people once for all projects (optimization)
+        let peopleMap = new Map<string, string>()
+        try {
+          const peopleResponse = await fetch('/api/people')
+          const peopleResult = await peopleResponse.json()
+          if (peopleResult.success) {
+            peopleResult.data?.forEach((p: any) => {
+              peopleMap.set(p.id, p.name)
+            })
+          }
+        } catch (err) {
+          console.error('Failed to fetch people:', err)
+        }
+
+        // Fetch additional data for each project (epic count and manager name only)
         const projectsWithMetrics = await Promise.all(
           result.data.map(async (project: any) => {
             const projectName = project._name || project.name
 
-            // Fetch epics count
+            // Fetch epics count only (no stories needed for card view)
             let epicCount = 0
-            let completionPercentage = 0
             try {
               const epicsResponse = await fetch(`/api/projects/${projectName}/epics`)
               const epicsResult = await epicsResponse.json()
               if (epicsResult.success) {
                 epicCount = epicsResult.data?.length || 0
-
-                // Calculate progress by fetching all stories
-                const allStories: any[] = []
-                for (const epic of epicsResult.data) {
-                  try {
-                    const storiesResponse = await fetch(
-                      `/api/projects/${projectName}/epics/${epic._name}/stories`
-                    )
-                    const storiesResult = await storiesResponse.json()
-                    if (storiesResult.success) {
-                      allStories.push(...storiesResult.data)
-                    }
-                  } catch (err) {
-                    console.error(`Failed to fetch stories for epic ${epic._name}:`, err)
-                  }
-                }
-
-                // Calculate completion percentage
-                const totalStoryPoints = allStories.reduce(
-                  (sum, story) => sum + (story.estimate?.storyPoints || 0),
-                  0
-                )
-                const completedStoryPoints = allStories
-                  .filter((s) => s.status === 'done')
-                  .reduce((sum, story) => sum + (story.estimate?.storyPoints || 0), 0)
-                completionPercentage =
-                  totalStoryPoints > 0
-                    ? Math.round((completedStoryPoints / totalStoryPoints) * 100)
-                    : 0
               }
             } catch (err) {
               console.error(`Failed to fetch epics for ${projectName}:`, err)
             }
 
-            // Fetch manager name
-            let managerName = 'unassigned'
-            if (project.metadata?.manager && project.metadata.manager !== 'unassigned') {
-              try {
-                const peopleResponse = await fetch('/api/people')
-                const peopleResult = await peopleResponse.json()
-                if (peopleResult.success) {
-                  const manager = peopleResult.data?.find((p: any) => p.id === project.metadata.manager)
-                  if (manager) {
-                    managerName = manager.name
-                  }
-                }
-              } catch (err) {
-                console.error(`Failed to fetch people for ${projectName}:`, err)
-              }
-            }
+            // Get manager name from pre-fetched people map
+            const managerName = project.metadata?.manager && project.metadata.manager !== 'unassigned'
+              ? (peopleMap.get(project.metadata.manager) || 'unassigned')
+              : 'unassigned'
 
             return {
               ...project,
               epicCount,
               managerName,
-              completionPercentage,
             }
           })
         )
@@ -326,12 +296,7 @@ export default function ProjectsPage() {
                       <div className="h-12 w-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
                         <FolderKanban className="h-6 w-6" />
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-text-primary">
-                          {project.completionPercentage || 0}%
-                        </span>
-                        <ArrowRight className="h-5 w-5 text-text-secondary" />
-                      </div>
+                      <ArrowRight className="h-5 w-5 text-text-secondary" />
                     </div>
 
                     <h3 className="text-xl font-semibold text-text-primary mb-2">

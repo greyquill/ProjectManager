@@ -794,31 +794,26 @@ export default function ProjectDetailPage() {
       const epic = epics.find((e) => e._name === epicName)
       if (epic) {
         const updatedEpic = { ...epic, title: newTitle.trim() }
+        // Optimistic update - update UI immediately
+        setEpics(prevEpics =>
+          prevEpics.map(e =>
+            e._name === epicName ? { ...e, title: newTitle.trim() } : e
+          )
+        )
         try {
           const response = await fetch(`/api/projects/${projectName}/epics/${epicName}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedEpic),
           })
-          if (response.ok) {
-            // Refresh epics list
-            const epicsResponse = await fetch(`/api/projects/${projectName}/epics`)
-            const epicsResult = await epicsResponse.json()
-            if (epicsResult.success) {
-              const epicsWithStories = await Promise.all(
-                epicsResult.data.map(async (epic: Epic & { _name: string }) => {
-                  const storiesResponse = await fetch(
-                    `/api/projects/${projectName}/epics/${epic._name}/stories`
-                  )
-                  const storiesResult = await storiesResponse.json()
-                  return {
-                    ...epic,
-                    stories: storiesResult.success ? storiesResult.data : [],
-                  }
-                })
+          if (!response.ok) {
+            // Revert on error
+            setEpics(prevEpics =>
+              prevEpics.map(e =>
+                e._name === epicName ? { ...e, title: currentTitle } : e
               )
-              setEpics(epicsWithStories)
-            }
+            )
+            throw new Error('Failed to update epic title')
           }
         } catch (err) {
           console.error('Failed to update epic title:', err)
@@ -840,31 +835,40 @@ export default function ProjectDetailPage() {
         ?.stories.find((s) => s.id === storyId)
       if (story) {
         const updatedStory = { ...story, title: formattedTitle }
+        // Optimistic update - update UI immediately
+        setEpics(prevEpics =>
+          prevEpics.map(epic =>
+            epic._name === epicName
+              ? {
+                  ...epic,
+                  stories: epic.stories.map(s =>
+                    s.id === storyId ? { ...s, title: formattedTitle } : s
+                  ),
+                }
+              : epic
+          )
+        )
         try {
           const response = await fetch(`/api/projects/${projectName}/epics/${epicName}/stories/${storyId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedStory),
           })
-          if (response.ok) {
-            // Refresh epics list
-            const epicsResponse = await fetch(`/api/projects/${projectName}/epics`)
-            const epicsResult = await epicsResponse.json()
-            if (epicsResult.success) {
-              const epicsWithStories = await Promise.all(
-                epicsResult.data.map(async (epic: Epic & { _name: string }) => {
-                  const storiesResponse = await fetch(
-                    `/api/projects/${projectName}/epics/${epic._name}/stories`
-                  )
-                  const storiesResult = await storiesResponse.json()
-                  return {
-                    ...epic,
-                    stories: storiesResult.success ? storiesResult.data : [],
-                  }
-                })
+          if (!response.ok) {
+            // Revert on error
+            setEpics(prevEpics =>
+              prevEpics.map(epic =>
+                epic._name === epicName
+                  ? {
+                      ...epic,
+                      stories: epic.stories.map(s =>
+                        s.id === storyId ? { ...s, title: currentTitle } : s
+                      ),
+                    }
+                  : epic
               )
-              setEpics(epicsWithStories)
-            }
+            )
+            throw new Error('Failed to update story title')
           }
         } catch (err) {
           console.error('Failed to update story title:', err)

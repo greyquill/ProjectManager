@@ -154,8 +154,6 @@ async function createEpic(
     targetRelease: null,
     storyIds,
     metrics: {
-      totalStories: storyIds.length,
-      completedStories: 0,
       totalStoryPoints: 0,
       completedStoryPoints: 0,
     },
