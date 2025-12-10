@@ -403,6 +403,17 @@ async function exportProjectToKV(
   log(`   Mode: ${options.dryRun ? 'DRY RUN' : 'LIVE'}`, 'cyan')
   log(`   Force: ${options.force ? 'Yes (will overwrite)' : 'No (skip existing)'}`, 'cyan')
 
+  // Check if people.json exists in KV
+  const peopleExistInKV = await pmRepositoryKV.globalPeopleExists()
+  if (!peopleExistInKV) {
+    logWarning(`⚠️  WARNING: people.json does NOT exist in KV!`)
+    logWarning(`   Project metadata references person IDs that may not exist.`)
+    logWarning(`   Please export people.json to KV before using the exported data.`)
+    logWarning(`   You can do this by copying pm/people.json to KV manually or using the People page in the UI.`)
+  } else {
+    logInfo(`✅ people.json exists in KV`)
+  }
+
   // Check if project exists in KV
   const projectExistsInKV = await pmRepositoryKV.projectExists(projectName)
   if (projectExistsInKV) {
@@ -510,8 +521,15 @@ async function exportProjectToKV(
   // Print summary
   printSummary(results, options, backupFile)
 
-  // Check for people.json
-  logWarning('\n⚠️  Please ensure people.json is present in KV before using the exported data')
+  // Final reminder about people.json
+  const peopleExistInKVFinal = await pmRepositoryKV.globalPeopleExists()
+  if (!peopleExistInKVFinal) {
+    logWarning('\n⚠️  IMPORTANT: people.json is NOT present in KV!')
+    logWarning('   Project metadata (manager, contributors) will not display correctly.')
+    logWarning('   Please export people.json to KV before using the exported data.')
+  } else {
+    logInfo('\n✅ people.json verified in KV')
+  }
 }
 
 // Print export summary

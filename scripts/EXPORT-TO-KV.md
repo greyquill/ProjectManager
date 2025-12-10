@@ -17,6 +17,8 @@ This script exports epics and stories from the local file system to Vercel KV (R
 
 3. **Project Name Consistency**: The project name must be identical for both local files and KV storage. The folder name in `/pm/` must match the project name in KV.
 
+4. **People Data in KV**: ⚠️ **IMPORTANT**: Ensure `people.json` exists in KV before exporting epics. The script will check and warn if people data is missing, but it will not export people data automatically. Project metadata (manager, contributors) references person IDs, so missing people data will cause display issues in the UI.
+
 ## Usage
 
 ### Basic Usage
@@ -114,7 +116,10 @@ Stories Failed: 0
 
 ## Important Notes
 
-1. **People Data**: The script does NOT export `people.json`. Ensure people are present in KV before using exported data.
+1. **People Data Check**: The script automatically checks if `people.json` exists in KV at the start and end of the export process. If missing, it will display warnings. **The script does NOT export `people.json`** - you must ensure people data is present in KV before using exported data. You can:
+   - Copy `pm/people.json` to KV manually
+   - Use the People page in the UI to add people (which writes to KV)
+   - Ensure person IDs in `project.json` metadata match the IDs in KV
 
 2. **No Overwrites by Default**: Existing stories in KV are never overwritten unless `--force` is explicitly used.
 
@@ -142,6 +147,11 @@ Stories Failed: 0
 - Check your internet connection
 - Verify KV credentials are correct
 - Ensure KV instance is accessible
+
+### "people.json does NOT exist in KV"
+- **Before exporting**: Ensure people data is in KV. The script checks this and will warn you.
+- **After exporting**: If you see this warning, export `pm/people.json` to KV using the People page in the UI or manually copy it.
+- **Person ID Mismatch**: If project metadata shows person IDs that don't exist in KV, update `project.json` metadata to match the person IDs in KV, then re-export the project using `npm run update-project-kv <project-name>`.
 
 ## Safety
 
