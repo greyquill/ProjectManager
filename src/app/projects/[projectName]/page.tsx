@@ -305,6 +305,12 @@ export default function ProjectDetailPage() {
   const [epicPriority, setEpicPriority] = useState<'low' | 'medium' | 'high' | 'critical'>('medium')
   const [epicManager, setEpicManager] = useState('')
   const [epicTargetRelease, setEpicTargetRelease] = useState('')
+  const [epicId, setEpicId] = useState('')
+  const [showEpicIdModal, setShowEpicIdModal] = useState(false)
+  const [epicIdLoginCode, setEpicIdLoginCode] = useState('')
+  const [epicIdError, setEpicIdError] = useState<string | null>(null)
+  const [updatingEpicId, setUpdatingEpicId] = useState(false)
+  const [newEpicId, setNewEpicId] = useState('')
 
   // Story edit state
   const [storyTitle, setStoryTitle] = useState('')
@@ -442,6 +448,20 @@ export default function ProjectDetailPage() {
         setEpicPriority(epic.priority)
         setEpicManager(epic.manager || '')
         setEpicTargetRelease(epic.targetRelease || '')
+
+        // Extract Epic ID (acronym) from first story
+        if (epic.stories.length > 0) {
+          const firstStory = epic.stories[0]
+          const match = firstStory.id.match(/^(F|NFR)-([A-Z]{2,6})-\d{3}$/)
+          if (match) {
+            setEpicId(match[2])
+          } else {
+            setEpicId('')
+          }
+        } else {
+          setEpicId('')
+        }
+
         setHasChanges(false)
       }
     } else if (selection.type === 'story' && selection.epicName && selection.storyId && epics.length > 0) {
@@ -2068,6 +2088,67 @@ export default function ProjectDetailPage() {
     setDeleteType(null)
   }
 
+  // Epic ID update handler
+  const handleUpdateEpicId = async () => {
+    if (epicIdLoginCode !== '2341') {
+      setEpicIdError('Nope!')
+      setTimeout(() => setEpicIdError(null), 2000)
+      return
+    }
+
+    if (!newEpicId || newEpicId === epicId) {
+      setEpicIdError('Please enter a different Epic ID')
+      return
+    }
+
+    // Validate format (2-6 uppercase letters)
+    if (!/^[A-Z]{2,6}$/.test(newEpicId)) {
+      setEpicIdError('Epic ID must be 2-6 uppercase letters')
+      return
+    }
+
+    setUpdatingEpicId(true)
+    setEpicIdError(null)
+
+    try {
+      const response = await fetch(
+        `/api/projects/${projectName}/epics/${selection.epicName}/update-epic-id`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            oldEpicId: epicId,
+            newEpicId: newEpicId.toUpperCase(),
+          }),
+        }
+      )
+
+      const result = await response.json()
+
+      if (result.success) {
+        setShowEpicIdModal(false)
+        setEpicIdLoginCode('')
+        setNewEpicId('')
+        await fetchEpics()
+        // Update the epic ID in state
+        setEpicId(newEpicId.toUpperCase())
+      } else {
+        setEpicIdError(result.error || 'Failed to update Epic ID')
+      }
+    } catch (err) {
+      setEpicIdError(err instanceof Error ? err.message : 'Failed to update Epic ID')
+    } finally {
+      setUpdatingEpicId(false)
+    }
+  }
+
+  const cancelEpicIdUpdate = () => {
+    setShowEpicIdModal(false)
+    setEpicIdLoginCode('')
+    setNewEpicId('')
+    setEpicIdError(null)
+  }
+
   function toggleContributor(personId: string) {
     const updated = projectContributors.includes(personId)
       ? projectContributors.filter((id) => id !== personId)
@@ -3467,6 +3548,41 @@ export default function ProjectDetailPage() {
                     </div>
                   </div>
 
+                  {/* Epic ID Editor */}
+                  <div className="pt-4 border-t border-border-light">
+                    <div className="flex items-center gap-3">
+                      <h3 className="text-base font-semibold text-text-primary whitespace-nowrap">Epic ID</h3>
+                      <input
+                        type="text"
+                        value={epicId}
+                        readOnly
+                        className="input-field text-sm font-mono bg-surface-muted w-24"
+                        placeholder="No stories yet"
+                      />
+                      {epicId && (
+                        <div className="text-xs text-text-secondary whitespace-nowrap">
+                          Used in story IDs (e.g., F-{epicId}-001)
+                        </div>
+                      )}
+                      {epicId && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setNewEpicId(epicId)
+                            setShowEpicIdModal(true)
+                            setEpicIdLoginCode('')
+                            setEpicIdError(null)
+                          }}
+                          className="ml-auto"
+                        >
+                          <Edit className="h-4 w-4 mr-1" />
+                          Update
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+
                   {/* Metrics (Read-only) */}
                   <div className="grid grid-cols-4 gap-4 pt-4 border-t border-border-light">
                     <div>
@@ -4054,6 +4170,97 @@ export default function ProjectDetailPage() {
               >
                 Understood
               </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Epic ID Update Confirmation Modal */}
+      {showEpicIdModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={cancelEpicIdUpdate}>
+          <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-text-primary">
+                Update Epic ID
+              </h3>
+              <button
+                onClick={cancelEpicIdUpdate}
+                className="text-text-secondary hover:text-text-primary transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800 font-medium mb-2">
+                Epic ID will change from <strong>{epicId}</strong> to <strong>{newEpicId.toUpperCase()}</strong>
+              </p>
+              <p className="text-xs text-blue-700">
+                All stories under this epic will be updated with the new ID format. This action cannot be undone.
+              </p>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-text-primary mb-1">
+                  New Epic ID (2-6 uppercase letters)
+                </label>
+                <input
+                  type="text"
+                  value={newEpicId}
+                  onChange={(e) => {
+                    const value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '')
+                    if (value.length <= 6) {
+                      setNewEpicId(value)
+                      setEpicIdError(null)
+                    }
+                  }}
+                  placeholder="Enter new Epic ID"
+                  className="input-field w-full font-mono"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <input
+                  type="password"
+                  value={epicIdLoginCode}
+                  onChange={(e) => {
+                    setEpicIdLoginCode(e.target.value)
+                    setEpicIdError(null)
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleUpdateEpicId()
+                    } else if (e.key === 'Escape') {
+                      cancelEpicIdUpdate()
+                    }
+                  }}
+                  placeholder="Enter login code"
+                  className="input-field w-full"
+                />
+                {epicIdError && (
+                  <p className={`mt-2 text-sm ${epicIdError === 'Nope!' ? 'text-red-600 animate-fade-in' : 'text-red-600'}`}>
+                    {epicIdError}
+                  </p>
+                )}
+              </div>
+              <div className="flex gap-2 justify-end">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={cancelEpicIdUpdate}
+                  disabled={updatingEpicId}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={handleUpdateEpicId}
+                  isLoading={updatingEpicId}
+                  disabled={!newEpicId || newEpicId === epicId || newEpicId.length < 2 || newEpicId.length > 6}
+                >
+                  Update Epic ID
+                </Button>
+              </div>
             </div>
           </div>
         </div>

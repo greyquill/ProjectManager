@@ -1,0 +1,33 @@
+{
+  "id": "F-PMME-002",
+  "requirementType": "functional",
+  "title": "[STORY-006] thish",
+  "summary": "sdfn",
+  "description": "",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-08T14:57:07.862Z",
+  "updatedAt": "2025-12-10T08:26:32.903Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [],
+  "estimate": {
+    "storyPoints": 4
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "user",
+    "lastEditedBy": "user",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false,
+  "epicId": "test-epic"
+}

@@ -6,11 +6,11 @@
   "priority": "medium",
   "manager": "person-002",
   "createdAt": "2025-01-05T09:00:00Z",
-  "updatedAt": "2025-12-09T07:15:08.338Z",
+  "updatedAt": "2025-12-10T08:26:50.873Z",
   "targetRelease": "2025-02-15",
   "storyIds": [
-    "F-PMM-001",
-    "F-PMM-002"
+    "F-PMME-002",
+    "F-PMME-001"
   ],
   "metrics": {
     "totalStoryPoints": 8,
