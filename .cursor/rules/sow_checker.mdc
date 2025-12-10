@@ -1,0 +1,43 @@
+---
+description: only if the user is asking to verify or validate and SOW document
+alwaysApply: false
+---
+# SOW Quality Checklist
+
+## ☐ Clarity
+- [ ] No use of “TBD”, “etc.”, or vague language
+- [ ] All deliverables are specific and measurable
+- [ ] Scope explicitly mentions what is *out* of scope
+
+## ☐ Structure
+- [ ] All 11 key sections are present
+- [ ] Sections follow logical flow
+- [ ] Timeline includes milestones and dates
+
+## ☐ Accountability
+- [ ] Roles & responsibilities are clearly mapped
+- [ ] No shared roles without owner
+
+## ☐ Acceptance & Testing
+- [ ] Acceptance Criteria are binary and testable
+- [ ] Acceptance is linked to specific deliverables
+
+## ☐ Assumptions & Constraints
+- [ ] At least one assumption is listed
+- [ ] Constraints are realistic and tied to scope
+
+## ☐ Risk Management
+- [ ] At least one project risk is documented
+- [ ] Mitigation strategy is described
+
+## ☐ Sign-off
+- [ ] Signature lines or e-sign language included
+
+## ☐ Customization
+- [ ] Client-specific requirements have been translated into scope
+- [ ] Template was reviewed for irrelevant sections
+
+Run this checklist after the SOW is generated to ensure it is of high quality.
+The output should be in markdown format, with same content above.
+
+you will also add a success, failure or partial success section to the output.

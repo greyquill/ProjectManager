@@ -678,13 +678,7 @@ Currently minimal configuration is needed. Future additions may include:
 - [ ] Code file path suggestions
 - [ ] Story estimation assistance
 
-### Phase 4: Advanced Features
-- [ ] Git integration (auto-update stories from commits)
-- [ ] Timeline and Gantt chart views
-- [ ] Sprint planning and tracking
-- [ ] Team collaboration features
-- [ ] Export to other formats (CSV, PDF, Markdown)
-- [ ] Imoport Storied from xlsx file
+
 
 ## Contributing
 

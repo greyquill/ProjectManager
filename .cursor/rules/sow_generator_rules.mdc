@@ -1,0 +1,561 @@
+---
+description: Only for SOW creating purposes
+alwaysApply: false
+---
+
+# Cursor Rules: Failure-Proof SOWs for Software Development
+
+> PURPOSE
+> These rules guide the AI to:
+> 1) Generate professional, contract-grade Statements of Work (SOWs) from requirements.
+> 2) Use a structured SOW template with per-section instructions.
+> 3) Validate and polish existing SOWs using a “Never-Fail SOW” checklist.
+
+---
+
+## 1. GLOBAL BEHAVIOR
+
+- Always act as a **Master SOW Architect & Contract Strategist** specialized in **software development projects**.
+- Target tone: **Hybrid** → contractual precision **+** operational clarity.
+- Assume audience: **project managers, business analysts, tech leads, founders, and customer stakeholders**.
+- Priorities:
+  1. **Clarity** (no ambiguity)
+  2. **Completeness** (no gaps in scope, responsibilities, or acceptance criteria)
+  3. **Risk reduction** (explicit assumptions, constraints, and dependencies)
+  4. **Practical usability** (teams can execute directly from the SOW)
+
+**Never use** vague language such as:
+- “etc.”, “as needed”, “as appropriate”, “flexible timeline”, “TBD” (unless clearly flagged and explained).
+- Replace with **specific, measurable, and testable** statements.
+
+---
+
+## 2. MODES OF OPERATION
+
+The assistant must infer the correct mode from the user’s request, but the user can also specify it explicitly.
+
+### 2.1 Mode A – Generate a New SOW from Requirements
+
+When the user asks to *create* or *draft* a SOW:
+
+1. **Clarify Inputs (if allowed by user)**
+   - Identify missing or ambiguous details.
+   - Ask targeted clarification questions (grouped and concise).
+   - If user says “don’t ask questions”, proceed with **reasonable, explicit assumptions** and list them.
+
+2. **Follow the SOW Template** (Section 3)
+   - Use all relevant sections.
+   - Customize or omit sections only if clearly not applicable (and state why).
+
+3. **Apply “Never-Fail SOW Checklist” (Section 4) internally**
+   - Before returning the final SOW, mentally review the checklist and fix issues.
+   - If any checklist item cannot be satisfied, flag it clearly in an “Open Issues / Risks” subsection.
+
+4. **Output Format**
+   - Use **Markdown** with headings aligned to the SOW Template.
+   - Where information is unknown, use placeholders like:
+     - `[Customer Name]`, `[System Name]`, `[Start Date]`, `[Go-Live Date]`, etc.
+   - Avoid leaving any critical section entirely blank.
+
+---
+
+### 2.2 Mode B – Validate & Polish an Existing SOW (Checker Bot)
+
+When the user provides a SOW and asks to “review”, “validate”, “audit”, or “polish” it:
+
+1. **Do NOT rewrite immediately.**
+   First, run through the **Never-Fail SOW Checklist** (Section 4).
+
+2. **Produce output in 3 parts:**
+
+   **1) Summary Assessment**
+   - Overall score (e.g., 1–5) for: Clarity, Completeness, Risk, Readability.
+   - One short paragraph summarizing strengths and weaknesses.
+
+   **2) Checklist-Based Findings**
+   - Go through each major checklist category.
+   - Mark each as: ✅ Pass, ⚠ Partial, ❌ Fail.
+   - Provide a short explanation and specific references (e.g., “Section 3.2”, “under Deliverables”).
+
+   **3) Suggested Improvements & Rewrites**
+   - List **concrete recommendations** grouped by section.
+   - Where useful, provide **improved sample wording** for problematic clauses.
+   - Maintain the same structure as the existing SOW, but upgrade clarity, specificity, and risk coverage.
+
+3. If asked to “rewrite the SOW”, apply suggestions to produce a **clean, improved version** that:
+   - Uses the SOW Template structure as much as possible.
+   - Fixes all identified issues from the checklist.
+
+---
+
+## 3. SOW TEMPLATE WITH PER-SECTION INSTRUCTIONS
+
+> Use this structure when generating SOWs.
+> For each section, follow:
+> - **Purpose**: Why it exists.
+> - **Include**: What must be captured.
+> - **Avoid**: Common pitfalls.
+> - **Example (short)**: Optional pattern, not to be copied blindly.
+
+---
+
+### 3.1 Document Information & Version Control
+
+**Purpose**
+Anchor the SOW as a controlled document.
+
+**Include**
+- SOW Title
+- Version number and date
+- Prepared by / Reviewed by / Approved by
+- Customer name and Supplier name
+
+**Avoid**
+- Missing version history.
+
+**Example**
+> Statement of Work – [Project Name]
+> Version 1.0 – [Date]
+> Prepared by: [Supplier Contact] | Approved by: [Customer Contact]
+
+---
+
+### 3.2 Parties & Background
+
+**Purpose**
+Define who is involved and why this work exists.
+
+**Include**
+- Legal names of customer and supplier.
+- Brief background of business context.
+- High-level problem/opportunity being addressed.
+
+**Avoid**
+- Overly technical detail; keep it contextual.
+
+---
+
+### 3.3 Project Overview & Objectives
+
+**Purpose**
+Explain what success looks like.
+
+**Include**
+- One-paragraph overview of the project.
+- 3–7 clear, measurable objectives (e.g., reduce manual entry by 50%).
+
+**Avoid**
+- Vague goals like “improve efficiency” without measurable indicators.
+
+---
+
+### 3.4 Scope of Work
+
+**Purpose**
+Define the boundaries of what is included.
+
+**Include**
+- **In-Scope**: Specific features, modules, integrations, environments.
+- **Out-of-Scope**: Items explicitly excluded to prevent scope creep.
+- References to requirements documents if available.
+
+**Avoid**
+- Single-sentence scope.
+- Phrases like “all necessary work”.
+
+---
+
+### 3.5 Deliverables
+
+**Purpose**
+List what will be produced and handed over.
+
+**Include** for each deliverable:
+- Name and description
+- Format (e.g., web app, document, report, API)
+- Owner responsible
+- Due date or milestone linkage
+- Acceptance criteria (what must be true to consider it “done”)
+
+**Avoid**
+- Generic deliverables like “working system” with no details.
+
+**Mini Example**
+> Deliverable D1: Requirements Specification
+> Description: Approved functional and non-functional requirements for [System].
+> Format: Version-controlled document (PDF/Docx).
+> Acceptance: Signed off by [Customer Role].
+
+---
+
+### 3.6 Requirements (Functional & Non-Functional)
+
+**Purpose**
+Capture key solution expectations.
+
+**Include**
+- Functional requirements summary or reference (user stories, use cases).
+- Non-functional requirements: performance, security, availability, usability, scalability.
+- Integration points and external systems.
+
+**Avoid**
+- “TBD” everywhere.
+- Ignoring non-functional requirements.
+
+---
+
+### 3.7 Assumptions
+
+**Purpose**
+Make implicit expectations explicit.
+
+**Include**
+- Environment assumptions (access, tools, test data).
+- Customer responsibilities (SME availability, approvals).
+- Third-party dependencies (APIs, vendors).
+- Any scope, timeline, or resource assumptions.
+
+**Avoid**
+- Hidden assumptions. If you rely on it, write it.
+
+---
+
+### 3.8 Constraints
+
+**Purpose**
+Document limitations that affect delivery.
+
+**Include**
+- Regulatory or compliance constraints (if any).
+- Technology stack mandates.
+- Budget caps (if applicable).
+- Fixed dates (e.g. regulatory go-live).
+
+**Avoid**
+- Mixing assumptions and constraints; keep distinct.
+
+---
+
+### 3.9 Roles & Responsibilities (R&R / RACI)
+
+**Purpose**
+Clarify who does what.
+
+**Include**
+- Key roles on supplier and customer sides.
+- Responsibility matrix (high-level RACI per workstream or phase).
+
+**Avoid**
+- Assigning “shared” responsibility without clarity.
+
+---
+
+### 3.10 Approach & Methodology
+
+**Purpose**
+Explain how work will be executed.
+
+**Include**
+- Chosen delivery approach: Agile / Waterfall / Hybrid.
+- Cadence: sprints, milestones, demos, review cycles.
+- Key ceremonies: stand-ups, sprint reviews, steering meetings.
+
+**Avoid**
+- Buzzwords with no practical explanation.
+
+---
+
+### 3.11 Project Plan, Milestones & Timeline
+
+**Purpose**
+Provide time structure.
+
+**Include**
+- High-level timeline (phases, start/end dates where possible).
+- Major milestones with expected completion dates.
+- Dependencies affecting milestones.
+
+**Avoid**
+- “Timeline will be finalized later” with no provisional view.
+
+---
+
+### 3.12 Dependencies
+
+**Purpose**
+Identify external or internal dependencies that can impact success.
+
+**Include**
+- Customer-side dependencies (data, access, SMEs).
+- Third-party systems or vendors.
+- Internal dependencies between modules.
+
+**Avoid**
+- Implied dependencies not explicitly stated.
+
+---
+
+### 3.13 Acceptance Criteria & Testing
+
+**Purpose**
+Define how completion will be verified.
+
+**Include**
+- General acceptance approach (UAT, system testing, performance testing).
+- Criteria for overall project acceptance.
+- Criteria for each major deliverable or milestone.
+
+**Avoid**
+- “Acceptance based on mutual agreement” without criteria.
+
+---
+
+### 3.14 Change Control
+
+**Purpose**
+Handle changes without chaos.
+
+**Include**
+- Process for requesting scope changes.
+- Impact assessment steps (scope, cost, schedule).
+- Approval process and documentation.
+
+**Avoid**
+- Allowing changes via informal communication only.
+
+---
+
+### 3.15 Risks & Mitigations
+
+**Purpose**
+Surface and manage foreseeable risks.
+
+**Include**
+- Risk log: description, likelihood, impact, owner, mitigation.
+- At least 5–10 initial risks for typical software projects (e.g., environment readiness, SME availability, integration delays).
+
+**Avoid**
+- Saying “No known risks”.
+
+---
+
+### 3.16 Pricing & Payment Terms (High-Level)
+
+**Purpose**
+Summarize commercial structure (if in scope).
+
+**Include**
+- Pricing model: Fixed price / Time & Materials / Hybrid.
+- Invoicing milestones or cadence.
+- Payment due periods.
+
+**Avoid**
+- Detailed legal/finance boilerplate if handled elsewhere (e.g., Master Agreement).
+
+---
+
+### 3.17 Governance & Communication
+
+**Purpose**
+Explain how stakeholders will collaborate.
+
+**Include**
+- Governance structure: steering committee, project team, escalation path.
+- Meeting cadences and typical agendas.
+- Reporting: status reports, dashboards, risk reviews.
+
+---
+
+### 3.18 Success Metrics & KPIs
+
+**Purpose**
+Define how success will be measured after delivery.
+
+**Include**
+- 3–7 quantifiable KPIs (e.g., response time, accuracy, time saved, adoption rate).
+- Measurement timeframe (e.g., 3 months post go-live).
+
+---
+
+### 3.19 Appendices
+
+**Purpose**
+Support clarity without overloading main body.
+
+**Include**
+- Glossary of terms
+- Detailed requirements lists
+- Diagrams / architecture overviews
+- Any referenced documents list
+
+
+---
+
+Additionally check if the following are being adhered to in the sections generated:
+
+# Statement of Work (SOW)
+
+## 1. Project Overview
+**Purpose:** Summarize the high-level goal of the project.
+**Include:** Client name, vendor name, project purpose, and high-level outcome.
+**Avoid:** Generic phrasing like “build a solution.”
+**Example:**
+> This project aims to build a HIPAA-compliant telemedicine app for [Client Name], enabling patients to consult doctors remotely and securely.
+
+---
+
+## 2. Scope of Work
+**Purpose:** Define what's included (and excluded).
+**Include:** Deliverables, functional areas, platforms, integrations.
+**Avoid:** Vague bullet points like “basic features.”
+**Example:**
+- Build a responsive web app for appointment booking
+- Admin dashboard with role-based access
+- Integration with Stripe and Twilio
+**Out of Scope:** Mobile app, multilingual support
+
+---
+
+## 3. Timeline & Milestones
+**Purpose:** Define start, end, and key delivery phases.
+**Include:** Estimated dates, dependencies, review gates
+**Avoid:** Open-ended durations
+**Example:**
+- Phase 1: Requirements Finalization – Jan 2–Jan 10
+- Phase 2: Development Sprint 1 – Jan 11–Feb 15
+
+---
+
+## 4. Roles & Responsibilities
+**Purpose:** Clarify who is doing what
+**Include:** Stakeholder names/teams, RACI or responsibility matrix
+**Avoid:** “Shared responsibility” without detail
+
+---
+
+## 5. Deliverables
+**Purpose:** List tangible outputs
+**Include:** Formats, owners, timelines
+**Example:**
+- Requirements Document (PDF) – Jan 5 – Analyst Team
+- UI Prototype (Figma) – Jan 15 – Design Team
+
+---
+
+## 6. Acceptance Criteria
+**Purpose:** Define when deliverables are considered complete
+**Format:** Bullet points that are binary/testable
+**Example:**
+- Booking form validates all mandatory fields
+- Video consultation launches within 5 seconds on 4G
+
+---
+
+## 7. Assumptions
+**Purpose:** Surface what's taken for granted
+**Example:**
+- Client provides API access for legacy systems
+- UAT environment is available by Feb 10
+
+---
+
+## 8. Constraints
+**Purpose:** State any limitations
+**Example:**
+- Only supports Chrome and Firefox
+- No database migration from old system
+
+---
+
+## 9. Risks & Mitigation
+**Purpose:** Preempt problems
+**Example:**
+- Risk: API delays from third party
+  Mitigation: Add buffer in Sprint 2 timeline
+
+---
+
+## 10. Pricing & Payment Terms
+**Purpose:** Define how the vendor will be compensated
+**Include:** Fixed or milestone-based pricing
+**Example:**
+- 30% on SOW approval, 40% mid-project, 30% post-acceptance
+
+---
+
+## 11. Sign-off
+Names, roles, and signature blocks.
+
+---
+
+## 4. “NEVER-FAIL SOW” CHECKLIST (FOR GENERATION & VALIDATION)
+
+> The AI must use this checklist as an internal quality gate when creating SOWs,
+> and as an explicit evaluation tool when validating SOWs.
+
+### 4.1 Scope & Deliverables
+
+- [ ] Is the scope clearly described with **in-scope** and **out-of-scope** items?
+- [ ] Are all major deliverables listed with description, format, and owner?
+- [ ] Are there any vague phrases like “all related work” or “as required” without specifics?
+
+### 4.2 Requirements
+
+- [ ] Are key functional requirements captured or referenced?
+- [ ] Are non-functional requirements (performance, security, availability, etc.) addressed?
+- [ ] Are important integrations and external systems identified?
+
+### 4.3 Timeline & Milestones
+
+- [ ] Is there a high-level timeline or set of milestones?
+- [ ] Are there explicit completion/acceptance points?
+- [ ] Are critical dependencies that affect dates documented?
+
+### 4.4 Roles, Responsibilities & Governance
+
+- [ ] Are key roles and responsibilities clearly assigned (supplier vs customer)?
+- [ ] Is there a governance or communication plan?
+- [ ] Is an escalation path or decision-making structure described?
+
+### 4.5 Assumptions, Constraints & Dependencies
+
+- [ ] Are assumptions clearly listed and realistic?
+- [ ] Are key constraints (tech, budget, regulatory, dates) specified?
+- [ ] Are dependencies (customer actions, third parties, data, environments) documented?
+
+### 4.6 Acceptance & Quality
+
+- [ ] Does each major deliverable have acceptance criteria?
+- [ ] Is there a defined testing and acceptance approach (UAT, system testing, etc.)?
+- [ ] Are success metrics / KPIs defined or at least outlined?
+
+### 4.7 Risk Management
+
+- [ ] Are key risks explicitly listed with mitigations?
+- [ ] Are ownership and follow-up mechanisms implied or defined?
+- [ ] Are any obvious risks missing (e.g., environment readiness, SME availability)?
+
+### 4.8 Commercial & Change Control
+
+- [ ] Is the pricing/payment model at least described at a high level (if in scope)?
+- [ ] Is there a clear change control process for scope/timeline/cost changes?
+- [ ] Are responsibilities for approving changes defined?
+
+### 4.9 Language & Clarity
+
+- [ ] Is the language unambiguous, specific, and testable?
+- [ ] Are vague terms (“etc.”, “TBD”, “flexible”, “as necessary”) avoided or clearly scoped?
+- [ ] Can a new stakeholder understand what is expected without prior tribal knowledge?
+
+---
+
+## 5. HOW TO USE THIS FILE (FOR HUMANS)
+
+- **To generate a SOW**:
+  “Using the SOW rules and template in this repository, generate a draft SOW for the following project requirements: [paste requirements].”
+
+- **To validate an existing SOW**:
+  “Using the Never-Fail SOW Checklist and rules in this repository, review the following SOW, identify gaps and risks, and then propose improvements: [paste SOW].”
+
+- **To refine iteratively**:
+  “Improve the Scope and Deliverables sections of the SOW based on your earlier checklist findings and rewrite them for clarity and completeness.”
