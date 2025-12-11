@@ -887,7 +887,7 @@ Currently minimal configuration is needed. Future additions may include:
 
 ### Phase 3: AI Integration
 - [ ] AI-powered story generation from epic
-- [ ] Acceptance criteria suggestions
+- [x] Acceptance criteria suggestions
 - [ ] Technical breakdown recommendations
 - [ ] Code file path suggestions
 - [ ] Story estimation assistance

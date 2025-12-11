@@ -1,0 +1,982 @@
+---
+description: When the user asks to write Acceptance criteria for Epics of stories
+alwaysApply: false
+---
+# =====================================================================
+# ACCEPTANCE CRITERIA GUIDELINES & RULES FOR CURSOR
+# Version: 1.0
+# Last Updated: December 2024
+# Applies when creating or reviewing acceptance criteria for Epics and User Stories.
+# This rule set supersedes any conflicting acceptance criteria instructions.
+# =====================================================================
+
+# -------------------------
+# OVERVIEW & PURPOSE
+# -------------------------
+
+## What are Acceptance Criteria?
+
+Acceptance Criteria (AC) are specific conditions that must be satisfied for a user story or epic to be considered complete and accepted by the Product Owner or stakeholders. They serve as:
+
+1. **Definition of Done**: Clear boundaries for when work is complete
+2. **Testing Guidelines**: Basis for test case creation
+3. **Scope Management**: Prevention of scope creep
+4. **Communication Tool**: Shared understanding between team members
+5. **Quality Gate**: Objective pass/fail decision criteria
+
+## Why Good Acceptance Criteria Matter
+
+- **Reduces Ambiguity**: Eliminates "I thought you meant..." conversations
+- **Prevents Rework**: Clear requirements from the start
+- **Enables Estimation**: Team can accurately estimate work
+- **Facilitates Testing**: QA knows exactly what to test
+- **Ensures Value**: Confirms user needs are met
+- **Legal/Compliance**: Provides audit trail for regulatory requirements
+
+---
+
+# -------------------------
+# CORE PRINCIPLES
+# -------------------------
+
+## The INVEST Criteria for Good Acceptance Criteria
+
+Every set of acceptance criteria should be:
+
+### I - Independent
+- Can be tested without dependency on other stories (where possible)
+- Does not create cascading failures if one criterion fails
+- Each criterion stands alone as a testable condition
+
+### N - Negotiable
+- Written at appropriate level of detail (not too prescriptive on "how")
+- Allows development team flexibility in implementation
+- Focuses on "what" and "why" rather than "how"
+
+### V - Valuable
+- Directly tied to business or user value
+- Addresses user needs or business objectives
+- Not purely technical unless it's a technical story
+
+### E - Estimable
+- Clear enough that team can estimate effort
+- All unknowns and assumptions are documented
+- Team understands what "done" looks like
+
+### S - Small (Specific)
+- Focused on single piece of functionality
+- Not too broad or encompassing
+- Typically 3-8 criteria per story (more indicates story should be split)
+
+### T - Testable
+- Can be objectively verified (pass/fail)
+- No ambiguous terms like "fast," "good," "user-friendly" without definition
+- Includes measurable criteria where applicable
+
+---
+
+# -------------------------
+# ACCEPTANCE CRITERIA FORMATS
+# -------------------------
+
+## Format 1: Gherkin (Given-When-Then) - RECOMMENDED
+
+**When to Use:**
+- User-facing features with clear workflows
+- Features requiring behavior validation
+- Stories with conditional logic
+- Integration scenarios
+- Most functional requirements
+
+**Structure:**
+```gherkin
+Scenario: [Descriptive name of the scenario]
+  Given [precondition/context]
+  And [additional context if needed]
+  When [action/trigger/event]
+  And [additional actions if needed]
+  Then [expected outcome/result]
+  And [additional outcomes if needed]
+  But [exception or negative condition]
+```
+
+**Benefits:**
+- Universally understood format
+- Maps directly to automated tests (Cucumber, SpecFlow)
+- Forces clear thinking about context, action, and outcome
+- Natural language readable by non-technical stakeholders
+- Supports behavior-driven development (BDD)
+
+**Example:**
+```gherkin
+Scenario: User successfully logs in with valid credentials
+  Given the user is on the login page
+  And the user has a valid account (username: test@example.com)
+  When the user enters their username "test@example.com"
+  And the user enters their password "SecurePass123!"
+  And the user clicks the "Login" button
+  Then the user is redirected to the dashboard page
+  And the welcome message displays "Welcome back, John!"
+  And the session cookie is set with 30-minute expiration
+```
+
+## Format 2: Checklist (Simple Bullet Points)
+
+**When to Use:**
+- Simple features with straightforward requirements
+- Configuration or setup stories
+- Technical debt stories
+- Research/spike stories
+- Stories where workflow is obvious
+
+**Structure:**
+```
+Acceptance Criteria:
+- [ ] Criterion 1 (specific, testable condition)
+- [ ] Criterion 2 (specific, testable condition)
+- [ ] Criterion 3 (specific, testable condition)
+```
+
+**Benefits:**
+- Quick to write and read
+- Good for non-complex stories
+- Easy checklist for manual testing
+- Straightforward for team to review
+
+**Example:**
+```
+Acceptance Criteria:
+- [ ] User can select profile photo from device gallery
+- [ ] Selected photo is displayed as circular avatar (200x200px)
+- [ ] Photo is compressed to max 500KB before upload
+- [ ] Success message appears after successful upload
+- [ ] Avatar updates across all pages within 2 seconds
+```
+
+## Format 3: Scenario Outline (Data-Driven)
+
+**When to Use:**
+- Testing multiple input variations
+- Validation rules with different data sets
+- Boundary testing scenarios
+- Permission-based access control
+
+**Structure:**
+```gherkin
+Scenario Outline: [Template description]
+  Given [precondition with <placeholder>]
+  When [action with <placeholder>]
+  Then [expected outcome with <placeholder>]
+
+  Examples:
+  | input_field | expected_result |
+  | value1      | outcome1        |
+  | value2      | outcome2        |
+```
+
+**Example:**
+```gherkin
+Scenario Outline: Password validation
+  Given the user is on the registration page
+  When the user enters password "<password>"
+  Then the system displays "<message>"
+
+  Examples:
+  | password     | message                           |
+  | abc          | Password must be at least 8 chars |
+  | password     | Password must include a number    |
+  | Pass123      | Password must include special char|
+  | Pass@123     | Password accepted                 |
+```
+
+---
+
+# -------------------------
+# MANDATORY RULES FOR ACCEPTANCE CRITERIA
+# -------------------------
+
+## Rule 1: EVERY User Story MUST Have Acceptance Criteria
+
+**Why:** Without AC, there's no objective way to determine if a story is complete.
+
+**Enforcement:**
+- Stories without AC cannot be moved to "In Progress"
+- Product Owner must review and approve AC before sprint planning
+- AC must exist before story estimation
+
+**Exception:**
+- Research/Spike stories may have "Definition of Done" instead of traditional AC
+- Technical debt stories may use checklist format with technical outcomes
+
+## Rule 2: Acceptance Criteria MUST Be Written Before Development Starts
+
+**Why:** Writing AC during development leads to confirmation bias and missed scenarios.
+
+**Best Practice:**
+- Write AC during backlog refinement
+- Review AC in sprint planning
+- Update AC only if requirements change (with PO approval)
+
+## Rule 3: Use Gherkin Format for All Functional Requirements
+
+**Why:** Gherkin provides structure, clarity, and maps to automated tests.
+
+**Mandatory Elements:**
+- Every functional AC must include Given-When-Then structure
+- Avoid "And" chains longer than 2-3 items (creates new scenario instead)
+- Use present tense ("user clicks" not "user clicked")
+
+## Rule 4: Acceptance Criteria MUST Be Testable and Objective
+
+**Why:** Subjective criteria lead to disputes and unclear definition of done.
+
+**Bad Examples (Subjective):**
+- ❌ "System should be fast"
+- ❌ "UI should look good"
+- ❌ "Error handling should be user-friendly"
+- ❌ "Performance should be acceptable"
+
+**Good Examples (Objective):**
+- ✅ "Page loads within 2 seconds on 4G network"
+- ✅ "UI matches approved Figma design (link: ...)"
+- ✅ "Error message displays: 'Invalid email format. Example: user@domain.com'"
+- ✅ "System handles 100 concurrent users without response time > 3 seconds"
+
+## Rule 5: Each Scenario MUST Include Positive AND Negative Cases
+
+**Why:** Most bugs occur in error handling and edge cases.
+
+**Requirement:**
+- Minimum 1 happy path scenario
+- Minimum 2 negative/edge case scenarios per story
+- Cover: invalid input, missing data, permission errors, system failures
+
+**Example:**
+```gherkin
+# POSITIVE CASE
+Scenario: Successfully create appointment
+  Given doctor has available slots on Dec 15, 2024
+  When patient selects 10:00 AM slot
+  Then appointment is confirmed
+  And confirmation email is sent
+
+# NEGATIVE CASES
+Scenario: Attempt to book unavailable slot
+  Given the 10:00 AM slot is already booked
+  When patient attempts to select that slot
+  Then error message displays "This slot is no longer available"
+  And alternative slots are suggested
+
+Scenario: Attempt to book without login
+  Given user is not logged in
+  When user attempts to book appointment
+  Then user is redirected to login page
+  And message displays "Please log in to book appointments"
+```
+
+## Rule 6: Avoid Implementation Details (Focus on WHAT, not HOW)
+
+**Why:** AC defines requirements, not design. Implementation is team's responsibility.
+
+**Bad (Too Prescriptive):**
+- ❌ "When user clicks button, make AJAX call to /api/users endpoint using POST method"
+- ❌ "Store data in users table with columns: id, name, email"
+- ❌ "Use React Context API for state management"
+
+**Good (Outcome-Focused):**
+- ✅ "When user clicks Save, data persists and user sees confirmation message"
+- ✅ "User information is stored securely and retrievable on next login"
+- ✅ "User preferences are available across all pages without page refresh"
+
+**Exception:** AC may include technical details for:
+- API contracts (when building integrations)
+- Performance requirements (response times, throughput)
+- Security requirements (encryption, authentication)
+- Compliance requirements (audit logging, data retention)
+
+## Rule 7: Quantify Whenever Possible
+
+**Why:** Numbers eliminate ambiguity and enable objective testing.
+
+**Apply to:**
+- **Time:** "within 2 seconds", "after 30 minutes", "by EOD"
+- **Quantity:** "at least 10 items", "maximum 500 characters", "exactly 3 retries"
+- **Percentage:** "95% accuracy", "80% code coverage", "< 5% error rate"
+- **Size:** "max 5MB file", "200x200 pixel image", "8-character minimum"
+- **Frequency:** "once per day", "every 5 minutes", "on every page load"
+
+**Examples:**
+- ✅ "Search returns results within 1 second for 95% of queries"
+- ✅ "Password must be 8-64 characters"
+- ✅ "System sends reminder exactly 24 hours before appointment"
+- ✅ "Dashboard displays data from last 30 days"
+
+## Rule 8: Include System State in Given Clause
+
+**Why:** Tests must be repeatable and isolated. Initial state matters.
+
+**Required Context:**
+- User authentication state (logged in, logged out, specific role)
+- Data prerequisites (records exist, database state)
+- System configuration (feature flags, settings)
+- Time/date context (if relevant)
+- External system state (APIs available, integrations active)
+
+**Example:**
+```gherkin
+Scenario: View patient history
+  Given the user is logged in as a "Doctor"
+  And patient "John Doe" (ID: 12345) exists in the system
+  And patient has 3 previous visits recorded
+  And the EMR integration is active
+  When doctor searches for patient "John Doe"
+  Then patient history displays all 3 previous visits
+  And visit dates are shown in reverse chronological order
+```
+
+## Rule 9: One Acceptance Criterion = One Testable Condition
+
+**Why:** Each criterion should have clear pass/fail outcome.
+
+**Bad (Multiple Conditions in One):**
+- ❌ "User can login, view dashboard, and update profile"
+
+**Good (Separated Concerns):**
+- ✅ Scenario 1: User can login with valid credentials
+- ✅ Scenario 2: User can view personalized dashboard after login
+- ✅ Scenario 3: User can update profile information
+
+**Guideline:** If you use "and" more than twice, split into separate scenarios.
+
+## Rule 10: Acceptance Criteria MUST Align with User Story Statement
+
+**Why:** AC validates the story's "I want" and "so that" clauses.
+
+**User Story:**
+```
+As a patient, I want to view my upcoming appointments,
+so that I can plan my schedule accordingly.
+```
+
+**AC Must Validate:**
+- ✅ Patient can VIEW appointments (not create or cancel)
+- ✅ Shows UPCOMING appointments (not past)
+- ✅ Displays in a way that helps PLANNING (date, time, location, doctor)
+
+**AC Should NOT Include (Scope Creep):**
+- ❌ Ability to reschedule appointments (different story)
+- ❌ Viewing appointment history (different story)
+- ❌ Receiving appointment reminders (different story)
+
+---
+
+# -------------------------
+# ADVANCED RULES & BEST PRACTICES
+# -------------------------
+
+## Rule 11: Include Non-Functional Requirements Where Relevant
+
+**Categories:**
+
+### Performance
+```gherkin
+Scenario: Dashboard loads quickly
+  Given user has 1000 patient records
+  When user navigates to dashboard
+  Then page loads completely within 2 seconds
+  And all charts render within 3 seconds
+```
+
+### Security
+```gherkin
+Scenario: Unauthorized access prevention
+  Given user is not logged in
+  When user attempts to access /patient-records URL directly
+  Then user is redirected to login page
+  And no patient data is displayed
+  And attempt is logged in security audit trail
+```
+
+### Accessibility
+```gherkin
+Scenario: Screen reader compatibility
+  Given user is using JAWS screen reader
+  When user navigates to appointment form
+  Then all form fields have proper labels
+  And field requirements are announced
+  And error messages are announced immediately
+```
+
+### Usability
+```gherkin
+Scenario: Mobile responsive design
+  Given user is on mobile device (375px width)
+  When user views appointment list
+  Then appointments display in single column
+  And all action buttons are tappable (min 44px height)
+  And no horizontal scrolling is required
+```
+
+## Rule 12: Handle Concurrent Actions and Race Conditions
+
+**Why:** Real systems have multiple simultaneous users.
+
+**Example:**
+```gherkin
+Scenario: Prevent double-booking
+  Given Doctor has one available slot at 10:00 AM
+  And Patient A is viewing the slot
+  And Patient B is also viewing the same slot
+  When Patient A books the slot
+  And Patient B attempts to book the same slot 2 seconds later
+  Then Patient B sees error "Slot no longer available"
+  And Patient B is shown alternative slots
+  And only Patient A's booking is confirmed
+```
+
+## Rule 13: Define Expected Behavior for Async Operations
+
+**Why:** Many operations are asynchronous and users need feedback.
+
+**Example:**
+```gherkin
+Scenario: File upload with progress
+  Given user selects a 50MB PDF file
+  When user clicks "Upload"
+  Then upload button displays "Uploading..." with spinner
+  And upload button is disabled during upload
+  And progress bar shows percentage complete
+  When upload completes after ~30 seconds
+  Then success message displays "File uploaded successfully"
+  And file appears in documents list
+  And upload button returns to enabled state
+```
+
+## Rule 14: Specify Data Validation Rules Explicitly
+
+**Why:** Validation is a common source of bugs and user frustration.
+
+**Format:**
+```gherkin
+Scenario Outline: Email validation
+  Given user is on registration form
+  When user enters email "<email>"
+  And clicks "Next"
+  Then validation result is "<result>"
+  And message displays "<message>"
+
+  Examples:
+  | email              | result  | message                          |
+  | valid@example.com  | Success | Email accepted                   |
+  | invalid            | Error   | Please enter valid email         |
+  | test@              | Error   | Please enter valid email         |
+  | @example.com       | Error   | Please enter valid email         |
+  | (empty)            | Error   | Email is required                |
+  | test+tag@mail.com  | Success | Email accepted (plus addressing) |
+```
+
+## Rule 15: Define Audit and Logging Requirements
+
+**Why:** Compliance and troubleshooting require audit trails.
+
+**Example:**
+```gherkin
+Scenario: Audit trail for patient record access
+  Given Dr. Smith is logged in
+  When Dr. Smith views patient John Doe's record
+  Then audit log records:
+    | Field        | Value                      |
+    | Action       | VIEW_PATIENT_RECORD        |
+    | User         | dr.smith@hospital.com      |
+    | Patient      | John Doe (ID: 12345)       |
+    | Timestamp    | 2024-12-11 14:30:25 UTC    |
+    | IP Address   | 192.168.1.100              |
+  And audit log is immutable (cannot be deleted/modified)
+  And audit log is retained for 7 years
+```
+
+## Rule 16: Specify Integration Behavior
+
+**Why:** Integration failures are common and must be handled gracefully.
+
+**Example:**
+```gherkin
+Scenario: Payment gateway timeout
+  Given user has entered payment information
+  And payment gateway typically responds in 2 seconds
+  When user clicks "Pay Now"
+  And payment gateway does not respond within 10 seconds
+  Then user sees message "Payment processing is taking longer than usual"
+  And system retries payment request (max 3 attempts)
+  And if all retries fail, user sees "Payment failed. Please try again."
+  And user's payment information is not charged
+  And failed attempt is logged for investigation
+```
+
+## Rule 17: Define Internationalization (i18n) Requirements
+
+**Why:** Global applications must work across languages and locales.
+
+**Example:**
+```gherkin
+Scenario: Display content in user's preferred language
+  Given user's browser language is set to "Spanish"
+  When user visits the homepage
+  Then all text displays in Spanish
+  And date format follows Spanish convention (DD/MM/YYYY)
+  And currency displays as EUR with appropriate symbol
+  And numbers use comma as decimal separator
+
+Scenario: Language switching
+  Given user is viewing page in English
+  When user selects "Español" from language dropdown
+  Then page content updates to Spanish immediately
+  And user preference is saved for future visits
+  And URL parameter reflects language: ?lang=es
+```
+
+---
+
+# -------------------------
+# COMMON MISTAKES TO AVOID
+# -------------------------
+
+## Mistake 1: Vague or Ambiguous Language
+
+**Bad:**
+- ❌ "System should be user-friendly"
+- ❌ "App should be fast"
+- ❌ "Error handling should be good"
+- ❌ "Interface should be intuitive"
+
+**Good:**
+- ✅ "New users complete first task without help documentation in <5 minutes"
+- ✅ "Page load time <2 seconds on 4G network (95th percentile)"
+- ✅ "Error messages display specific problem and resolution steps"
+- ✅ "90% of users complete checkout in ≤3 clicks"
+
+## Mistake 2: Too Many Acceptance Criteria
+
+**Problem:** Story probably too large or complex
+
+**Solution:**
+- If >8 acceptance criteria, consider splitting the story
+- Each story should deliver one coherent piece of value
+- Look for natural boundaries to split
+
+**Example of Story Needing Split:**
+```
+Original Story: User Registration (15 criteria)
+
+Split into:
+- Story 1: Basic Registration (5 criteria)
+- Story 2: Email Verification (3 criteria)
+- Story 3: Profile Completion (4 criteria)
+- Story 4: Welcome Email (3 criteria)
+```
+
+## Mistake 3: Mixing Different Abstraction Levels
+
+**Bad:**
+```gherkin
+Scenario: User registration
+  Given user is on registration page
+  When user enters email in input field with id="email-input"  ← Too specific
+  And user enters password
+  Then user account is created in users table  ← Too technical
+  And welcome screen appears  ← Right level
+```
+
+**Good:**
+```gherkin
+Scenario: User registration
+  Given user is on registration page
+  When user enters valid email address
+  And user enters secure password
+  Then user account is created successfully
+  And welcome screen displays with user's name
+  And confirmation email is sent to user's email
+```
+
+## Mistake 4: Missing Cleanup or State Reset
+
+**Bad:**
+```gherkin
+Scenario: Create appointment
+  When doctor creates appointment for 10:00 AM
+  Then appointment appears in calendar
+  # ❌ What happens to this test data?
+```
+
+**Good:**
+```gherkin
+Scenario: Create appointment
+  Given test database is in clean state
+  When doctor creates appointment for 10:00 AM
+  Then appointment appears in calendar with ID [appointment_id]
+  And appointment can be retrieved by ID
+  # Cleanup handled by test framework teardown
+```
+
+## Mistake 5: Forgetting Edge Cases
+
+**Checklist of Common Edge Cases:**
+- [ ] Empty input (null, empty string, empty array)
+- [ ] Maximum limits (character count, file size, number of items)
+- [ ] Minimum limits (below threshold values)
+- [ ] Special characters (unicode, emojis, SQL injection attempts)
+- [ ] Boundary values (exactly at min/max, one above/below)
+- [ ] Concurrent actions (two users doing same thing)
+- [ ] Network failures (timeout, disconnect, retry)
+- [ ] Permission boundaries (unauthorized access attempts)
+- [ ] State transitions (invalid state changes)
+- [ ] Time-based (timezone differences, DST, expired sessions)
+
+## Mistake 6: Not Involving QA in AC Creation
+
+**Why It's a Mistake:**
+- QA has expertise in edge cases and test scenarios
+- AC will be used to create test cases
+- Early QA involvement catches issues before development
+
+**Best Practice:**
+- Include QA in backlog refinement sessions
+- QA reviews and suggests additional AC
+- QA identifies testability concerns early
+
+## Mistake 7: Writing AC After Development Starts
+
+**Problems:**
+- Confirmation bias (AC written to match what's already built)
+- Missed requirements
+- Scope disputes
+- Rework and delays
+
+**Solution:**
+- AC must be complete before sprint planning
+- Development cannot start until AC is approved by PO
+- Any AC changes during sprint require PO approval and may impact sprint commitment
+
+---
+
+# -------------------------
+# EPIC-LEVEL ACCEPTANCE CRITERIA
+# -------------------------
+
+## How Epic AC Differs from Story AC
+
+**Story AC:** Detailed, scenario-based, immediate functionality
+**Epic AC:** High-level, outcome-based, business value
+
+## Rules for Epic Acceptance Criteria
+
+### Rule E1: Focus on Business Outcomes, Not Features
+
+**Bad (Feature-Focused):**
+- ❌ "Appointment scheduling module is built"
+- ❌ "Patient portal is deployed"
+
+**Good (Outcome-Focused):**
+- ✅ "Patients can book appointments online 24/7"
+- ✅ "60% reduction in phone calls for scheduling"
+- ✅ "No-show rate decreases from 18% to <5%"
+
+### Rule E2: Epic AC Should Be Measurable
+
+**Format:**
+```
+Epic Acceptance Criteria:
+- [ ] [Metric] reaches [target value] within [timeframe]
+- [ ] [Percentage] of [user group] can [capability] without [assistance]
+- [ ] [Business metric] improves from [baseline] to [target]
+```
+
+**Example:**
+```
+Epic: Online Appointment Scheduling
+
+Acceptance Criteria:
+- [ ] 80% of patients can book appointments without calling clinic
+- [ ] Average appointment booking time reduces from 10min to <3min
+- [ ] No-show rate decreases by 25% within 60 days of launch
+- [ ] System handles 100 concurrent booking requests
+- [ ] Patient satisfaction score for scheduling increases to 4.5/5
+- [ ] 90% of bookings completed without staff intervention
+```
+
+### Rule E3: Include Success Metrics and KPIs
+
+**Categories:**
+
+**User Adoption:**
+- X% of target users actively using feature
+- Y number of transactions per day/week
+- Z% feature utilization rate
+
+**Business Impact:**
+- Revenue increase/cost reduction
+- Process efficiency gains
+- Customer satisfaction improvement
+
+**Technical Quality:**
+- System performance benchmarks
+- Uptime/reliability targets
+- Security/compliance standards
+
+**Example:**
+```
+Epic: Revenue Cycle Management Optimization
+
+Acceptance Criteria:
+
+User Adoption:
+- [ ] 95% of claims submitted through automated system
+- [ ] 90% of billing staff trained and using new workflow
+
+Business Impact:
+- [ ] Days Sales Outstanding (DSO) reduced from 45 to <25 days
+- [ ] Claim denial rate reduced from 12% to <5%
+- [ ] $140K+ annual revenue recapture from improved billing
+
+Technical Quality:
+- [ ] Claim processing time <2 seconds per claim
+- [ ] System available 99.9% during business hours
+- [ ] Zero security incidents during pilot period
+
+Compliance:
+- [ ] HIPAA audit passed with zero findings
+- [ ] All payer gateway integrations certified
+```
+
+### Rule E4: Epic AC Must Be Achievable Within Epic Timeframe
+
+**Bad (Unrealistic):**
+- ❌ "Become #1 healthcare platform globally" (for 6-month epic)
+- ❌ "100% patient adoption" (unlikely in any timeframe)
+
+**Good (Realistic):**
+- ✅ "Achieve 60% patient adoption within 90 days post-launch"
+- ✅ "Top 3 healthcare platform in target market by user reviews"
+
+### Rule E5: Link Epic AC to Strategic Objectives
+
+**Format:**
+```
+Epic AC should answer:
+- How does this epic advance company strategy?
+- What business problem does it solve?
+- What happens if we DON'T do this epic?
+```
+
+**Example:**
+```
+Epic: AI-Powered Clinical Documentation
+
+Strategic Alignment:
+- Supports strategic goal: "Reduce clinician burnout"
+- Addresses problem: "Doctors spend 2+ hours on charts after hours"
+- Risk if not done: "Lose competitive advantage; physician retention issues"
+
+Acceptance Criteria:
+- [ ] 70% reduction in documentation time per encounter
+- [ ] Physician satisfaction with documentation increases from 2.8 to 4.2/5
+- [ ] 95% accuracy rate for AI-generated clinical notes
+- [ ] Zero HIPAA violations from AI system in first 90 days
+- [ ] 3+ additional patients seen per doctor per day
+- [ ] ROI positive within 6 months (cost savings > implementation cost)
+```
+
+---
+
+# -------------------------
+# TEMPLATES & EXAMPLES
+# -------------------------
+
+## Template 1: Standard User Story AC (Gherkin)
+
+```gherkin
+USER STORY: [Story title]
+
+ACCEPTANCE CRITERIA:
+
+# Happy Path Scenario
+Scenario: [Primary successful scenario]
+  Given [initial context and preconditions]
+  And [additional context if needed]
+  When [user action or trigger]
+  And [additional actions if needed]
+  Then [expected immediate outcome]
+  And [additional outcomes]
+  And [system state changes]
+
+# Alternative Success Scenario (if applicable)
+Scenario: [Alternative way to succeed]
+  Given [different initial context]
+  When [different action]
+  Then [alternative successful outcome]
+
+# Error Scenario 1
+Scenario: [Specific error case]
+  Given [context leading to error]
+  When [action that triggers error]
+  Then [specific error message displays]
+  And [user remains on current page / is guided to resolution]
+  And [error is logged for monitoring]
+
+# Error Scenario 2
+Scenario: [Another error case]
+  Given [different error context]
+  When [action causing error]
+  Then [appropriate error handling]
+
+# Edge Case
+Scenario: [Boundary or unusual condition]
+  Given [edge case setup]
+  When [action at boundary]
+  Then [expected boundary behavior]
+
+# Performance Criterion (if applicable)
+Scenario: [Performance expectation]
+  Given [load condition]
+  When [action performed]
+  Then [response time requirement]
+  And [system remains responsive]
+```
+
+## Template 2: Simple Checklist AC
+
+```markdown
+USER STORY: [Story title]
+
+ACCEPTANCE CRITERIA:
+
+Functional Requirements:
+- [ ] [Specific functional requirement 1]
+- [ ] [Specific functional requirement 2]
+- [ ] [Specific functional requirement 3]
+
+Error Handling:
+- [ ] [Error condition 1 handled appropriately]
+- [ ] [Error condition 2 handled appropriately]
+
+UI/UX Requirements:
+- [ ] [UI element behavior 1]
+- [ ] [Responsive design requirement]
+- [ ] [Accessibility requirement]
+
+Non-Functional Requirements:
+- [ ] [Performance requirement with metric]
+- [ ] [Security requirement]
+- [ ] [Logging/audit requirement]
+
+Testing Requirements:
+- [ ] [Unit test coverage requirement]
+- [ ] [Integration test requirement]
+```
+
+## Template 3: Epic-Level AC
+
+```markdown
+EPIC: [Epic Title]
+
+BUSINESS OBJECTIVES:
+- [Primary business goal]
+- [Secondary business goal]
+
+ACCEPTANCE CRITERIA:
+
+Success Metrics:
+- [ ] [Quantitative metric 1]: Improve from [baseline] to [target] within [timeframe]
+- [ ] [Quantitative metric 2]: Achieve [target value] by [date]
+- [ ] [Qualitative metric]: [Target user group] reports [improvement]
+
+Technical Requirements:
+- [ ] System performance: [specific benchmark]
+- [ ] Security/Compliance: [specific standard met]
+- [ ] Integration: [systems successfully connected]
+
+User Adoption:
+- [ ] [X]% of [user group] actively using feature
+- [ ] [Y] transactions per [timeframe]
+- [ ] [Z]% reduction in [old process metric]
+
+Stakeholder Acceptance:
+- [ ] Demo approved by [stakeholder group]
+- [ ] [Regulatory body] certification obtained
+- [ ] Go-live checklist 100% complete
+
+Financial Impact:
+- [ ] ROI positive within [timeframe]
+- [ ] Cost reduction of $[amount] per [period]
+- [ ] Revenue increase of [percentage] or $[amount]
+```
+
+---
+
+# -------------------------
+# REVIEW & VALIDATION CHECKLIST
+# -------------------------
+
+## Before Approving Acceptance Criteria, Verify:
+
+### Completeness Check
+- [ ] All mandatory scenarios covered (happy path + errors + edge cases)
+- [ ] Non-functional requirements included (if applicable)
+- [ ] Data validation rules specified
+- [ ] Integration points defined
+- [ ] Audit/logging requirements stated (if applicable)
+
+### Clarity Check
+- [ ] No ambiguous terms ("fast," "good," "user-friendly" without definition)
+- [ ] All quantitative values specified (time, size, count, percentage)
+- [ ] Technical jargon explained or avoided
+- [ ] Can a new team member understand this?
+
+### Testability Check
+- [ ] Each criterion has clear pass/fail outcome
+- [ ] Can be tested without access to implementation code
+- [ ] Test data requirements are clear
+- [ ] Preconditions are achievable
+
+### Alignment Check
+- [ ] AC aligns with user story statement (As a... I want... So that...)
+- [ ] AC delivers value stated in "so that" clause
+- [ ] No scope creep (features not in story statement)
+- [ ] Aligns with epic objectives (if part of epic)
+
+### Format Check
+- [ ] Uses approved format (Gherkin recommended for functional)
+- [ ] Follows team's naming conventions
+- [ ] Proper Given-When-Then structure
+- [ ] Scenarios have descriptive names
+
+### Collaboration Check
+- [ ] Product Owner reviewed and approved
+- [ ] Development team can estimate based on AC
+- [ ] QA can create test cases from AC
+- [ ] All questions and assumptions documented
+
+---
+
+# -------------------------
+# AI AGENT INSTRUCTIONS
+# -------------------------
+
+## When AI is asked to create or review Acceptance Criteria:
+
+### MUST DO:
+1. **Always use Gherkin format** for functional requirements unless explicitly asked otherwise
+2. **Include minimum 3 scenarios**: 1 happy path, 2+ negative/edge cases
+3. **Quantify everything**: Replace vague terms with specific metrics
+4. **Verify testability**: Every AC must have objective pass/fail criteria
+5. **Check alignment**: Ensure AC matches the user story statement
+6. **Include Given clause**: Always specify initial system state
+7. **Add non-functional requirements**: Performance, security, accessibility where relevant
+8. **Use scenario outlines**: For validation rules with multiple input variations
+9. **Consider edge cases**: Empty input, max limits, concurrent actions, timeouts
+10. **Format properly**: Use code blocks for Gherkin, checkboxes for lists
+
+### NEVER DO:
+1. **Never use ambiguous terms** without definition (fast, good, user-friendly)
+2. **Never skip negative scenarios** - they catch most bugs
+3. **Never prescribe implementation** - this is the responsibility of the development team
