@@ -889,10 +889,20 @@ Currently minimal configuration is needed. Future additions may include:
 - [ ] AI-powered story generation from epic
 - [x] Acceptance criteria suggestions
 - [ ] Technical breakdown recommendations
-- [ ] Code file path suggestions
 - [ ] Story estimation assistance
 
-
+### Phase 4: Advanced Project Management
+- [ ] Sprint planning and story distribution
+- [ ] Timeline and Gantt chart views
+- [ ] Resource planning and allocation
+- [ ] Leave planning integration
+- [ ] Cost estimation with hourly rates
+- [ ] Budget tracking and margin calculations
+- [ ] Contributor workload balancing
+- [ ] Story points distribution analysis
+- [ ] Git integration (auto-update stories from commits)
+- [ ] Export to other formats (CSV, PDF, Markdown)
+- [ ] Import Stories from xlsx file
 
 ## Contributing
 
