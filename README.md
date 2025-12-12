@@ -899,7 +899,7 @@ Currently minimal configuration is needed. Future additions may include:
 - [ ] Cost estimation with hourly rates
 - [ ] Budget tracking and margin calculations
 - [ ] Contributor workload balancing
-- [ ] Story points distribution analysis
+- [ ] Story points distribution analysis + review/justification
 - [ ] Git integration (auto-update stories from commits)
 - [ ] Export to other formats (CSV, PDF, Markdown)
 - [ ] Import Stories from xlsx file

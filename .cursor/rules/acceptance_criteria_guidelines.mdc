@@ -980,3 +980,507 @@ Financial Impact:
 1. **Never use ambiguous terms** without definition (fast, good, user-friendly)
 2. **Never skip negative scenarios** - they catch most bugs
 3. **Never prescribe implementation** - this is the responsibility of the development team
+4. **Never create AC after seeing implementation** - causes confirmation bias
+5. **Never write >8 criteria per story** - flag for splitting story instead
+6. **Never forget system state in Given clause**
+7. **Never use "should" or "might"** - use "must" or definitive language
+8. **Never leave validation rules vague** - specify exact rules with examples
+9. **Never forget integration failure scenarios**
+10. **Never skip performance requirements** for user-facing features
+
+## Output Format
+
+When generating AC, output in this structure:
+
+## Acceptance Criteria
+
+### Primary Success Scenario
+```gherkin
+Scenario: [Descriptive name]
+  Given [initial state]
+  When [action]
+  Then [outcome]
+```
+
+### Alternative Success Paths (if applicable)
+```gherkin
+Scenario: [Alternative path]
+  Given [different context]
+  When [different action]
+  Then [successful outcome]
+```
+
+### Error Handling & Validation
+```gherkin
+Scenario: [Error case 1]
+  Given [error context]
+  When [action]
+  Then [error handling]
+
+Scenario: [Error case 2]
+  Given [different error]
+  When [action]
+  Then [appropriate response]
+```
+
+### Edge Cases
+```gherkin
+Scenario: [Edge case]
+  Given [boundary condition]
+  When [action]
+  Then [expected behavior]
+```
+
+### Non-Functional Requirements (if applicable)
+```gherkin
+Scenario: [Performance/Security/Accessibility requirement]
+  Given [conditions]
+  When [action]
+  Then [measurable outcome]
+```
+
+## Validation Before Output
+
+Run through this checklist:
+
+- [ ] Minimum 3 scenarios present
+- [ ] Gherkin syntax correct
+- [ ] All scenarios have Given-When-Then
+- [ ] No ambiguous terms
+- [ ] Quantified metrics where applicable
+- [ ] Testable and objective
+- [ ] Negative cases included
+- [ ] Edge cases considered
+- [ ] NFRs included (if relevant)
+- [ ] Aligns with user story
+
+---
+
+## Real-World Examples
+
+### Example 1: Healthcare - Patient Appointment Booking
+
+**USER STORY:**
+As a patient, I want to book appointments online, so that I can schedule visits
+without calling during business hours.
+
+ACCEPTANCE CRITERIA:
+
+### Primary Success Scenario
+```gherkin
+Scenario: Successfully book appointment with preferred doctor
+  Given patient "John Doe" is logged into the patient portal
+  And Dr. Sarah Chen has available slots on Dec 15, 2024
+  And patient has no existing appointment on that date
+  When patient selects Dr. Sarah Chen from provider list
+  And patient selects "Cardiology Consultation" as appointment type
+  And patient selects the 10:00 AM - 10:30 AM slot on Dec 15, 2024
+  And patient confirms the booking
+  Then appointment is created with status "Confirmed"
+  And confirmation number is generated (format: APT-YYYYMMDD-XXXX)
+  And confirmation email is sent to patient within 1 minute
+  And confirmation SMS is sent to patient's mobile number
+  And appointment appears in patient's "My Appointments" list
+  And the selected time slot becomes unavailable to other patients
+```
+
+### Alternative Success Path
+```gherkin
+Scenario: Book appointment with "Any Available Doctor"
+  Given patient is logged in
+  And patient selects "Any Available Doctor" option
+  And patient selects appointment date Dec 15, 2024
+  And multiple doctors have availability on that date
+  When patient selects 10:00 AM time slot
+  Then system assigns earliest available doctor
+  And displays assigned doctor name on confirmation
+  And patient can view doctor profile before final confirmation
+```
+
+### Error Handling & Validation
+```gherkin
+Scenario: Attempt to book already reserved slot
+  Given patient is viewing available slots for Dec 15, 2024
+  And the 10:00 AM slot shows as available
+  And another patient books the 10:00 AM slot 5 seconds earlier
+  When this patient attempts to select the 10:00 AM slot
+  Then system displays "This slot was just booked by another patient"
+  And system refreshes available slots within 2 seconds
+  And alternative nearby slots (9:30 AM, 10:30 AM) are highlighted
+  And no partial booking is created
+
+Scenario: Attempt booking without required information
+  Given patient has not completed profile (missing phone number)
+  When patient attempts to book appointment
+  Then system displays "Please complete your profile to book appointments"
+  And system navigates to profile page with missing fields highlighted
+  And appointment selection is preserved in session (30-minute timeout)
+  And patient can return to booking after profile completion
+
+Scenario: Booking attempt during system maintenance
+  Given appointment booking system is under maintenance
+  When patient attempts to access appointment booking page
+  Then system displays "Appointment booking is temporarily unavailable"
+  And system shows "Estimated restoration time: [X]"
+  And system provides phone number for urgent scheduling needs
+  And system logs maintenance mode access attempts for analytics
+```
+
+### Edge Cases
+```gherkin
+Scenario: Same-day appointment request
+  Given patient attempts to book appointment for today's date
+  And clinic policy requires 2-hour advance notice
+  And current time is 9:30 AM
+  When patient attempts to select 10:00 AM slot
+  Then system displays "Same-day appointments require 2-hour advance notice"
+  And earliest available slot is 11:30 AM or later
+  And system highlights next available qualifying slot
+
+Scenario: Booking during clinic closure (holiday)
+  Given Dec 25, 2024 is marked as clinic holiday
+  When patient selects Dec 25, 2024
+  Then system displays "Clinic is closed on this date (Christmas)"
+  And date selector does not allow Dec 25 selection
+  And system suggests next available date (Dec 26, 2024)
+  And holiday schedule is displayed for patient reference
+
+Scenario: Maximum appointment limit reached
+  Given patient has 3 upcoming appointments already scheduled
+  And clinic policy limits patients to 3 future appointments
+  When patient attempts to book 4th appointment
+  Then system displays "You have reached the maximum of 3 scheduled appointments"
+  And system lists existing appointments with "Cancel" option
+  And patient can proceed after canceling an existing appointment
+```
+
+### Performance & Non-Functional Requirements
+```gherkin
+Scenario: System handles concurrent booking requests
+  Given 50 patients are simultaneously booking appointments
+  When each patient selects and confirms a slot
+  Then each patient receives confirmation within 3 seconds
+  And no double-booking occurs
+  And system maintains <2 second response time for all users
+  And all transactions are logged in audit trail
+
+Scenario: Mobile responsive booking
+  Given patient is using mobile device (iPhone 12, viewport 375px)
+  When patient accesses appointment booking page
+  Then all calendar elements display correctly without horizontal scroll
+  And all buttons are tappable (minimum 44x44 pixels)
+  And form inputs use appropriate mobile keyboards (date picker, phone keypad)
+  And booking completes successfully on mobile device
+
+Scenario: Accessibility compliance
+  Given patient is using screen reader (JAWS)
+  When patient navigates booking page
+  Then all form fields have proper ARIA labels
+  And calendar is navigable via keyboard (arrow keys, enter)
+  And booking confirmation is announced by screen reader
+  And color contrast meets WCAG 2.1 AA standards (4.5:1 minimum)
+```
+
+### Example 2: E-Commerce - Product Search
+
+**USER STORY:**
+As a shopper, I want to search for products by keyword, so that I can quickly
+find items I'm interested in purchasing.
+
+ACCEPTANCE CRITERIA:
+
+### Primary Success Scenario
+```gherkin
+Scenario: Search returns relevant products
+  Given the product catalog contains 10,000 active products
+  And search index is up-to-date (last refresh <5 minutes ago)
+  When shopper enters "wireless headphones" in search box
+  And shopper clicks "Search" or presses Enter
+  Then search results display within 1 second
+  And results show products with "wireless" AND "headphones" in title or description
+  And results are sorted by relevance score (algorithm: TF-IDF)
+  And result count displays at top: "Found 127 products"
+  And pagination shows 20 products per page
+  And each result shows: product image, title, price, rating, "Add to Cart" button
+```
+
+### Alternative Success Paths
+```gherkin
+Scenario: Search with filters applied
+  Given shopper has searched for "laptop"
+  And 450 results are displayed
+  When shopper applies filters: Price Range $800-$1200, Brand "Dell", Rating 4+ stars
+  Then results filter to 23 products meeting all criteria
+  And filter tags display above results showing active filters
+  And "Clear all filters" button is visible
+  And each filter tag has individual "X" to remove
+
+Scenario: Search suggestion selection
+  Given shopper types "wireles" (misspelled)
+  When search suggestions dropdown appears
+  Then top suggestion is "wireless headphones" (corrected spelling)
+  And shopper clicks suggested term
+  Then search executes with corrected term "wireless headphones"
+  And results display as if user typed correct spelling
+```
+
+### Error Handling & Validation
+```gherkin
+Scenario: No results found
+  Given shopper searches for "xyzabc123nonsense"
+  When search executes
+  Then message displays "No results found for 'xyzabc123nonsense'"
+  And system suggests "Try different keywords" with examples
+  And system displays "Popular Searches" with 5 trending terms
+  And no error is logged (zero results is valid response)
+
+Scenario: Search query too short
+  Given shopper types single character "a" in search box
+  When shopper attempts to search
+  Then inline message displays "Please enter at least 2 characters"
+  And search does not execute
+  And search box retains focus for additional input
+
+Scenario: Special characters in search
+  Given shopper enters "laptop & tablet " (with HTML tags)
+  When search executes
+  Then search query is sanitized (HTML tags stripped)
+  And search proceeds with "laptop & tablet" (safe characters preserved)
+  And no JavaScript injection occurs
+  And attempted injection is logged to security monitoring
+```
+
+### Edge Cases
+```gherkin
+Scenario: Search with zero products in category
+  Given "VHS Players" category exists but has zero active products
+  When shopper searches "VHS players"
+  Then message displays "No VHS players currently available"
+  And system suggests similar categories: "DVD Players", "Blu-ray Players"
+  And "Notify me when available" option is presented
+  And search is logged for inventory planning
+
+Scenario: Very long search query
+  Given shopper enters 250-character search query (paragraph length)
+  When search executes
+  Then system processes first 100 characters only
+  And message displays "Search limited to: [truncated query]"
+  And relevant results are returned based on truncated query
+
+Scenario: Simultaneous identical searches
+  Given 100 shoppers search "iPhone 15" at same moment
+  When all searches execute simultaneously
+  Then each shopper receives results within 2 seconds
+  And search cache is utilized (same query doesn't hit DB 100 times)
+  And system logs query for analytics (counted as 100 searches)
+```
+
+### Performance Requirements
+```gherkin
+Scenario: Search performance under load
+  Given 1000 concurrent shoppers are searching
+  When each search executes
+  Then 95th percentile response time is <1.5 seconds
+  And 99th percentile response time is <3 seconds
+  And no search request times out
+  And search functionality remains available
+
+Scenario: Search index freshness
+  Given new product is added to catalog at 10:00 AM
+  When shopper searches for new product at 10:05 AM
+  Then new product appears in search results
+  And search index lag is <5 minutes (automated refresh)
+  And manual index refresh is available to admins
+```
+
+### Example 3: Financial - Money Transfer
+
+**USER STORY:**
+As a banking customer, I want to transfer money to another account, so that
+I can pay friends and vendors electronically.
+
+ACCEPTANCE CRITERIA:
+
+### Primary Success Scenario
+```gherkin
+Scenario: Successfully transfer money to saved beneficiary
+  Given customer "Alice" is logged in with 2FA completed
+  And Alice's checking account (XXXX-1234) has balance $5,000
+  And beneficiary "Bob" (account XXXX-5678) is saved in Alice's payee list
+  And daily transfer limit is $10,000
+  And Alice has not transferred money today (daily cumulative: $0)
+  When Alice selects "Transfer Money" from navigation
+  And Alice selects beneficiary "Bob"
+  And Alice enters amount $500.00
+  And Alice enters transfer note "Rent payment - December"
+  And Alice selects "Transfer immediately"
+  And Alice reviews transfer details on confirmation screen
+  And Alice clicks "Confirm Transfer"
+  Then transfer is processed within 5 seconds
+  And Alice's account balance updates to $4,500 ($500 deducted)
+  And Bob's account is credited $500 within 30 seconds (real-time transfer)
+  And transfer confirmation number is generated (format: TXN-YYYYMMDD-XXXX)
+  And confirmation screen displays: amount, beneficiary, date/time, confirmation number
+  And email receipt is sent to Alice within 1 minute
+  And SMS notification is sent to Alice's registered mobile
+  And transfer appears in Alice's transaction history immediately
+  And transaction is logged in audit trail with all details
+```
+
+### Error Handling & Validation
+```gherkin
+Scenario: Insufficient balance
+  Given Alice's checking account balance is $300
+  When Alice attempts to transfer $500
+  Then error message displays "Insufficient funds. Available balance: $300.00"
+  And transfer is not processed
+  And Alice's balance remains $300 (no attempted deduction)
+  And Alice is offered option to "Transfer different amount" or "Transfer from different account"
+
+Scenario: Daily limit exceeded
+  Given Alice has already transferred $9,800 today
+  And daily limit is $10,000
+  When Alice attempts to transfer $500
+  Then error displays "Daily transfer limit exceeded. Remaining limit: $200.00"
+  And system suggests "Transfer $200 now and $300 tomorrow"
+  And Alice can proceed with reduced amount or cancel
+
+Scenario: Beneficiary account closed or invalid
+  Given beneficiary Bob's account (XXXX-5678) was closed yesterday
+  When Alice attempts transfer to Bob's closed account
+  Then system checks beneficiary account status before processing
+  And error displays "Beneficiary account is no longer active"
+  And Alice is prompted to "Update beneficiary information"
+  And no funds are deducted from Alice's account
+  And incident is logged for fraud monitoring
+
+Scenario: Network timeout during transfer
+  Given transfer request is initiated
+  And core banking system does not respond within 10 seconds
+  When timeout occurs
+  Then user sees "Transfer is processing. Please wait..."
+  And system retries request (max 3 attempts with exponential backoff)
+  And if all retries fail: "Transfer status unclear. Check transaction history in 5 minutes"
+  And idempotency key prevents duplicate transfer if user retries
+  And pending transaction is flagged for manual review
+```
+
+### Security & Compliance
+```gherkin
+Scenario: Large transfer requires additional authentication
+  Given Alice attempts to transfer $5,000 (amount >$1,000 threshold)
+  When Alice confirms transfer
+  Then system prompts for additional authentication: "Confirm with SMS OTP"
+  And 6-digit OTP is sent to Alice's registered mobile
+  And OTP is valid for 5 minutes
+  When Alice enters correct OTP
+  Then transfer proceeds as normal
+  And both password and OTP authentication are logged
+
+Scenario: Suspicious transfer pattern detection
+  Given Alice normally transfers <$200 per transaction
+  And Alice has never transferred to account XXXX-9999 before
+  When Alice attempts $10,000 transfer to new beneficiary at 2:00 AM
+  Then fraud detection system flags transaction as suspicious
+  And transfer is temporarily held (status: "Pending Review")
+  And Alice receives notification: "For your security, this transfer requires verification"
+  And Alice must call customer service to confirm and release transfer
+  And security team is alerted within 1 minute
+
+Scenario: Audit trail completeness
+  Given any transfer is executed
+  Then audit log records:
+    | Field              | Value                          |
+    | Transaction ID     | TXN-20241211-1234             |
+    | Timestamp          | 2024-12-11 14:30:25.123 UTC   |
+    | From Account       | Alice - XXXX-1234              |
+    | To Account         | Bob - XXXX-5678                |
+    | Amount             | $500.00                        |
+    | Initiated By       | Alice (User ID: 98765)         |
+    | IP Address         | 192.168.1.100                  |
+    | Device             | iPhone 15 / iOS 17.1           |
+    | Auth Method        | 2FA + SMS OTP                  |
+    | Status             | Completed                      |
+  And audit log is immutable (write-once, no updates/deletes)
+  And audit log is retained for 7 years (regulatory requirement)
+```
+
+### Performance & Reliability
+```gherkin
+Scenario: Transfer processing time
+  Given standard real-time transfer
+  When transfer is confirmed
+  Then funds are debited from source within 2 seconds
+  And funds are credited to destination within 30 seconds
+  And end-to-end transfer completes in <35 seconds (95th percentile)
+
+Scenario: System maintains transaction integrity
+  Given transfer is in progress
+  And system crashes after debiting source but before crediting destination
+  When system recovers
+  Then automated reconciliation process runs
+  And incomplete transfer is detected within 5 minutes
+  And either: (a) destination is credited automatically, or (b) source is refunded
+  And no money is lost or duplicated
+  And incident is logged for investigation
+```
+
+---
+
+## Conclusion & Final Checklist
+
+### Summary of Key Principles
+
+- **Gherkin Format** - Use Given-When-Then for all functional requirements
+- **Objective & Testable** - Every AC must have clear pass/fail criteria
+- **Comprehensive Coverage** - Include positive, negative, and edge cases
+- **Quantified Metrics** - Replace vague terms with specific numbers
+- **System Context** - Always specify initial state in Given clause
+- **Non-Functional Requirements** - Include performance, security, accessibility
+- **Alignment** - AC must validate the user story's value proposition
+- **Written Before Development** - AC are requirements, not documentation
+- **Collaborative** - Involve PO, Dev, and QA in AC creation
+- **Maintained** - Update AC when requirements change (with PO approval)
+
+### Final Pre-Approval Checklist
+
+Before marking AC as "Ready for Development":
+
+- [ ] **Format**: Uses Gherkin (Given-When-Then) for functional requirements
+- [ ] **Coverage**: Includes happy path + minimum 2 negative scenarios + edge cases
+- [ ] **Clarity**: No ambiguous terms; all metrics quantified
+- [ ] **Testability**: Every scenario has objective pass/fail outcome
+- [ ] **Completeness**: All mandatory sections present (see templates)
+- [ ] **Alignment**: AC validates the "I want" and "so that" clauses
+- [ ] **Context**: Given clause specifies system state for each scenario
+- [ ] **NFRs**: Performance, security, accessibility included where relevant
+- [ ] **Data**: Validation rules specified with examples
+- [ ] **Integration**: External system behavior defined (including failures)
+- [ ] **Audit**: Logging requirements stated (for compliance scenarios)
+- [ ] **Review**: Approved by Product Owner, Dev can estimate, QA can test
+- [ ] **Documented**: All assumptions and open questions recorded
+
+### When AC is Complete
+
+✅ **Development can begin when:**
+
+- All checklist items above are satisfied
+- AC is approved by Product Owner
+- Development team has estimated the story
+- No blocking questions or dependencies remain
+
+❌ **Development should NOT begin if:**
+
+- AC has ambiguous or vague terms
+- Negative scenarios are missing
+- Non-functional requirements are undefined for user-facing features
+- Team cannot estimate due to unclear requirements
+- Product Owner has not approved the AC
+
+
+=====================================================================
+END OF GUIDELINES
+=====================================================================
+Document Version: 1.0
+Last Updated: December 2024
+Maintained By: Product & Engineering Team
