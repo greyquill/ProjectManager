@@ -1,0 +1,14 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install dependencies for the proxy
+RUN npm install express redis
+
+# Copy proxy script
+COPY scripts/redis-proxy.js ./
+
+EXPOSE 8080
+
+CMD ["node", "redis-proxy.js"]
+

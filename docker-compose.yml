@@ -1,0 +1,49 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: project-manager-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  # REST API Proxy to translate Upstash REST API format to Redis commands
+  # This allows us to use the same @upstash/redis client in local dev
+  redis-proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile.redis-proxy
+    container_name: project-manager-redis-proxy
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PROXY_PORT=8080
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Optional: RedisInsight GUI for viewing Redis data
+  # Uncomment to enable (uses port 8001)
+  # redisinsight:
+  #   image: redis/redisinsight:latest
+  #   container_name: project-manager-redisinsight
+  #   ports:
+  #     - "8001:8001"
+  #   depends_on:
+  #     - redis
+  #   restart: unless-stopped
+
+volumes:
+  redis-data:
+    driver: local
+

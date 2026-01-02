@@ -23,12 +23,15 @@ const PM_DATA_DIR = path.join(process.cwd(), 'pm')
 // Supports both Upstash Redis (Marketplace) and Vercel KV (legacy)
 //
 // Logic (automatic detection):
+// - Production: ENVIRONMENT=PROD or VERCEL=1 → use KV/Redis (Upstash cloud)
+// - Local KV: USE_LOCAL_KV=true → use local KV (via REST API proxy)
 // - Local development: ENVIRONMENT=DEV or NODE_ENV=development → use local files (pm/ folder)
-// - Production: ENVIRONMENT=PROD or VERCEL=1 → use KV/Redis
 // - Default: use local files for safety (prevents accidental KV usage in dev)
-const USE_KV = (process.env.ENVIRONMENT === 'PROD' || process.env.VERCEL === '1') &&
-               process.env.ENVIRONMENT !== 'DEV' &&
-               process.env.NODE_ENV !== 'development'
+//
+// Note: Production path is unchanged - VERCEL=1 still triggers KV mode with Upstash cloud
+const USE_KV =
+  (process.env.ENVIRONMENT === 'PROD' || process.env.VERCEL === '1') ||
+  (process.env.USE_LOCAL_KV === 'true')
 
 // Lazy-load KV repository
 let kvRepositoryPromise: Promise<typeof import('./pm-repository-kv').pmRepositoryKV | null> | null = null
