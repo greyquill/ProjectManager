@@ -1,0 +1,35 @@
+{
+  "id": "NFR-SCHED-014",
+  "requirementType": "non-functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Message delivery guarantee (retry logic for failed SMS)",
+  "summary": "Implement retry logic to ensure message delivery for failed SMS/WhatsApp messages.",
+  "description": "Reliability requirement: Implement retry logic that automatically retries failed SMS and WhatsApp message deliveries. The system should track delivery status and retry failed messages with exponential backoff to ensure high delivery rates.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "high",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "SCHED",
+    "Reliability"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

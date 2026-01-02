@@ -1,0 +1,38 @@
+{
+  "id": "NFR-EMR-013",
+  "epicId": "electronic-medical-records-emr-system",
+  "requirementType": "non-functional",
+  "title": "Break-the-glass emergency access with justification",
+  "summary": "Security & Compliance: Break-the-glass emergency access with justification",
+  "description": "Support break-the-glass emergency access functionality allowing authorized users to access patient records in emergencies with required justification and audit logging.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:27:28.186Z",
+  "updatedAt": "2025-12-10T11:27:28.186Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "EMR",
+    "Security & Compliance"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

@@ -1,0 +1,38 @@
+{
+  "id": "F-CUSTOM-004",
+  "epicId": "white-label-digital-patient-experience",
+  "requirementType": "functional",
+  "title": "Biometric authentication (Face ID, Touch ID, fingerprint)",
+  "summary": "Branded Mobile Applications: Biometric authentication (Face ID, Touch ID, fingerprint)",
+  "description": "Enable biometric authentication using Face ID, Touch ID, and fingerprint recognition to provide secure, convenient access to patient health information.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:31:31.492Z",
+  "updatedAt": "2025-12-10T11:31:31.492Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "CUSTOM",
+    "Branded Mobile Applications"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

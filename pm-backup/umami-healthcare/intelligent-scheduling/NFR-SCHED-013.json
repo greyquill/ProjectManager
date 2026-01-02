@@ -1,0 +1,35 @@
+{
+  "id": "NFR-SCHED-013",
+  "requirementType": "non-functional",
+  "epicId": "intelligent-scheduling",
+  "title": "99.95% uptime for booking system",
+  "summary": "Maintain 99.95% uptime SLA for the appointment booking system.",
+  "description": "Reliability requirement: The appointment booking system must maintain 99.95% uptime SLA, ensuring high availability for patients to book appointments at any time.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "high",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "SCHED",
+    "Reliability"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

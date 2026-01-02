@@ -1,0 +1,38 @@
+{
+  "id": "F-CUSTOM-026",
+  "epicId": "white-label-digital-patient-experience",
+  "requirementType": "functional",
+  "title": "Responsive design (mobile, tablet, desktop)",
+  "summary": "Custom Web Portal: Responsive design (mobile, tablet, desktop)",
+  "description": "Implement responsive design ensuring optimal user experience across mobile devices, tablets, and desktop computers for maximum accessibility.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:31:31.500Z",
+  "updatedAt": "2025-12-10T11:31:31.500Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "CUSTOM",
+    "Custom Web Portal"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

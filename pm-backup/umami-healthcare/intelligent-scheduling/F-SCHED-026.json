@@ -1,0 +1,35 @@
+{
+  "id": "F-SCHED-026",
+  "requirementType": "functional",
+  "epicId": "intelligent-scheduling",
+  "title": "No-show rate tracking by provider/time/day",
+  "summary": "Track and analyze no-show rates broken down by provider, time of day, and day of week.",
+  "description": "Implement analytics that track no-show rates with detailed breakdowns by provider, time of day, and day of week. This helps identify patterns and optimize scheduling strategies to minimize no-shows.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "SCHED",
+    "Analytics & Optimization"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

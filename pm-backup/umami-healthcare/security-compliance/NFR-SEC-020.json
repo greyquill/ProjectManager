@@ -1,0 +1,38 @@
+{
+  "id": "NFR-SEC-020",
+  "epicId": "security-compliance",
+  "requirementType": "non-functional",
+  "title": "User behavior analytics (anomaly detection)",
+  "summary": "Audit & Monitoring: User behavior analytics (anomaly detection)",
+  "description": "Deploy user behavior analytics with anomaly detection to identify unusual access patterns and potential insider threats or compromised accounts.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:40:48.599Z",
+  "updatedAt": "2025-12-10T11:40:48.599Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "SEC",
+    "Audit & Monitoring"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

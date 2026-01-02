@@ -1,0 +1,35 @@
+{
+  "id": "NFR-SCHED-011",
+  "requirementType": "non-functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Twilio API for SMS/WhatsApp messaging",
+  "summary": "Integrate with Twilio API for sending SMS and WhatsApp messages for reminders and confirmations.",
+  "description": "Integration requirement: Integrate with Twilio API to send SMS and WhatsApp messages for appointment reminders, confirmations, and notifications. This enables reliable multi-channel communication with patients.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "SCHED",
+    "Integration"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

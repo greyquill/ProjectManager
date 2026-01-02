@@ -1,0 +1,35 @@
+{
+  "id": "F-SCHED-006",
+  "requirementType": "functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Multiple location support for providers",
+  "summary": "Support providers who work at multiple locations with location-specific scheduling.",
+  "description": "Enable providers to have schedules across multiple locations. The system should track location-specific availability and appointments, allowing providers to manage their time across different facilities.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "SCHED",
+    "Provider Schedule Management"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

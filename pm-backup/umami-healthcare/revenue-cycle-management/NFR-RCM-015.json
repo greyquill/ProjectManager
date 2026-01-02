@@ -1,0 +1,35 @@
+{
+  "id": "NFR-RCM-015",
+  "requirementType": "non-functional",
+  "epicId": "revenue-cycle-management",
+  "title": "EDI 837/835 transaction support",
+  "summary": "Support EDI 837 (claim submission) and EDI 835 (payment/remittance) transaction formats.",
+  "description": "Integration requirement: Support Electronic Data Interchange (EDI) 837 format for claim submission and EDI 835 format for payment and remittance advices to ensure compatibility with standard healthcare billing systems.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "RCM",
+    "Integration"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

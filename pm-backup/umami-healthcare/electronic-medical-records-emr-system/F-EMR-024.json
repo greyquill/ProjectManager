@@ -1,0 +1,38 @@
+{
+  "id": "F-EMR-024",
+  "epicId": "electronic-medical-records-emr-system",
+  "requirementType": "functional",
+  "title": "Procedure order management",
+  "summary": "Orders & Results Management: Procedure order management",
+  "description": "Support comprehensive procedure order management including scheduling, preparation instructions, and coordination with procedural departments.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:27:28.181Z",
+  "updatedAt": "2025-12-10T11:27:28.181Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "EMR",
+    "Orders & Results Management"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

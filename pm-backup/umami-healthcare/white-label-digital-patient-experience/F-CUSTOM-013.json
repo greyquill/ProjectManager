@@ -1,0 +1,38 @@
+{
+  "id": "F-CUSTOM-013",
+  "epicId": "white-label-digital-patient-experience",
+  "requirementType": "functional",
+  "title": "In-call chat and file sharing",
+  "summary": "Telemedicine Infrastructure: In-call chat and file sharing",
+  "description": "Support in-call chat messaging and secure file sharing during telemedicine sessions to facilitate communication and information exchange.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:31:31.495Z",
+  "updatedAt": "2025-12-10T11:31:31.495Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "CUSTOM",
+    "Telemedicine Infrastructure"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

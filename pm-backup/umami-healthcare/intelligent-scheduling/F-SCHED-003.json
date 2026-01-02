@@ -1,0 +1,35 @@
+{
+  "id": "F-SCHED-003",
+  "requirementType": "functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Custom appointment duration by type and provider",
+  "summary": "Set custom appointment durations that vary by appointment type and provider preferences.",
+  "description": "Enable configuration of appointment durations that can be customized per appointment type and per provider, allowing flexibility in scheduling based on individual provider preferences and appointment complexity.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "SCHED",
+    "Provider Schedule Management"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

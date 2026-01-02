@@ -1,0 +1,35 @@
+{
+  "id": "NFR-RCM-012",
+  "requirementType": "non-functional",
+  "epicId": "revenue-cycle-management",
+  "title": "Daily automated backups with 30-day retention",
+  "summary": "Perform daily automated backups with 30-day retention period for all financial data.",
+  "description": "Reliability requirement: Implement daily automated backups of all financial data with a 30-day retention period. This ensures data recovery capability in case of system failures or data corruption.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "high",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "RCM",
+    "Reliability"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

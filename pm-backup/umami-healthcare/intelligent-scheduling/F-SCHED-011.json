@@ -1,0 +1,35 @@
+{
+  "id": "F-SCHED-011",
+  "requirementType": "functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Filter by provider, specialty, location, and date range",
+  "summary": "Provide filtering options for patients to find appointments by provider, specialty, location, and date range.",
+  "description": "Implement comprehensive filtering functionality that allows patients to search for available appointments by provider name, medical specialty, location, and preferred date range. This helps patients quickly find suitable appointment slots.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "SCHED",
+    "Patient Self-Scheduling"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

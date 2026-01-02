@@ -1,0 +1,36 @@
+{
+  "id": "F-AI-028",
+  "requirementType": "functional",
+  "epicId": "clinical-decision-support",
+  "title": "Missing documentation prompts for billing optimization",
+  "summary": "Medical Coding Assistance: Missing documentation prompts for billing optimization",
+  "description": "Develop intelligent missing documentation detection system that identifies gaps in clinical documentation that could impact billing accuracy and prompts providers to add necessary information before note finalization.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "AI",
+    "Medical Coding Assistance"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+
+

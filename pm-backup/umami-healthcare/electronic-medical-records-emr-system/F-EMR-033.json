@@ -1,0 +1,38 @@
+{
+  "id": "F-EMR-033",
+  "epicId": "electronic-medical-records-emr-system",
+  "requirementType": "functional",
+  "title": "Vital signs trend visualization",
+  "summary": "Vitals & Flowsheet: Vital signs trend visualization",
+  "description": "Provide visual trend graphs for vital signs over time, enabling providers to identify patterns, monitor patient progress, and detect concerning changes.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:27:28.183Z",
+  "updatedAt": "2025-12-10T11:27:28.183Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "EMR",
+    "Vitals & Flowsheet"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

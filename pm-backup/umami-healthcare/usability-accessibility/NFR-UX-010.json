@@ -1,0 +1,38 @@
+{
+  "id": "NFR-UX-010",
+  "epicId": "usability-accessibility",
+  "requirementType": "non-functional",
+  "title": "Alternative text for images and icons",
+  "summary": "Accessibility: Alternative text for images and icons",
+  "description": "Provide descriptive alternative text for all images and icons to enable screen reader users to understand visual content and navigate the interface.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:46:02.428Z",
+  "updatedAt": "2025-12-10T11:46:02.428Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "UX",
+    "Accessibility"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

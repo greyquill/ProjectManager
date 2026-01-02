@@ -1,0 +1,38 @@
+{
+  "id": "F-EMR-004",
+  "epicId": "electronic-medical-records-emr-system",
+  "requirementType": "functional",
+  "title": "Chief complaint and HPI documentation",
+  "summary": "Clinical Documentation: Chief complaint and HPI documentation",
+  "description": "Enable structured documentation of chief complaint and History of Present Illness (HPI) to capture the patient's primary reason for visit and relevant medical history.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:27:28.176Z",
+  "updatedAt": "2025-12-10T11:27:28.176Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "EMR",
+    "Clinical Documentation"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

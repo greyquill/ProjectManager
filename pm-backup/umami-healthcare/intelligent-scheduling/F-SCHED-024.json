@@ -1,0 +1,35 @@
+{
+  "id": "F-SCHED-024",
+  "requirementType": "functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Appointment modification via reminder response",
+  "summary": "Allow patients to reschedule or cancel appointments by responding to reminder messages.",
+  "description": "Enable patients to modify appointments (reschedule or cancel) by responding to reminder messages with specific commands. The system should parse responses and execute the requested changes automatically.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "SCHED",
+    "Automated Reminders"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

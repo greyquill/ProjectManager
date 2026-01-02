@@ -1,0 +1,35 @@
+{
+  "id": "F-RCM-010",
+  "requirementType": "functional",
+  "epicId": "revenue-cycle-management",
+  "title": "Denial trend analytics and reporting",
+  "summary": "Provide analytics and reporting on denial trends to identify patterns and improve processes.",
+  "description": "Implement comprehensive denial trend analytics that tracks denial patterns over time, by payer, by denial reason, and by provider. Generate reports that help identify trends and opportunities for process improvement.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "RCM",
+    "Denial Management"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

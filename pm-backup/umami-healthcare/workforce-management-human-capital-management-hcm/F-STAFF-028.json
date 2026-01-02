@@ -1,0 +1,38 @@
+{
+  "id": "F-STAFF-028",
+  "epicId": "workforce-management-human-capital-management-hcm",
+  "requirementType": "functional",
+  "title": "Attendance exception flagging (late, absent)",
+  "summary": "Time & Attendance: Attendance exception flagging (late, absent)",
+  "description": "Automatically flag attendance exceptions such as late arrivals and absences to support attendance management and identify patterns.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:34:11.636Z",
+  "updatedAt": "2025-12-10T11:34:11.636Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "STAFF",
+    "Time & Attendance"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

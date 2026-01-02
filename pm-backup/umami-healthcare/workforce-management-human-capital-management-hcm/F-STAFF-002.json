@@ -1,0 +1,38 @@
+{
+  "id": "F-STAFF-002",
+  "epicId": "workforce-management-human-capital-management-hcm",
+  "requirementType": "functional",
+  "title": "Role-based access provisioning",
+  "summary": "Staff Management: Role-based access provisioning",
+  "description": "Implement role-based access provisioning to automatically assign appropriate system permissions based on employee roles and responsibilities.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:34:11.630Z",
+  "updatedAt": "2025-12-10T11:34:11.630Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "STAFF",
+    "Staff Management"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

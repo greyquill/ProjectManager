@@ -1,0 +1,35 @@
+{
+  "id": "F-RCM-023",
+  "requirementType": "functional",
+  "epicId": "revenue-cycle-management",
+  "title": "ERP system integration for GL (General Ledger) posting",
+  "summary": "Integrate with ERP systems to automatically post transactions to General Ledger.",
+  "description": "Create integration with ERP systems to automatically post financial transactions to the General Ledger. This ensures accurate financial reporting and eliminates manual data entry.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "RCM",
+    "Ledger & Reconciliation"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

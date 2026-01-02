@@ -1,0 +1,38 @@
+{
+  "id": "NFR-PERF-005",
+  "epicId": "performance-scalability",
+  "requirementType": "non-functional",
+  "title": "Support 1000 concurrent users per clinic",
+  "summary": "Throughput: Support 1000 concurrent users per clinic",
+  "description": "Support 1000 concurrent users per clinic without performance degradation to accommodate large healthcare organizations and peak usage periods.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:42:24.929Z",
+  "updatedAt": "2025-12-10T11:42:24.929Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "PERF",
+    "Throughput"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

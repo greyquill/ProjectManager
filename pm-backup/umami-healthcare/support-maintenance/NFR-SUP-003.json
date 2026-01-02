@@ -1,0 +1,38 @@
+{
+  "id": "NFR-SUP-003",
+  "epicId": "support-maintenance",
+  "requirementType": "non-functional",
+  "title": "First call resolution rate > 80%",
+  "summary": "Customer Support: First call resolution rate > 80%",
+  "description": "Achieve first call resolution rate greater than 80% to resolve most issues on the initial contact, improving customer satisfaction and reducing support workload.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:48:53.441Z",
+  "updatedAt": "2025-12-10T11:48:53.441Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "SUP",
+    "Customer Support"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

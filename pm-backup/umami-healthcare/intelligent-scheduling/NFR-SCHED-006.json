@@ -1,0 +1,35 @@
+{
+  "id": "NFR-SCHED-006",
+  "requirementType": "non-functional",
+  "epicId": "intelligent-scheduling",
+  "title": "WCAG 2.1 AA accessibility compliance",
+  "summary": "Ensure the scheduling system meets WCAG 2.1 AA accessibility standards.",
+  "description": "Usability requirement: The scheduling system must comply with WCAG 2.1 AA accessibility standards to ensure it is usable by people with disabilities, including screen reader support, keyboard navigation, and proper color contrast.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "SCHED",
+    "Usability"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

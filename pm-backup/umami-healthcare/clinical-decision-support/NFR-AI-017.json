@@ -1,0 +1,36 @@
+{
+  "id": "NFR-AI-017",
+  "requirementType": "non-functional",
+  "epicId": "clinical-decision-support",
+  "title": "Lab result integration for trend analysis",
+  "summary": "Integration: Lab result integration for trend analysis",
+  "description": "Implement lab result integration that enables the AI system to access historical lab results and perform trend analysis, providing context-aware clinical decision support based on lab value patterns.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "AI",
+    "Integration"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+
+

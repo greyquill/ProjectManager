@@ -1,0 +1,35 @@
+{
+  "id": "F-SCHED-021",
+  "requirementType": "functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Cascading reminder logic (SMS → WhatsApp → IVR Call)",
+  "summary": "Send reminders through multiple channels in a cascading sequence if previous attempts fail.",
+  "description": "Implement cascading reminder system that attempts to reach patients through multiple channels: first SMS, then WhatsApp if SMS fails, and finally IVR call if both fail. This maximizes reminder delivery rates.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "SCHED",
+    "Automated Reminders"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

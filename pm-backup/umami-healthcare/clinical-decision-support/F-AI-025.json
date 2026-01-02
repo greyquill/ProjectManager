@@ -1,0 +1,36 @@
+{
+  "id": "F-AI-025",
+  "requirementType": "functional",
+  "epicId": "clinical-decision-support",
+  "title": "Evaluation & Management (E&M) level calculation",
+  "summary": "Medical Coding Assistance: Evaluation & Management (E&M) level calculation",
+  "description": "Implement automated E&M level calculation that analyzes clinical documentation complexity, history, examination, and medical decision-making to determine the appropriate E&M service level for billing.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "AI",
+    "Medical Coding Assistance"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+
+

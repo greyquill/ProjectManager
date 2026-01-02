@@ -1,0 +1,38 @@
+{
+  "id": "F-CUSTOM-017",
+  "epicId": "white-label-digital-patient-experience",
+  "requirementType": "functional",
+  "title": "Medication list with reminders",
+  "summary": "Patient Engagement: Medication list with reminders",
+  "description": "Display patient medication list with customizable reminders to improve medication adherence and support medication management.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:31:31.497Z",
+  "updatedAt": "2025-12-10T11:31:31.497Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "CUSTOM",
+    "Patient Engagement"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

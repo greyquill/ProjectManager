@@ -1,0 +1,35 @@
+{
+  "id": "F-SCHED-022",
+  "requirementType": "functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Configurable reminder timing (24hr/48hr/72hr before)",
+  "summary": "Configure reminder timing to send notifications 24, 48, or 72 hours before appointments.",
+  "description": "Enable configuration of reminder timing with options to send reminders 24 hours, 48 hours, or 72 hours before appointments. Different appointment types or providers can have different reminder schedules.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "SCHED",
+    "Automated Reminders"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

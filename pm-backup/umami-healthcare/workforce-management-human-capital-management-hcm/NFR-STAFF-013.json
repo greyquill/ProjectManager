@@ -1,0 +1,38 @@
+{
+  "id": "NFR-STAFF-013",
+  "epicId": "workforce-management-human-capital-management-hcm",
+  "requirementType": "non-functional",
+  "title": "Self-service PTO requests",
+  "summary": "Usability: Self-service PTO requests",
+  "description": "Enable self-service PTO requests allowing staff to submit leave requests independently without requiring administrative assistance.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:34:11.640Z",
+  "updatedAt": "2025-12-10T11:34:11.640Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "STAFF",
+    "Usability"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

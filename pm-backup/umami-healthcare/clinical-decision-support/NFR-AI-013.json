@@ -1,0 +1,36 @@
+{
+  "id": "NFR-AI-013",
+  "requirementType": "non-functional",
+  "epicId": "clinical-decision-support",
+  "title": "Inline editing with track changes",
+  "summary": "Usability: Inline editing with track changes",
+  "description": "Implement inline editing functionality with track changes feature that allows providers to edit AI-generated notes while maintaining a clear audit trail of all modifications.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "AI",
+    "Usability"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+
+

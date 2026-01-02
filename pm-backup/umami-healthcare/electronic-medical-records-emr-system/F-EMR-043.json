@@ -1,0 +1,38 @@
+{
+  "id": "F-EMR-043",
+  "epicId": "electronic-medical-records-emr-system",
+  "requirementType": "functional",
+  "title": "Secure messaging with care team",
+  "summary": "Patient Portal: Secure messaging with care team",
+  "description": "Enable secure messaging between patients and care team members through the patient portal, facilitating communication and care coordination while maintaining HIPAA compliance.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:27:28.184Z",
+  "updatedAt": "2025-12-10T11:27:28.184Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "EMR",
+    "Patient Portal"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

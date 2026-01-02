@@ -1,0 +1,35 @@
+{
+  "id": "F-RCM-025",
+  "requirementType": "functional",
+  "epicId": "revenue-cycle-management",
+  "title": "Audit trail for all financial transactions",
+  "summary": "Maintain comprehensive audit trail for all financial transactions for compliance and accountability.",
+  "description": "Create a comprehensive audit trail system that records all financial transactions with timestamps, user information, and change history. This ensures compliance, accountability, and supports financial audits.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "RCM",
+    "Ledger & Reconciliation"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

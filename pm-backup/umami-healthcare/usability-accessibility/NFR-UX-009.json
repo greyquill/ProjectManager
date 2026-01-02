@@ -1,0 +1,38 @@
+{
+  "id": "NFR-UX-009",
+  "epicId": "usability-accessibility",
+  "requirementType": "non-functional",
+  "title": "Color contrast ratios meeting accessibility standards",
+  "summary": "Accessibility: Color contrast ratios meeting accessibility standards",
+  "description": "Maintain color contrast ratios that meet WCAG accessibility standards to ensure text is readable for users with color vision deficiencies.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:46:02.427Z",
+  "updatedAt": "2025-12-10T11:46:02.427Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "UX",
+    "Accessibility"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

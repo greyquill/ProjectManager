@@ -1,0 +1,35 @@
+{
+  "id": "F-RCM-003",
+  "requirementType": "functional",
+  "epicId": "revenue-cycle-management",
+  "title": "Automated claim status tracking and updates",
+  "summary": "Automatically track and update claim status from payer responses and clearinghouse updates.",
+  "description": "Implement automated claim status tracking that monitors claim submissions and receives updates from payers and clearinghouses. The system should automatically update claim status in real-time.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "RCM",
+    "Automated Claim Management"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

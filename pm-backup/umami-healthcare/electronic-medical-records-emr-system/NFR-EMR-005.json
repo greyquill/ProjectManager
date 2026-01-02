@@ -1,0 +1,38 @@
+{
+  "id": "NFR-EMR-005",
+  "epicId": "electronic-medical-records-emr-system",
+  "requirementType": "non-functional",
+  "title": "HIPAA-compliant data storage and transmission",
+  "summary": "Security & Compliance: HIPAA-compliant data storage and transmission",
+  "description": "Ensure all patient data storage and transmission meets HIPAA compliance requirements, including administrative, physical, and technical safeguards.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:27:28.185Z",
+  "updatedAt": "2025-12-10T11:27:28.185Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "EMR",
+    "Security & Compliance"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

@@ -1,0 +1,35 @@
+{
+  "id": "F-RCM-012",
+  "requirementType": "functional",
+  "epicId": "revenue-cycle-management",
+  "title": "Automated payment plan structuring based on patient financial profile",
+  "summary": "Automatically structure payment plans based on patient financial profile and ability to pay.",
+  "description": "Create an automated system that analyzes patient financial profiles and structures appropriate payment plans. The system should consider patient income, outstanding balances, and payment history to propose feasible payment arrangements.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "RCM",
+    "Patient Financial Experience"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

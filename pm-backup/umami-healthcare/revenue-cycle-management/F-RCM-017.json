@@ -1,0 +1,35 @@
+{
+  "id": "F-RCM-017",
+  "requirementType": "functional",
+  "epicId": "revenue-cycle-management",
+  "title": "Claims acceptance rate tracking (target: 98%+)",
+  "summary": "Track and monitor claims acceptance rate with a target of 98% or higher.",
+  "description": "Implement claims acceptance rate tracking that monitors the percentage of claims accepted on first submission. The system should provide alerts when acceptance rates fall below the 98% target and identify trends.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "RCM",
+    "Financial Analytics & Reporting"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

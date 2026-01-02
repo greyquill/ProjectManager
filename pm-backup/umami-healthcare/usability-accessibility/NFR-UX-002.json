@@ -1,0 +1,38 @@
+{
+  "id": "NFR-UX-002",
+  "epicId": "usability-accessibility",
+  "requirementType": "non-functional",
+  "title": "Support for iOS Safari, Android Chrome, desktop browsers (latest 2 versions)",
+  "summary": "User Experience: Support for iOS Safari, Android Chrome, desktop browsers (latest 2 versions)",
+  "description": "Ensure compatibility with iOS Safari, Android Chrome, and latest 2 versions of desktop browsers to support users across all major platforms and devices.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:46:02.424Z",
+  "updatedAt": "2025-12-10T11:46:02.424Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "UX",
+    "User Experience"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

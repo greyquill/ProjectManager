@@ -1,0 +1,38 @@
+{
+  "id": "NFR-CUSTOM-010",
+  "epicId": "white-label-digital-patient-experience",
+  "requirementType": "non-functional",
+  "title": "Certificate pinning for API security",
+  "summary": "Security: Certificate pinning for API security",
+  "description": "Implement certificate pinning for API communications to prevent man-in-the-middle attacks and ensure secure data transmission.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:31:31.504Z",
+  "updatedAt": "2025-12-10T11:31:31.504Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "CUSTOM",
+    "Security"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

@@ -1,0 +1,35 @@
+{
+  "id": "NFR-RCM-004",
+  "requirementType": "non-functional",
+  "epicId": "revenue-cycle-management",
+  "title": "Real-time payer gateway response < 5 seconds for eligibility checks",
+  "summary": "Ensure real-time payer gateway responses complete in less than 5 seconds for eligibility checks.",
+  "description": "Performance requirement: Real-time eligibility verification with payer gateways must complete in less than 5 seconds to maintain responsive user experience.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "RCM",
+    "Performance"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

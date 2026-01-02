@@ -1,0 +1,38 @@
+{
+  "id": "F-EMR-022",
+  "epicId": "electronic-medical-records-emr-system",
+  "requirementType": "functional",
+  "title": "Laboratory test ordering (Quest, LabCorp integration)",
+  "summary": "Orders & Results Management: Laboratory test ordering (Quest, LabCorp integration)",
+  "description": "Integrate with major laboratory networks (Quest, LabCorp) for electronic lab ordering, enabling seamless test ordering and result delivery.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:27:28.180Z",
+  "updatedAt": "2025-12-10T11:27:28.180Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "EMR",
+    "Orders & Results Management"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

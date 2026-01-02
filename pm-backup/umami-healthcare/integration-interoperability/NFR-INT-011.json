@@ -1,0 +1,38 @@
+{
+  "id": "NFR-INT-011",
+  "epicId": "integration-interoperability",
+  "requirementType": "non-functional",
+  "title": "Carequality framework participation",
+  "summary": "HIE Participation: Carequality framework participation",
+  "description": "Participate in Carequality framework to enable nationwide patient data sharing and care coordination across participating healthcare organizations.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:47:35.356Z",
+  "updatedAt": "2025-12-10T11:47:35.356Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "INT",
+    "HIE Participation"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

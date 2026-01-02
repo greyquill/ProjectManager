@@ -1,0 +1,35 @@
+{
+  "id": "NFR-SCHED-015",
+  "requirementType": "non-functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Conflict detection and prevention (no double-booking)",
+  "summary": "Detect and prevent scheduling conflicts to ensure no double-booking occurs.",
+  "description": "Reliability requirement: Implement robust conflict detection and prevention mechanisms that ensure no double-booking can occur. The system must validate all booking requests against existing appointments and prevent conflicts in real-time.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "high",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "SCHED",
+    "Reliability"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

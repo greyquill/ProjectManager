@@ -1,0 +1,38 @@
+{
+  "id": "NFR-CUSTOM-013",
+  "epicId": "white-label-digital-patient-experience",
+  "requirementType": "non-functional",
+  "title": "Support 10,000+ active users per clinic",
+  "summary": "Scalability: Support 10,000+ active users per clinic",
+  "description": "Support 10,000+ active users per clinic without performance degradation to accommodate large patient populations and high usage.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:31:31.504Z",
+  "updatedAt": "2025-12-10T11:31:31.504Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "CUSTOM",
+    "Scalability"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

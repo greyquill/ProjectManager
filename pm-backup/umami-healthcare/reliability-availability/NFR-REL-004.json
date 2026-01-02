@@ -1,0 +1,38 @@
+{
+  "id": "NFR-REL-004",
+  "epicId": "reliability-availability",
+  "requirementType": "non-functional",
+  "title": "Recovery Point Objective (RPO): 15 minutes",
+  "summary": "Disaster Recovery: Recovery Point Objective (RPO): 15 minutes",
+  "description": "Achieve Recovery Point Objective (RPO) of 15 minutes to minimize data loss in the event of a disaster or system failure.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:44:04.304Z",
+  "updatedAt": "2025-12-10T11:44:04.304Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "REL",
+    "Disaster Recovery"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

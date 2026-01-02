@@ -1,0 +1,38 @@
+{
+  "id": "F-REPORT-018",
+  "epicId": "reporting-analytics",
+  "requirementType": "functional",
+  "title": "Data export (Excel, CSV, PDF)",
+  "summary": "Custom Reporting: Data export (Excel, CSV, PDF)",
+  "description": "Support data export in multiple formats including Excel, CSV, and PDF to enable further analysis and sharing of report data.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:37:48.667Z",
+  "updatedAt": "2025-12-10T11:37:48.667Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "REPORT",
+    "Custom Reporting"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

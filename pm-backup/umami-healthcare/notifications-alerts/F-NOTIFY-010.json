@@ -1,0 +1,38 @@
+{
+  "id": "F-NOTIFY-010",
+  "epicId": "notifications-alerts",
+  "requirementType": "functional",
+  "title": "Health maintenance reminders (annual physical due)",
+  "summary": "Patient Notifications: Health maintenance reminders (annual physical due)",
+  "description": "Send proactive health maintenance reminders such as annual physical due dates to support preventive care and care gap closure.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:39:15.493Z",
+  "updatedAt": "2025-12-10T11:39:15.493Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "NOTIFY",
+    "Patient Notifications"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

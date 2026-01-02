@@ -1,0 +1,38 @@
+{
+  "id": "F-REPORT-010",
+  "epicId": "reporting-analytics",
+  "requirementType": "functional",
+  "title": "Budget vs actual variance",
+  "summary": "Financial Reports: Budget vs actual variance",
+  "description": "Compare budgeted amounts to actual performance and report variances to support financial planning and budget management.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:37:48.663Z",
+  "updatedAt": "2025-12-10T11:37:48.663Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "REPORT",
+    "Financial Reports"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

@@ -1,0 +1,35 @@
+{
+  "id": "F-SCHED-018",
+  "requirementType": "functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Check-in workflow (mobile check-in, kiosk, front desk)",
+  "summary": "Support multiple check-in methods including mobile, kiosk, and front desk.",
+  "description": "Implement flexible check-in workflows that support mobile check-in (via app), self-service kiosks, and traditional front desk check-in. All methods should update appointment status in real-time and provide consistent experience.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "SCHED",
+    "Appointment Management"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

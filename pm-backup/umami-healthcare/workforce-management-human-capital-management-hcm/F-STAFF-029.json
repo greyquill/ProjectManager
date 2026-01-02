@@ -1,0 +1,38 @@
+{
+  "id": "F-STAFF-029",
+  "epicId": "workforce-management-human-capital-management-hcm",
+  "requirementType": "functional",
+  "title": "Multiple pay structures (hourly, salaried, per-diem)",
+  "summary": "Payroll Integration: Multiple pay structures (hourly, salaried, per-diem)",
+  "description": "Support multiple pay structures including hourly, salaried, and per-diem to accommodate different employment types and compensation models.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:34:11.636Z",
+  "updatedAt": "2025-12-10T11:34:11.636Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "STAFF",
+    "Payroll Integration"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

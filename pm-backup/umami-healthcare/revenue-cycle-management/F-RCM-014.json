@@ -1,0 +1,35 @@
+{
+  "id": "F-RCM-014",
+  "requirementType": "functional",
+  "epicId": "revenue-cycle-management",
+  "title": "Automated payment reminders via SMS/email",
+  "summary": "Send automated payment reminders to patients via SMS and email based on configured schedules.",
+  "description": "Implement an automated reminder system that sends payment reminders to patients via SMS and email. The system should support configurable schedules and personalized messaging based on account status and payment history.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "RCM",
+    "Patient Financial Experience"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

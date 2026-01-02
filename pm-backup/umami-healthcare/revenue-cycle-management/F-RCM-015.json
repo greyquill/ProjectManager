@@ -1,0 +1,35 @@
+{
+  "id": "F-RCM-015",
+  "requirementType": "functional",
+  "epicId": "revenue-cycle-management",
+  "title": "Flexible payment options (full payment, installments, deposit)",
+  "summary": "Support multiple payment options including full payment, installments, and deposit-based payments.",
+  "description": "Enable flexible payment options that allow patients to choose between full payment, installment plans, or deposit-based payments. The system should support various payment configurations and terms.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "RCM",
+    "Patient Financial Experience"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

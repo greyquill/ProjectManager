@@ -1,0 +1,38 @@
+{
+  "id": "NFR-EMR-016",
+  "epicId": "electronic-medical-records-emr-system",
+  "requirementType": "non-functional",
+  "title": "CCD/CCDA document generation and import",
+  "summary": "Interoperability: CCD/CCDA document generation and import",
+  "description": "Support CCD (Continuity of Care Document) and CCDA (Consolidated Clinical Document Architecture) document generation and import for care coordination and patient record portability.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:27:28.187Z",
+  "updatedAt": "2025-12-10T11:27:28.187Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "EMR",
+    "Interoperability"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

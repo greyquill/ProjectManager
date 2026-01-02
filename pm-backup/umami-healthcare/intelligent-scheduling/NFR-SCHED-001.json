@@ -1,0 +1,35 @@
+{
+  "id": "NFR-SCHED-001",
+  "requirementType": "non-functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Real-time availability updates < 1 second",
+  "summary": "Ensure real-time availability updates complete in less than 1 second.",
+  "description": "Performance requirement: Real-time availability updates must complete in less than 1 second to ensure accurate scheduling and prevent double-booking when multiple users are viewing the same calendar.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "SCHED",
+    "Performance"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

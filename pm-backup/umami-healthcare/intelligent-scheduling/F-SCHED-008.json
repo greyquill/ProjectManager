@@ -1,0 +1,35 @@
+{
+  "id": "F-SCHED-008",
+  "requirementType": "functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Web portal appointment booking with real-time availability",
+  "summary": "Enable patients to book appointments through a web portal with real-time availability display.",
+  "description": "Create a patient-facing web portal that displays real-time appointment availability and allows patients to book appointments online. The system should update availability instantly as appointments are booked or cancelled.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "SCHED",
+    "Patient Self-Scheduling"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

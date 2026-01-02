@@ -1,0 +1,35 @@
+{
+  "id": "NFR-SCHED-010",
+  "requirementType": "non-functional",
+  "epicId": "intelligent-scheduling",
+  "title": "EMR integration for patient demographics",
+  "summary": "Integrate with EMR systems to retrieve and sync patient demographic information.",
+  "description": "Integration requirement: Integrate with Electronic Medical Record (EMR) systems to retrieve and synchronize patient demographic information. This ensures patient data consistency and reduces manual data entry.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "SCHED",
+    "Integration"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

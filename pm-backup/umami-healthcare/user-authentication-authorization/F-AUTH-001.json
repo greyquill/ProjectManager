@@ -1,0 +1,38 @@
+{
+  "id": "F-AUTH-001",
+  "epicId": "user-authentication-authorization",
+  "requirementType": "functional",
+  "title": "Multi-factor authentication (MFA) required",
+  "summary": "Identity Management: Multi-factor authentication (MFA) required",
+  "description": "Require multi-factor authentication (MFA) for all user logins to enhance security and protect against unauthorized access to patient data and systems.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:36:20.596Z",
+  "updatedAt": "2025-12-10T11:36:20.596Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "AUTH",
+    "Identity Management"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

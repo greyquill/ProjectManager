@@ -1,0 +1,35 @@
+{
+  "id": "F-SCHED-009",
+  "requirementType": "functional",
+  "epicId": "intelligent-scheduling",
+  "title": "WhatsApp chatbot for appointment scheduling (conversational AI)",
+  "summary": "Enable appointment booking through WhatsApp using a conversational AI chatbot.",
+  "description": "Integrate WhatsApp Business API with a conversational AI chatbot that guides patients through appointment scheduling via natural language conversation. The chatbot should understand patient requests and complete bookings seamlessly.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "SCHED",
+    "Patient Self-Scheduling"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

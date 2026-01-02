@@ -1,0 +1,38 @@
+{
+  "id": "F-EMR-032",
+  "epicId": "electronic-medical-records-emr-system",
+  "requirementType": "functional",
+  "title": "IoT device integration (connected BP cuffs, scales, glucometers)",
+  "summary": "Vitals & Flowsheet: IoT device integration (connected BP cuffs, scales, glucometers)",
+  "description": "Integrate with IoT devices including connected blood pressure cuffs, scales, and glucometers to automatically capture and record vital signs, reducing manual entry errors.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:27:28.182Z",
+  "updatedAt": "2025-12-10T11:27:28.182Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "EMR",
+    "Vitals & Flowsheet"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

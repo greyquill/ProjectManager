@@ -1,0 +1,35 @@
+{
+  "id": "NFR-RCM-016",
+  "requirementType": "non-functional",
+  "epicId": "revenue-cycle-management",
+  "title": "REST API for third-party clearinghouse integration",
+  "summary": "Provide REST API endpoints for third-party clearinghouse integration.",
+  "description": "Integration requirement: Expose REST API endpoints that allow third-party clearinghouses to integrate with the revenue cycle management system for claim submission and status tracking.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "RCM",
+    "Integration"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

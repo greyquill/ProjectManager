@@ -1,0 +1,35 @@
+{
+  "id": "F-RCM-011",
+  "requirementType": "functional",
+  "epicId": "revenue-cycle-management",
+  "title": "Digital wallet integration (Apple Pay, Google Pay, credit/debit cards)",
+  "summary": "Integrate digital wallet payment options including Apple Pay, Google Pay, and traditional credit/debit cards.",
+  "description": "Implement digital wallet integration to support modern payment methods including Apple Pay, Google Pay, and traditional credit/debit card processing. This enhances patient payment experience and increases collection rates.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "RCM",
+    "Patient Financial Experience"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

@@ -1,0 +1,35 @@
+{
+  "id": "F-SCHED-027",
+  "requirementType": "functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Provider utilization metrics (% of slots filled)",
+  "summary": "Calculate and display provider utilization metrics showing percentage of available slots filled.",
+  "description": "Implement provider utilization analytics that calculate and display the percentage of available appointment slots that are filled. This helps identify underutilized providers and optimize schedule allocation.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "SCHED",
+    "Analytics & Optimization"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

@@ -1,0 +1,38 @@
+{
+  "id": "NFR-SEC-010",
+  "epicId": "security-compliance",
+  "requirementType": "non-functional",
+  "title": "HITECH Act breach notification capability",
+  "summary": "Compliance & Certification: HITECH Act breach notification capability",
+  "description": "Implement HITECH Act breach notification capability to detect breaches and notify affected individuals and authorities within required timeframes.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:40:48.596Z",
+  "updatedAt": "2025-12-10T11:40:48.596Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "SEC",
+    "Compliance & Certification"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

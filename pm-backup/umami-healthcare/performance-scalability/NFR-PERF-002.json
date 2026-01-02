@@ -1,0 +1,38 @@
+{
+  "id": "NFR-PERF-002",
+  "epicId": "performance-scalability",
+  "requirementType": "non-functional",
+  "title": "API response time < 500ms (average)",
+  "summary": "Response Time: API response time < 500ms (average)",
+  "description": "Maintain average API response time under 500ms to ensure fast data retrieval and smooth application interactions.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:42:24.928Z",
+  "updatedAt": "2025-12-10T11:42:24.928Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "PERF",
+    "Response Time"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

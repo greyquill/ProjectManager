@@ -1,0 +1,35 @@
+{
+  "id": "F-RCM-019",
+  "requirementType": "functional",
+  "epicId": "revenue-cycle-management",
+  "title": "Accounts receivable aging reports (30/60/90/120+ days)",
+  "summary": "Generate accounts receivable aging reports categorized by 30/60/90/120+ days buckets.",
+  "description": "Create accounts receivable aging reports that categorize outstanding balances by age buckets (30, 60, 90, 120+ days). These reports help identify collection priorities and assess financial health.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "RCM",
+    "Financial Analytics & Reporting"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

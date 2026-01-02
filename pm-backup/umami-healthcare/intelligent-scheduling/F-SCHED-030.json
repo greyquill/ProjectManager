@@ -1,0 +1,35 @@
+{
+  "id": "F-SCHED-030",
+  "requirementType": "functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Revenue per appointment type analysis",
+  "summary": "Analyze revenue generated per appointment type to optimize scheduling mix.",
+  "description": "Implement revenue analytics that track and analyze revenue generated per appointment type. This helps identify the most profitable appointment types and optimize the scheduling mix to maximize revenue.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "SCHED",
+    "Analytics & Optimization"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

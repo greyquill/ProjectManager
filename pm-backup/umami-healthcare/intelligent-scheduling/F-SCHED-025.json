@@ -1,0 +1,35 @@
+{
+  "id": "F-SCHED-025",
+  "requirementType": "functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Reminder analytics (delivery rate, response rate)",
+  "summary": "Track and analyze reminder delivery rates and patient response rates.",
+  "description": "Implement analytics dashboard that tracks reminder performance metrics including delivery rates (successful SMS/WhatsApp/IVR delivery), response rates (patient confirmations), and channel effectiveness. This helps optimize reminder strategies.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "SCHED",
+    "Automated Reminders"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

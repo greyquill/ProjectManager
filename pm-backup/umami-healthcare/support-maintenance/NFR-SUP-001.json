@@ -1,0 +1,38 @@
+{
+  "id": "NFR-SUP-001",
+  "epicId": "support-maintenance",
+  "requirementType": "non-functional",
+  "title": "24/7 phone and chat support",
+  "summary": "Customer Support: 24/7 phone and chat support",
+  "description": "Provide 24/7 phone and chat support to ensure healthcare organizations can receive assistance at any time, supporting critical healthcare operations that operate around the clock.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:48:53.438Z",
+  "updatedAt": "2025-12-10T11:48:53.438Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "SUP",
+    "Customer Support"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

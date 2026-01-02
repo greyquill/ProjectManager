@@ -1,0 +1,38 @@
+{
+  "id": "NFR-CUSTOM-004",
+  "epicId": "white-label-digital-patient-experience",
+  "requirementType": "non-functional",
+  "title": "Push notification delivery < 5 seconds",
+  "summary": "Performance: Push notification delivery < 5 seconds",
+  "description": "Ensure push notification delivery within 5 seconds to provide timely alerts and reminders for appointments and important updates.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:31:31.503Z",
+  "updatedAt": "2025-12-10T11:31:31.503Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "CUSTOM",
+    "Performance"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

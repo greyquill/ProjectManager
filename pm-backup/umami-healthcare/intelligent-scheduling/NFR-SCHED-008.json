@@ -1,0 +1,35 @@
+{
+  "id": "NFR-SCHED-008",
+  "requirementType": "non-functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Maximum 3 clicks to book an appointment",
+  "summary": "Ensure patients can complete appointment booking in maximum 3 clicks from start to finish.",
+  "description": "Usability requirement: The appointment booking flow must be streamlined so that patients can complete a booking in maximum 3 clicks from the initial action to confirmation. This ensures a simple and efficient user experience.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "SCHED",
+    "Usability"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

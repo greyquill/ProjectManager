@@ -1,0 +1,38 @@
+{
+  "id": "NFR-CUSTOM-007",
+  "epicId": "white-label-digital-patient-experience",
+  "requirementType": "non-functional",
+  "title": "Support iOS 15+ and Android 10+",
+  "summary": "Usability: Support iOS 15+ and Android 10+",
+  "description": "Support iOS 15 and later, and Android 10 and later to ensure compatibility with current and recent mobile operating systems.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:31:31.504Z",
+  "updatedAt": "2025-12-10T11:31:31.504Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "CUSTOM",
+    "Usability"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

@@ -1,0 +1,38 @@
+{
+  "id": "F-CUSTOM-019",
+  "epicId": "white-label-digital-patient-experience",
+  "requirementType": "functional",
+  "title": "Health education content library",
+  "summary": "Patient Engagement: Health education content library",
+  "description": "Provide comprehensive health education content library accessible to patients, supporting health literacy and self-management of conditions.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:31:31.497Z",
+  "updatedAt": "2025-12-10T11:31:31.497Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "CUSTOM",
+    "Patient Engagement"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

@@ -1,0 +1,38 @@
+{
+  "id": "NFR-INT-003",
+  "epicId": "integration-interoperability",
+  "requirementType": "non-functional",
+  "title": "CCD/CCDA document generation (C-CDA 2.1)",
+  "summary": "Healthcare Standards: CCD/CCDA document generation (C-CDA 2.1)",
+  "description": "Generate CCD (Continuity of Care Document) and CCDA (Consolidated Clinical Document Architecture) documents compliant with C-CDA 2.1 standard for care coordination and patient record portability.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:47:35.350Z",
+  "updatedAt": "2025-12-10T11:47:35.350Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "INT",
+    "Healthcare Standards"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

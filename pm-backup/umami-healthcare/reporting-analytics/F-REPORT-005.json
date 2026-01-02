@@ -1,0 +1,38 @@
+{
+  "id": "F-REPORT-005",
+  "epicId": "reporting-analytics",
+  "requirementType": "functional",
+  "title": "Average wait time by provider/location",
+  "summary": "Operational Reports: Average wait time by provider/location",
+  "description": "Calculate and report average wait times by provider and location to monitor patient experience and identify bottlenecks in care delivery.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:37:48.661Z",
+  "updatedAt": "2025-12-10T11:37:48.661Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "REPORT",
+    "Operational Reports"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

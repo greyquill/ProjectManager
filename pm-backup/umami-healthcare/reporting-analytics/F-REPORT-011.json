@@ -1,0 +1,38 @@
+{
+  "id": "F-REPORT-011",
+  "epicId": "reporting-analytics",
+  "requirementType": "functional",
+  "title": "HEDIS measure tracking (diabetes, hypertension control)",
+  "summary": "Clinical Quality Reports: HEDIS measure tracking (diabetes, hypertension control)",
+  "description": "Track and report HEDIS (Healthcare Effectiveness Data and Information Set) measures including diabetes and hypertension control to measure quality of care.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:37:48.664Z",
+  "updatedAt": "2025-12-10T11:37:48.664Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "REPORT",
+    "Clinical Quality Reports"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

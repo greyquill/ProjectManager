@@ -1,0 +1,35 @@
+{
+  "id": "F-SCHED-029",
+  "requirementType": "functional",
+  "epicId": "intelligent-scheduling",
+  "title": "Patient satisfaction score tracking",
+  "summary": "Track and analyze patient satisfaction scores related to scheduling experience.",
+  "description": "Implement patient satisfaction tracking system that collects and analyzes satisfaction scores related to the scheduling experience. This includes post-appointment surveys and feedback collection to identify areas for improvement.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "SCHED",
+    "Analytics & Optimization"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+

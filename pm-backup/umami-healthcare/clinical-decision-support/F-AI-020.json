@@ -1,0 +1,36 @@
+{
+  "id": "F-AI-020",
+  "requirementType": "functional",
+  "epicId": "clinical-decision-support",
+  "title": "Allergy contraindication warnings",
+  "summary": "Clinical Decision Support: Allergy contraindication warnings",
+  "description": "Develop allergy contraindication warning system that alerts providers when prescribing medications that may cause allergic reactions based on patient's documented allergies.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-01-15T00:00:00Z",
+  "updatedAt": "2025-01-15T00:00:00Z",
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "AI",
+    "Clinical Decision Support"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
+
+

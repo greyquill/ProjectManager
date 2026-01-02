@@ -1,0 +1,38 @@
+{
+  "id": "NFR-EMR-002",
+  "epicId": "electronic-medical-records-emr-system",
+  "requirementType": "non-functional",
+  "title": "Search query response < 500ms for 1M+ records",
+  "summary": "Performance: Search query response < 500ms for 1M+ records",
+  "description": "Maintain search query response time under 500ms even with 1 million or more patient records to ensure fast information retrieval and optimal user experience.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:27:28.185Z",
+  "updatedAt": "2025-12-10T11:27:28.185Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "non-functional",
+    "EMR",
+    "Performance"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}

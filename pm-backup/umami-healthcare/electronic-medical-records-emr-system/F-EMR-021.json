@@ -1,0 +1,38 @@
+{
+  "id": "F-EMR-021",
+  "epicId": "electronic-medical-records-emr-system",
+  "requirementType": "functional",
+  "title": "Controlled substance prescribing (DEA compliance)",
+  "summary": "Medication Management: Controlled substance prescribing (DEA compliance)",
+  "description": "Support controlled substance prescribing with DEA compliance features including prescription drug monitoring program (PDMP) integration and required documentation.",
+  "acceptanceCriteria": [],
+  "status": "todo",
+  "priority": "medium",
+  "manager": "person-001",
+  "createdAt": "2025-12-10T11:27:28.180Z",
+  "updatedAt": "2025-12-10T11:27:28.180Z",
+  "plannedStartDate": null,
+  "plannedDueDate": null,
+  "actualStartDate": null,
+  "actualDueDate": null,
+  "dueDate": null,
+  "tags": [
+    "functional",
+    "EMR",
+    "Medication Management"
+  ],
+  "estimate": {
+    "storyPoints": 0,
+    "confidence": "medium"
+  },
+  "relatedStories": [],
+  "mentions": [],
+  "files": [],
+  "metadata": {
+    "createdBy": "system",
+    "lastEditedBy": "system",
+    "custom": {}
+  },
+  "deleted": false,
+  "archived": false
+}
