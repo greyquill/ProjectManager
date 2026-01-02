@@ -29,7 +29,7 @@ dotenv.config({ path: path.join(projectRoot, '.env.local') })
 let pmRepositoryKV: any
 
 // Direct file system access functions (bypass KV check)
-const PM_DATA_DIR = path.join(projectRoot, 'pm')
+const PM_DATA_DIR = path.join(projectRoot, 'pm-backup')
 
 function getProjectFilePath(projectName: string): string {
   return path.join(PM_DATA_DIR, projectName, 'project.json')
@@ -409,7 +409,7 @@ async function exportProjectToKV(
     logWarning(`⚠️  WARNING: people.json does NOT exist in KV!`)
     logWarning(`   Project metadata references person IDs that may not exist.`)
     logWarning(`   Please export people.json to KV before using the exported data.`)
-    logWarning(`   You can do this by copying pm/people.json to KV manually or using the People page in the UI.`)
+    logWarning(`   You can do this by copying pm-backup/people.json to KV manually or using the People page in the UI.`)
   } else {
     logInfo(`✅ people.json exists in KV`)
   }
@@ -427,7 +427,7 @@ async function exportProjectToKV(
     await readProjectFromFile(projectName)
   } catch (error) {
     logError(`Project not found locally: ${projectName}`)
-    logError(`   Expected folder: pm/${projectName}/project.json`)
+    logError(`   Expected folder: pm-backup/${projectName}/project.json`)
     process.exit(1)
   }
 
