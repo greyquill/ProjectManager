@@ -15,7 +15,7 @@
     "clean": "rm -rf .next node_modules/.cache",
     "update-claude": "node scripts/update-claude-md.js",
     "setup-git-hook": "bash scripts/setup-git-hook.sh",
-    "export-to-kv": "tsx scripts/export-to-kv.ts",
+    "sync:to-production": "tsx scripts/sync-to-production.ts",
     "update-project-kv": "tsx scripts/update-project-kv.ts",
     "cleanup-kv-project": "tsx scripts/cleanup-kv-project.ts",
     "create-epic-stories": "tsx scripts/create-epic-stories.ts",
@@ -26,9 +26,8 @@
     "redis:logs": "docker-compose logs -f",
     "redis:flush": "docker-compose exec redis redis-cli FLUSHALL",
     "test:local-kv": "tsx scripts/test-local-kv.ts",
-    "check:migration": "tsx scripts/check-migration-status.ts",
-    "migrate-to-local-kv": "tsx scripts/migrate-to-local-kv.ts",
-    "view:redis": "tsx scripts/view-redis-data.ts"
+    "view:redis": "tsx scripts/view-redis-data.ts",
+    "sync:from-production": "tsx scripts/sync-from-production.ts"
   },
   "keywords": [
     "project-management",

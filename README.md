@@ -746,77 +746,58 @@ npm run update-claude    # Update CLAUDE.md files
 npm run setup-git-hook   # Setup git hooks for CLAUDE.md
 
 # KV Storage Management
-npm run export-to-kv     # Export local project data to Vercel KV
-npm run cleanup-kv-project # Remove a project and all its data from KV
+npm run sync:from-production  # Pull data from production KV to local
+npm run sync:to-production    # Push data from local KV to production
+npm run view:redis            # View local KV data summary
+npm run test:local-kv         # Test local KV connection
+
+# Redis Management (Local Development)
+npm run redis:start      # Start local Redis (Docker)
+npm run redis:stop       # Stop local Redis
+npm run redis:restart    # Restart local Redis
+npm run redis:status     # Check Redis status
+npm run redis:logs       # View Redis logs
+npm run redis:flush      # Clear all local KV data
 ```
 
-#### Export to KV (`export-to-kv`)
+#### KV Sync Workflow
 
-Exports epics and stories from local files to Vercel KV (Redis) storage.
+This project uses **KV-only storage** (Redis). Local development uses Docker Redis, and production uses Vercel Upstash Redis.
 
-**Usage:**
+**Sync FROM Production TO Local:**
 ```bash
-# Basic export (interactive epic selection)
-npm run export-to-kv <project-name> --
+# Pull latest data from production
+npm run sync:from-production
 
-# Dry run (preview without exporting)
-npm run export-to-kv <project-name> -- --dry-run
+# Dry run (preview)
+npm run sync:from-production -- --dry-run
 
-# Export specific epics only
-npm run export-to-kv <project-name> -- --epics=epic1,epic2
+# Force overwrite existing data
+npm run sync:from-production -- --force
+```
 
-# Force overwrite existing stories
-npm run export-to-kv <project-name> -- --force
+**Sync FROM Local TO Production:**
+```bash
+# Push local changes to production
+npm run sync:to-production
 
-# Create backup before exporting
-npm run export-to-kv <project-name> -- --backup
+# Dry run (preview)
+npm run sync:to-production -- --dry-run
 
-# Combine options
-npm run export-to-kv umami-healthcare -- --dry-run --backup --epics=revenue-cycle-management
+# Sync specific project only
+npm run sync:to-production -- --project=umami-healthcare
+```
+
+**View Local KV Data:**
+```bash
+npm run view:redis
 ```
 
 **Important Notes:**
-- Project name must be identical for both local files and KV storage
-- The script preserves story order from local `epic.json`
-- Existing stories are skipped by default (use `--force` to overwrite)
-- People data is not exported (ensure it exists in KV separately)
-- See `scripts/EXPORT-TO-KV.md` for detailed documentation
-
-#### Cleanup KV Project (`cleanup-kv-project`)
-
-Removes a project and all its data from Vercel KV storage. Useful for cleaning up old or duplicate projects.
-
-**Usage:**
-```bash
-# Preview what would be deleted (dry run)
-npm run cleanup-kv-project <project-name> -- --dry-run
-
-# Actually delete the project (requires --confirm flag)
-npm run cleanup-kv-project <project-name> -- --confirm
-```
-
-**What Gets Deleted:**
-- Project metadata (`pm:project:<project-name>`)
-- All epic metadata and lists
-- All story data
-- Project epics list
-- Project is removed from the global projects list (without deleting the list itself)
-
-**Safety Features:**
-- `--confirm` flag is required for actual deletion (prevents accidental deletion)
-- Dry run mode shows all keys that would be deleted
-- The global `pm:projects:list` is preserved (only the project name is removed from it)
-
-**Example:**
-```bash
-# Preview deletion
-npm run cleanup-kv-project healthcare-platform -- --dry-run
-
-# Actually delete
-npm run cleanup-kv-project healthcare-platform -- --confirm
-```
-
-**Warning:** This operation is **irreversible**. Always use `--dry-run` first to review what will be deleted.
+- Always sync before development: `npm run sync:from-production`
+- Sync after changes: `npm run sync:to-production`
+- Use `--dry-run` to preview changes before syncing
+- Production automatically uses Vercel Upstash Redis when deployed
 
 ### Project Structure
 
@@ -851,15 +832,94 @@ Copy `env.example` to `.env.local`:
 cp env.example .env.local
 ```
 
-Currently minimal configuration is needed. Future additions may include:
-- AI API keys (for automated story generation)
-- Git integration settings
-- Custom storage paths
+**Required for Local Development (KV Mode):**
+```bash
+# Local KV (Docker Redis)
+USE_LOCAL_KV=true
+UPSTASH_REDIS_REST_URL=http://localhost:8080
+UPSTASH_REDIS_REST_TOKEN=local-dev-token
+
+# Production KV (for syncing)
+KV_REST_API_URL=https://your-production-redis.upstash.io
+KV_REST_API_TOKEN=your-production-token
+```
+
+**Production:** Environment variables are automatically set by Vercel when Redis integration is installed.
+
+### Storage Backend
+
+The application automatically detects the environment:
+- **Local Development**: Uses Docker Redis (when `USE_LOCAL_KV=true`) or file system
+- **Vercel Production**: Uses Vercel Upstash Redis automatically
+
+Detection is based on:
+- `process.env.VERCEL === '1'` (automatically set by Vercel)
+- `process.env.USE_LOCAL_KV === 'true'` (for local KV development)
+- `process.env.KV_REST_API_URL` or `process.env.UPSTASH_REDIS_REST_URL` (KV credentials)
+
+### Local Development Setup (KV Mode)
+
+1. **Start Docker Desktop** (macOS: Open from Applications)
+
+2. **Start Local Redis:**
+   ```bash
+   npm run redis:start
+   ```
+
+3. **Configure `.env.local`:**
+   ```bash
+   USE_LOCAL_KV=true
+   UPSTASH_REDIS_REST_URL=http://localhost:8080
+   UPSTASH_REDIS_REST_TOKEN=local-dev-token
+   ```
+
+4. **Sync from Production:**
+   ```bash
+   npm run sync:from-production
+   ```
+
+5. **Start Development Server:**
+   ```bash
+   npm run dev
+   ```
+
+### Production Deployment (Vercel)
+
+1. **Add Redis Integration:**
+   - Go to Vercel Dashboard → Your Project → Settings → Integrations
+   - Search for "Upstash Redis" and install
+   - Ensure it's connected to Production environment
+
+2. **Verify Environment Variables:**
+   - Settings → Environment Variables
+   - Should see `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`
+   - Ensure they're enabled for **Production** environment
+
+3. **Deploy:**
+   - Push to Git (auto-deploys) or use `vercel --prod`
+   - **Important**: After adding/updating environment variables, redeploy
+
+### Troubleshooting
+
+**"Local KV not configured":**
+- Ensure `USE_LOCAL_KV=true` in `.env.local`
+- Verify `UPSTASH_REDIS_REST_URL=http://localhost:8080`
+- Start Redis: `npm run redis:start`
+
+**"Cannot connect to Docker daemon":**
+- Open Docker Desktop application
+- Wait for it to fully start
+- Try again: `npm run redis:start`
+
+**Production shows empty projects:**
+- Verify environment variables are set for Production environment
+- Redeploy after updating environment variables
+- Check `/api/health` endpoint for connection status
 
 ### Customization
 
 **Theme Colors**: Edit `tailwind.config.js`
-**Data Location**: Modify `PM_DATA_DIR` in `src/lib/pm-repository.ts`
+**Data Location**: Modify `PM_DATA_DIR` in `src/lib/pm-repository.ts` (file mode only)
 **Status Options**: Update project JSON `defaultStatuses` array
 **Priority Levels**: Update project JSON `defaultPriorities` array
 
@@ -917,6 +977,18 @@ Contributions are welcome! Since this is a file-based system:
 ## License
 
 MIT License - see LICENSE file for details
+
+## Security Notes
+
+**Current Implementation:**
+- Login code is hardcoded (`2341`) - should be moved to environment variable
+- Delete operations require login code verification
+- Client-side validation exists but server-side validation is primary
+
+**Recommended Improvements:**
+- Move login code to `LOGIN_CODE` environment variable
+- Add rate limiting to authentication endpoints
+- Implement proper session management
 
 ## Support
 
